@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -20,6 +20,7 @@ namespace SKHSS.Controllers
         JavaScriptSerializer js = new JavaScriptSerializer(new SimpleTypeResolver());
         String username = "mathguy";
         String password = "M.trtlp1!";
+        String asdf = "asdf";
         public ActionResult Index()
         {
             return View();
