@@ -1,0 +1,26 @@
+﻿@model String
+@{
+    ViewBag.Title = "News";
+    ViewBag.Script1 = "date.js";
+}
+<script>
+    $(document).ready(function (e) {
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts/@Model?key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(function (data) {
+            $("#title").text(data.title);
+            $("#date").text(Date.parse(data.published.substring(0, 10)).toString("MM/d/yyyy"));
+            $("#paragraph").text(data.content);
+        })
+    });
+</script>
+<style>
+    #news{padding:10px 10px;}
+    #date{display:inline-block;margin-left:30px;}
+    #title{display:inline-block;}
+</style>
+<div id="news">
+    <h2 id="title"></h2>
+    <div id="date"></div>
+    <br />
+    <div id="paragraph">
+    </div>
+</div>

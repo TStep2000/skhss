@@ -1,0 +1,78 @@
+﻿@using SKHSS.Models.PageModels
+@using SKHSS.Helpers
+@using SKHSS.Models
+@model SettingsPageModel
+@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "Settings";
+    List<SelectListItem> sl = new List<SelectListItem>();
+    for (Int32 i = 0; i < Definitions.Seasons.Count;i++ )
+    {
+        sl.Add(new SelectListItem() { Text = Definitions.Seasons[i], Value = i.ToString(), Selected = Model.CurrentSeasonID == i });
+    }
+    List<SelectListItem> agel = new List<SelectListItem>();
+    for(var i=6;i<=18;i++){
+        agel.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString(), Selected = false });
+    }
+    List<SelectListItem> genl = new List<SelectListItem>();
+    genl.Add(new SelectListItem() { Text = "None", Value = null, Selected = false });
+    genl.Add(new SelectListItem() { Text = "Male", Value = "False", Selected = false });
+    genl.Add(new SelectListItem() { Text = "Female", Value = "True", Selected = false });
+}
+<h2>Settings</h2>
+@using(Html.BeginForm()){
+    
+    <div class="item">
+        <div class="left">Current Season:</div>
+        @Html.DropDownListFor(m => m.CurrentSeasonID, new SelectList(sl, "Value", "Text", Model.CurrentSeasonID), new { Class = "fncy-box" })
+    </div>
+    <div class="item">
+        <div class="left">Current Year:</div>
+        @Html.TextBoxFor(m => m.CurrentYear, new { Class="fncy-box" })
+    </div>
+    <div class="item">
+        <div class="left">Late Fee Cutoff:</div>
+        @Html.TextBoxFor(m => m.LateFeeDate, new {Class="fncy-box", Value = Model.LateFeeDate.ToShortDateString() })
+    </div>
+    <div class="item">
+        <div class="left">Registration Cutoff:</div>
+        @Html.TextBoxFor(m => m.RegCutoff, new {Class="fncy-box", Value = Model.RegCutoff.ToShortDateString() })
+    </div>
+    <div class="item">
+        <div class="left">Last Day Of Season:</div>
+        @Html.TextBoxFor(m => m.EndDate, new {Class="fncy-box", Value = Model.EndDate.ToShortDateString() })
+    </div>
+    <div class="item teams">
+        <h4>Team Age Groups</h4>
+        @for (var i = 0; i < Model.TAGs.Count;i++ )
+        {
+        <div class="team" id="@Model.TAGs[i].TEM_TeamID">
+            @Html.HiddenFor(m => m.TAGs[i].TEM_TeamID)
+            <div class="left">
+                @Html.CheckBoxFor(m => m.TAGs[i].TEM_Enabled)
+                @Html.TextBoxFor(m => m.TAGs[i].TEM_TeamName)
+                @*Model.TAGs[i].TEM_TeamName*@
+            </div>
+            <div class="right">
+                @{String val = (Model.TAGs[i].TEM_Gender.HasValue ? (Model.TAGs[i].TEM_Gender.Value ? "True" : "False") : "Neither");}
+                <div class="minc">
+                    Min:
+                    @Html.DropDownListFor(m => m.TAGs[i].TEM_MinAge, new SelectList(agel, "Value", "Text", Model.TAGs[i].TEM_MinAge), new { Class = "min fncy-box" })
+                </div>
+                <div class="maxc">
+                    Max:
+                    @Html.DropDownListFor(m => m.TAGs[i].TEM_MaxAge, new SelectList(agel, "Value", "Text", Model.TAGs[i].TEM_MaxAge), new { Class = "max fncy-box" })
+                </div>
+                <div class="genc">
+                    Gender: 
+                    @Html.DropDownListFor(m => m.TAGs[i].TEM_Gender, new SelectList(genl, "Value", "Text", val), new { Class = "gen fncy-box" })
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="clear">&nbsp;</div>
+        }
+    </div>
+    <input id="save" type="submit" class="fncybtn" value="Save" /> <img id="saving-settings" width="20" style="vertical-align:middle;" class="hide" src="/Content/loading.gif" alt="loading" />
+    if (ViewBag.Saved == "y") { <img id="saved" src="/Content/icons/gcheck.png" width="20" style="vertical-align:middle;" alt="saved" /> }
+}

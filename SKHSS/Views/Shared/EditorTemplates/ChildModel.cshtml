@@ -1,0 +1,19 @@
+﻿@model SKHSS.Models.ChildModel
+<div class="row">
+    <div class="box box-6 childnamebox">
+        @Html.TextBoxFor(model => model.FirstName, new { @class = "fncy-box", placeholder = "Child's First Name" })
+    </div>
+    <div class="box box-4">
+        @Html.TextBoxFor(model => model.Birthdate, new { @class = "fncy-box date", placeholder = "Date of Birth" })
+    </div>
+    <div class="box box-2 filled genderbox">
+        @{string id = ViewData.TemplateInfo.GetFullHtmlFieldId("radioFalse");}
+        @Html.RadioButtonFor(model => model.Gender, false, new { id })<label for="Children_0__radioFalse">M</label><br />
+
+        @{id = ViewData.TemplateInfo.GetFullHtmlFieldId("radioTrue");}
+        @Html.RadioButtonFor(model => model.Gender, true, new { id })<label for="Children_0__radioTrue">F</label>
+    </div>
+    <div class="box btnbox">
+        <span id="0" class="removeChild">&nbsp;</span>
+    </div>
+</div>

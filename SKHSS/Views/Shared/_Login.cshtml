@@ -1,0 +1,23 @@
+﻿@model SKHSS.Models.UserLogin
+@{
+    //SKHSS.Authentication.SKHSSMembershipProvider sp = new SKHSS.Authentication.SKHSSMembershipProvider();
+    //SKHSS.Authentication.SKHSSUser user = sp.GetUser(User.Identity.Name,User.Identity.Name);
+    
+}
+<style>
+    
+</style>
+
+<div class="close fncybtn">Close</div>
+<h3 style="line-height:25px; margin:0;">Login</h3><span id="loginerror" class="input-validation-error">@ViewBag.LoginError @if(ViewBag.LoginErrorAdd==true){<br/><span><a href="">Click Here</a> to re-send activation email</span>}</span>
+@using (Html.BeginForm("Login", "Home", FormMethod.Post))
+{
+    <div id="loginform" style="margin-top:5px;">
+        Username or Email
+        @Html.TextBoxFor(m => m.USR_Username, new { @class = "fncy-box", name = "useremail" })
+        Password
+        @Html.TextBoxFor(m => m.USR_Password, new { @class = "fncy-box", name = "password", type = "password" })
+        <input type="submit" id="loginbtn" class="fncybtn" value="Login" />
+        <a id="passreset" href="/Home/SendPasswordReset">I forgot my password</a>
+    </div>
+}

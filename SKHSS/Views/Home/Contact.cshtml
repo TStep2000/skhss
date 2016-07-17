@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    //ViewBag.MinHeight = "470px";
+    //ViewBag.MinWidth = "540px";
+}
+
+
+<h2>Contact</h2>
+@using (Html.BeginForm())
+{
+<div id="exterior">
+    <div id="interior">
+        <div style="text-align:left;">
+            Please leave a message with your name and email, and we will respond as quickly as possible!
+        </div>
+        <div id="left">
+            <span class="c">Name</span>
+            <span class="c">Email</span>
+            <span class="c">Message</span>
+        </div>
+        <div id="right">
+            <input type="text" class="c fncy-box" id="name" />
+            <input type="text" class="c fncy-box" id="email" />
+            <textarea rows="5" style="" class="c fncy-box" id="message" ></textarea>
+            <span id="loadingarea" style="display:none;">
+                Sending... 
+                <img src="../../Content/loading.gif" id="loading" alt="loading"/>
+            </span>
+            <div id="sub" class="fncybtn fl-end">Send</div>
+        </div>
+    </div>
+</div>
+}

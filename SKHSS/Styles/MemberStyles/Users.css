@@ -1,0 +1,194 @@
+﻿#users {
+    width:100%;
+    height:100%;
+    height:calc(100% - 39px);
+    overflow:auto;
+    padding:0px 10px 0px 11px;
+}
+.fields {width:calc(100% - 26px);float:left;}
+.cont {padding-left:25px;}
+.rightm .imgbtn {float:right;margin-right:5px;}
+.leftm .imgbtn {margin-right:5px;}
+.leftm, .rightm {margin-top:9px;}
+.leftm {min-width:25px;}
+.ul:nth-child(2n+1) {background:#eee;}
+.ul:nth-child(2n+1) fieldset legend {background:#eee;}
+.ul fieldset,.imgbtn {float:left;}
+.ul input {width:100%;}
+
+/*User Login*/
+.ul {
+    float:left;
+    width:100%;
+    padding:8px 3px 10px 3px;
+    margin-bottom:8px;
+}
+.ul > .fields {width:calc(100% - 50px);}
+.fsUsername, .fsLastName, .fsEmail {width:calc(33% - 79px);}
+.fsRoleID {width:130px;}
+.fsPhone {width:100px}
+.RoleID {max-width:50px!important;min-width:25px!important;}
+
+/*Parent*/
+.p {margin-top:8px;border-top:1px solid #ccc;}
+.p > .fields > fieldset {width:calc(16% - 2px);}
+
+/*Child*/
+.c:first-child {margin-top:8px;border-top:1px solid #ccc;}
+.fsBirthdate {width:75px;}
+.fsFirstName {width:calc(33.3% - 78px);}
+.fsNotes {width:calc(66% - 78px);}
+
+input[type='checkbox'] {width:auto;max-width:200px!important;min-width:0px!important;}
+
+/*.saveimg {position:absolute;right:3px;top:7px;}
+.loginas {position:absolute;right:26px;top:7px;}
+.delete {position:absolute;right:49px;top:7px;}*/
+/* OLD 
+.user:nth-child(2n+1) {background:#eee;}
+.user:nth-child(2n+1) fieldset legend {background:#eee;}
+.top div,.user fieldset,.btn {float:left;}
+.user fieldset {position:relative;border:1px solid black;padding:2px 0 1px 3px;border-radius:5px;margin-right:2px;height:24px;}
+.user fieldset legend {position:absolute;top:-6px;left:5px;line-height:12px;font-size:12px;background:#fff;}
+.user input {background:none;border:none;margin:0;}
+.username {width:140px;}
+.password {width:90px;}
+.userid {width:25px;}
+.RoleID {width:130px;}
+    
+.roledetails fieldset {margin-top:5px;}
+    
+.teammate {position:relative;}
+    
+.new {float:right!important;width:20px;}
+.btn {width:20px;}
+.btn:hover:not(.disabled) img{background:#bbb;border-radius:5px;}
+.btn:active:not(.disabled) img{background:#aaa;border-radius:5px;}
+.btn.disabled img{display:none;}
+    
+    
+.user img {width:15px;height:15px;position:relative;top:5px;cursor:pointer;}
+.roledetails img {top:10px;}
+.top img {top:2px;}
+.new {float:left!important;margin-left:8px;}
+.newuser {float:right!important;}
+.newest {background:#aaa;}
+.user.newest fieldset legend {background:#aaa!important;}
+.strike {position:absolute;top:13px;left:0; width:100%;color:#000;background-color:#000;border:0;height:2px;}
+
+/* NEW 
+#membercontent {
+    overflow:hidden;
+    padding:0;
+}
+#users {
+    width:100%;
+    height:100%;
+    height:calc(100% - 39px);
+    overflow:auto;
+    padding:0px 10px 0px 11px;
+}
+.pagetitle {margin:10px 0px 0px 10px;border-bottom:1px solid #ccc;padding-bottom:10px;}
+.fancylist {
+    background: #fff;
+    border: 1px solid #777;
+    border-radius: 5px;
+    position: relative;
+    padding:5px;
+}
+.user {
+    float:left;
+    width:100%;
+    padding-left:3px;
+    padding-top:8px;
+    margin-bottom:8px;
+}
+.user:first-child {margin-top:8px;}
+.details {margin-left:20px;position:relative;}
+.child {
+    margin-top:5px;
+    background: #fff;
+    border: 1px solid #777;
+    border-radius: 5px;
+    position: relative;
+    padding:5px;
+}
+.clear {height:0;}
+
+.push {height:30px;}
+.error {color:red;}
+.Child legend {background:#fff!important;}
+
+.saveimg {position:absolute;right:3px;top:7px;}
+.loginas {position:absolute;right:26px;top:7px;}
+.delete {position:absolute;right:49px;top:7px;}
+.Parent .delete {right:1px;top:4px;}
+.Child > .delete {right:5px;}
+.Username input,.LastName input, .FirstName input {font-size:14px;font-weight:bold;}
+.Year select {-webkit-appearance:none;-moz-appearance:none;}
+.Year select, .Gender select,.TeamID select,.SeasonID select,.ShirtID select {width:98%!important;width:calc(100% - 3px)!important;height:20px;}
+.RoleID input {width:20px!important;}
+.Gender select {height:19px;}
+    
+.userdata {width:95%;width:calc(100% - 20px);}
+.parentdata {padding-top:3px;border-top:1px solid #aaa;}
+.teammatedata {margin-left:25px;margin-top:6px;padding-top:3px;border-top:1px solid #aaa;}
+
+.Email,.RoleID, .LastName {width:30%;width:calc(33% - 40px);}
+.Phone {width:95px;}
+.FatherName, .MotherName {width:50%;width:calc(50% - 13px);}
+
+.Address {width:49%;width:calc(50% - 13px);margin-left:20px;}
+.City    {width:23%;width:calc(30% - 7px);}
+.Zipcode {width:20%;width:calc(20% - 7px);}
+
+.FirstName {width:30%;width:calc(100% - 196px);max-width:250px;}
+.Birthdate {width:75px;}
+.Gender {width:95px;}
+.Notes {width: 95%;width:calc(100% - 20px);margin-left:20px;}
+
+.TeamID {min-width:90px;width:36%;width:calc(32% - 2px);}
+.Year {min-width:40px;width:15%;width:calc(20% - 2px);}
+.SeasonID {width:46%;width:calc(38% - 2px);}
+.ShirtID {width:51%;width:calc(53% - 2px);}
+.Accepted {width:46%;width:calc(47% - 2px);}
+
+@media screen and (max-width: 760px) {
+    .details {margin-left: 0px;}
+    .push {height: 60px!important;}
+    .childpush {height:63px!important;}
+    .loginas {right:26px;}
+    .delete {right:49px;}
+        
+    .saveimg img, .loginas img, .delete img {width:18px;height:18px;}
+    .user fieldset legend {top:-5px;left:5px;line-height:9px;font-size:11px;}
+
+    .userdata {width:95%;width:calc(100% - 20px);}
+    .parentdata {padding-top:3px;border-top:1px solid #aaa;}
+    .teammatedata {margin-left:25px;margin-top:3px;padding-top:3px;border-top:1px solid #aaa;}
+
+    .Username input,.Password input,.Email input, .Team {width:100%;}
+    .Username {width:32%;width:calc(40% - 12px)}
+    .Password {width:27%;width:calc(40% - 22px)}
+    .Email,.RoleID,.Phone {width:49%;width:calc(50% - 13px);}
+    .Phone {margin-top:5px;margin-left:20px;}
+    .Phone.dd {margin-left:0px;}
+    .RoleID.dd {margin-top:5px;margin-left:20px;}
+
+    .LastName {width:49%;width:calc(50% - 13px);} 
+        
+    .Address {width:50%;width:calc(50% - 13px);margin-left:20px;}
+    .City    {width:23%;width:calc(30% - 7px);}
+    .Zipcode {width:20%;width:calc(20% - 7px);}
+
+    .FirstName {width:30%;width:calc(100% - 196px);}
+    .FirstName input {font-weight:bold;}
+    .Birthdate {width:75px;}
+    .Gender {width:95px;}
+
+    .TeamID {min-width:90px;width:36%;width:calc(42% - 2px);}
+    .Year {min-width:40px;width:15%;width:calc(18% - 2px);}
+    .SeasonID {width:38%;width:calc(40% - 2px);}
+    .ShirtID {width:51%;width:calc(53% - 2px);}
+    .Accepted {width:46%;width:calc(47% - 2px);}
+}*/

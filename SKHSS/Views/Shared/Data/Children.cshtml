@@ -1,0 +1,69 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Child> cs = new List<Child>();
+    if (all)
+    {
+        cs = Data.GetCs().ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            case "p":
+                cs = Data.GetCs(m => m.CLD_PRT_RecordID == Model).ToList();
+            break;
+            case "t":
+                cs.Add(Data.GetC(m => m.CLD_RecordID == Model));
+            break;
+            default:
+                cs.Add(Data.GetC(m => m.CLD_RecordID == Model));
+            break;
+        }
+    }
+}
+@foreach (Child c in cs)
+{
+<div class="fancylist c @c.CLD_RecordID" data-group="@c.CLD_RecordID" data-type="c" id="@c.CLD_RecordID">
+    <input type="hidden" class="crid" value="@c.CLD_RecordID" />
+    <span class="title"><b>Child</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@c.CLD_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@c.CLD_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Child" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Teammates">Teammates</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>FirstName</legend><input type="text" value="@c.CLD_FirstName" /></fieldset>
+        <fieldset><legend>LastName</legend><input type="text" value="@c.Parent.PRT_LastName" /></fieldset>
+        <fieldset class="fk highlight" data-id="@c.CLD_PRT_RecordID" data-type="p"><legend>Parent</legend><span>@Global.ParentNames(c.Parent)</span></fieldset>
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@c.CLD_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>ParentID</legend><input type="text" class="OrderID" value="@c.CLD_PRT_RecordID" /></fieldset>
+        <fieldset><legend>FirstName</legend><input type="text" class="FirstName" value="@c.CLD_FirstName" /></fieldset>
+        <fieldset><legend>Birthdate</legend><input type="text" class="Birthdate" value="@c.CLD_Birthdate.ToShortDateString()" /></fieldset>
+        <fieldset><legend>Gender</legend><input type="text" class="Gender" value="@c.CLD_Gender" /></fieldset>
+        <fieldset><legend>Notes</legend><input type="text" class="Notes" value="@c.CLD_Notes" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (cs.Count == 0)
+{
+    <text>none</text>
+}

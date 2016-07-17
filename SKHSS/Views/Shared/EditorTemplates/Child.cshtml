@@ -1,0 +1,55 @@
+﻿@model Int32
+@using SKHSS.Helpers
+@{
+    Layout = null;
+    String c = "c" + Model;
+    List<String> tm = Definitions.Teams;
+    List<String> se = Definitions.Seasons;
+    List<String> sh = Definitions.ShirtSizes;
+}
+<div class="row Child fancylist" id="c@(Model)" data-prefix="c@(Model)">
+    <div class="inputs">
+        <input type="text" id="c@(Model)FirstName" class="fncy-box" placeholder="First Name" />
+    </div>
+    <div class="inputs">
+        <input type="text" id="c@(Model)Birthdate" class="fncy-box" placeholder="Birthdate" />
+    </div>
+    <div class="mult-opt">
+        <div class="opt">
+            <input type="radio" name="c@(Model)Gender" id="c@(Model)opt1" class="c@(Model)Gender" value="False" /><label for="c@(Model)opt1">Male</label>
+        </div>
+        <div class="opt">
+            <input type="radio" name="c@(Model)Gender" id="c@(Model)opt2" class="c@(Model)Gender" value="True" /><label for="c@(Model)opt2">Female</label>
+        </div>
+    </div>
+    <div class="notes">
+        <textarea id="c@(Model)Notes" class="fncy-box" placeholder="Optional description of medical conditions/allergies. This can be updated after registration."></textarea>
+    </div>
+    <div class="Teammate" id="t@(Model)" data-prefix="t@(Model)">
+        <fieldset class="TeamID"><legend>Team</legend><select id="t@(Model)TeamID">
+            @for (int l = 0; l < tm.Count; l++ )
+            {
+                <option value="@l" >@tm[l]</option>
+            }
+        </select></fieldset>
+        <fieldset class="ShirtID"><legend>Shirt</legend><input class="isShirt" type="checkbox" />&nbsp;<select disabled="disabled" class="ShirtID" id="t@(Model)ShirtID">
+            @for (int l = 0; l < sh.Count; l++ )
+            {
+                <option value="@l">@sh[l]</option>
+            }
+        </select></fieldset>
+        <fieldset class="Year"><legend>Year</legend><select id="t@(Model)Year">
+            @for (int k = DateTime.Now.Year - 10; k <= DateTime.Now.Year + 1; k++)
+            {
+                <option value="@k" @(k == Global.CurrentYear ? "selected=\"selected\"" : "")>@k</option>
+            }
+        </select></fieldset>
+        <fieldset class="SeasonID"><legend>Season</legend><select id="t@(Model)SeasonID">
+            @for (int l = 0; l < se.Count; l++ )
+            {
+                <option value="@l" @(l == Global.CurrentSeasonID ? "selected=\"selected\"" : "")>@se[l]</option>
+            }
+        </select></fieldset>
+    </div>
+    <div class="removechild imgbtn"><img src="/Content/icons/close.png" /></div>
+</div>

@@ -1,0 +1,555 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model List<UserLogin>
+
+@{
+    ViewBag.Title = "ViewUsers";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    SKHSSEntities db = new SKHSSEntities();
+    ViewBag.DisableBackspace = true;
+    ViewBag.SaveData = true;
+    //ViewBag.ScrollPage = true;
+}
+<style type="text/css">
+    #users {
+        width:100%;
+    }
+    .user {
+        background:#ddd;
+        border:1px solid #bbb;
+        border-radius:5px;
+        float:left;
+        width:100%;
+        padding:5px;
+        margin-bottom:2px;
+        position:relative;
+    }
+    .user:nth-child(2n+1) {background:#ccc;}
+    .user:nth-child(2n+1) fieldset legend {background:#ccc;}
+    .top div,.user fieldset,.btn {float:left;}
+    .user fieldset {position:relative;border:1px solid black;padding:2px 0 1px 3px;border-radius:5px;margin-right:2px;}
+    .user fieldset legend {position:absolute;top:-6px;left:5px;line-height:12px;font-size:12px;background:#ddd;}
+    .user input {background:none;border:none;margin:0;}
+    .username,.password {width:140px;}
+    .userid {width:25px;}
+    .RoleID {width:130px;}
+    .details {margin-left:35px;position:relative;}
+    .roledetails fieldset {margin-top:5px;}
+    .child {display:block;width:100%;position:relative;}
+    .teammate {position:relative;}
+    .save,.user > .delete,.loginas {float:right;}
+    .new {float:right!important;width:20px;}
+    .btn {width:20px;}
+    .btn:hover:not(.disabled) img{background:#bbb;border-radius:5px;}
+    .btn:active:not(.disabled) img{background:#aaa;border-radius:5px;}
+    .btn.disabled img{display:none;}
+    .push {height:26px;display:block;float:none!important;}
+    .roledetails .push {height:30px;}
+
+    .Username input,.Password input {width:130px;}
+    .Username input {font-weight:bold;}
+    .TeamID input,.SeasonID input,.ShirtID input {width:15px;}
+    .FatherName input,.MotherName input,.LastName input,.FirstName input{width:100px;}
+    .City input {width:125px;}
+    .Address input,.ids:nth-of-type(1) {width:140px;}
+    .Birthdate input {width: 80px;}
+    .Year input,.Accepted input,.Zipcode input,.ids:nth-of-type(2) {width:50px;}
+    .SeasonID {width:90px;}
+    .Gender input,.RoleID input {width:40px;}
+    .Gender {width:100px;}
+    .ShirtID {width:110px;}
+    .TeamID {width:115px;}
+    .PicID input {width:250px;}
+    .ids {height:25px; padding-top:4px!important;}
+    
+    .user img {width:15px;height:15px;position:relative;top:5px;cursor:pointer;}
+    .roledetails img {top:10px;}
+    .top img {top:2px;}
+    .hidden {display:none;}
+    .new {float:left!important;margin-left:8px;}
+    .newuser {float:right!important;}
+    .newest {background:#aaa;}
+    .user.newest fieldset legend {background:#aaa!important;}
+    .strikethrough {position:absolute;top:13px;left:0; width:100%;color:#000;background-color:#000;border:0;height:2px;}
+</style>
+
+<h2>Users</h2>
+
+<div id="users">
+    <div class="user top">
+        <div class="open btn"><img src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/></div>
+        <div class="userid">ID</div><div class="username">Username</div>
+        <div class="password">Password</div><div class="RoleID">RoleId</div>
+        <div class="new newuser btn"><img src="../../Content/icons/add.png" /></div>
+        <div class="clear"></div>
+    </div>
+    @foreach (UserLogin login in Model)
+    {
+        Parent p = db.Parents.SingleOrDefault(m => m.PRT_USR_RecordID == login.USR_RecordID);
+        <div class="user">
+            <hr class="strikethrough hidden" />
+            <input type="hidden" class="id" value="@login.USR_RecordID" />
+            <div class="open btn openbtn @(p==null ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>
+            <div class="userid btn"><img src="/Content/icons/cog.png" /></div>
+            <fieldset class="ids hidden"><legend>Record ID</legend><span style="position:absolute;height:18px;overflow:hidden;">@login.USR_RecordID</span></fieldset>
+            <fieldset class="ids hidden"><legend>UserID</legend>@login.USR_UserID</fieldset>
+            <fieldset class="Username"><legend>Username</legend><input type="text" value="@login.USR_Username" /></fieldset>
+            <fieldset class="Email"><legend>Email</legend><input type="text" value="@login.USR_Email" /></fieldset>
+            <fieldset class="Password"><legend>Password</legend><input type="password" value="@login.USR_Password" /></fieldset>
+            <fieldset class="RoleID"><legend>Role</legend><input type="text" value="@login.USR_ROL_RoleID" /> <span>@Definitions.GetHighestRole(login.USR_ROL_RoleID)</span></fieldset>
+            <div class="save btn"><img src="../../Content/icons/save.png" /></div>
+            <div class="loginas btn"><img src="../../Content/icons/card.png" /></div>
+            <div class="delete btn"><img src="../../Content/icons/close.png" /></div>
+            <div class="push">&nbsp;</div>
+            <div class="roledetails details hidden">
+                @if (Global.IsInRole(login,Definitions.ParentRole) && p != null)
+                {
+                    <hr class="strikethrough hidden" />
+                    <input class="role" type="hidden" value="parent" />
+                    <input class="ParentRecordID" type="hidden" value="@p.PRT_RecordID" />
+                    <div class="openrole btn openbtn @(p.Children.Count == 0 ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>
+                    <fieldset class="FatherName"><legend>Father Name</legend><input type="text" value="@p.PRT_FatherName" /></fieldset>
+                    <fieldset class="MotherName"><legend>Mother Name</legend><input type="text" value="@p.PRT_MotherName" /></fieldset>
+                    <fieldset class="LastName"><legend>Last Name</legend><input type="text" value="@p.PRT_LastName" /></fieldset>
+                    <fieldset class="Address"><legend>Address</legend><input type="text" value="@p.PRT_Address" /></fieldset>
+                    <fieldset class="City"><legend>City</legend><input type="text" value="@p.PRT_City" /></fieldset>
+                    <fieldset class="Zipcode"><legend>Zipcode</legend><input type="text" value="@p.PRT_Zipcode" /></fieldset>
+                    <div class="new newchild btn"><img src="../../Content/icons/add.png" /></div>
+                    <div class="delete btn"><img src="../../Content/icons/close.png" /></div>
+                    <div class="push">&nbsp;</div>
+                    <div class="moredetails details hidden">
+                        @foreach (Child c in p.Children)
+                        {
+                            List<Teammate> ts = db.Teammates.Where(m => m.TMT_CLD_RecordID == c.CLD_RecordID).ToList();
+                            <div class="child">
+                                <hr class="strikethrough hidden" />
+                                <input type="hidden" class="childid" value="@c.CLD_RecordID" />
+                                <div class="openteammate btn openbtn @(ts.Count == 0 ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>
+                                <fieldset class="FirstName"><legend>First Name</legend><input type="text" value="@c.CLD_FirstName" /></fieldset>
+                                <fieldset class="Birthdate"><legend>Birthdate</legend><input type="text" value="@c.CLD_Birthdate.Value.ToShortDateString()" /></fieldset>
+                                <fieldset class="Gender"><legend>Gender</legend><input type="text" value="@c.CLD_Gender" /><span>@(c.CLD_Gender ? "Female" : "Male")</span></fieldset>
+                                <div class="new newteammate btn"><img src="../../Content/icons/add.png" /></div>
+                                <div class="delete btn"><img src="../../Content/icons/close.png" /></div>
+                                <div class="push">&nbsp;</div>
+                                <div class="teammatedetails details hidden">
+                                @foreach (Teammate t in ts)
+                                {
+                                    <div class="teammate">
+                                        <hr class="strikethrough hidden" />
+                                        <input type="hidden" class="teammateid" value="@t.TMT_RecordID" />
+                                        <fieldset class="TeamID"><legend>Team</legend><input type="text" value="@t.TMT_TEM_TeamID" /><span>@*t.Team.TEM_TeamName*@</span></fieldset>
+                                        <fieldset class="Year"><legend>Year</legend><input type="text" value="@t.TMT_Year" /></fieldset>
+                                        <fieldset class="SeasonID"><legend>Season</legend><input type="text" value="@t.TMT_SEA_SeasonID" /><span>@Definitions.Seasons[t.TMT_SEA_SeasonID]</span></fieldset>
+                                        <fieldset class="ShirtID"><legend>ShirtID</legend><input type="text" value="@t.TMT_SRT_ShirtID" /><span>@(t.TMT_SRT_ShirtID.HasValue ? Definitions.ShirtSizes[t.TMT_SRT_ShirtID.Value] : "")</span></fieldset>
+                                        <fieldset class="Accepted"><legend>Accepted</legend><input type="text" value="@t.TMT_Accepted" /></fieldset>
+                                        @*<fieldset class="PicID"><legend>PicID</legend><input type="text" value="@t.TMT_PIC_RecordID" /></fieldset>*@
+                                        <div class="delete btn"><img src="../../Content/icons/close.png" /></div>
+                                        <div class="push">&nbsp;</div>
+                                        <div class="clear"></div>
+                                    </div>
+                                }
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        }
+                        <div class="clear"></div>
+                    </div>
+                }
+                <div class="clear"></div>
+            </div>
+            
+            <div class="clear"></div>
+        </div>
+    }
+</div>
+@section PageScript{
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".newuser").on("click", function () {
+            $(this).remove();
+            $(".top").after(getUserContent());
+            
+            $(".user:nth-child(2) .userid img").on("click", showid);
+            $(".user:nth-child(2) .save").on("click", saverow);
+            $(".user:nth-child(2) .RoleID input").on("keyup", onechange);
+            $(".user:nth-child(2) .newrole").on("click", function () {
+                $(".user:nth-child(2) .open").on("click", open);
+                $(".user:nth-child(2) .open").find("img:first-child").removeClass("hidden");
+                switch ($(".user:nth-child(2) .RoleID input").val()) {
+                    case "0":
+                        $(".user:nth-child(2) .roledetails").prepend(getParentContent());
+                        $(".user:nth-child(2) .roledetails .newchild").on("click", newchild);
+                        if ($(".user:nth-child(2) .roledetails").hasClass("hidden")) {
+                            $(".user:nth-child(2) .open").click();
+                        }
+                        break;
+                    case "1":
+                        break;
+                    case "2":
+                        break;
+                    case "3":
+                        break;
+                    case "4":
+                        break;
+                    case "5":
+                        break;
+                }
+                $(this).remove();
+            });
+        });
+        
+        $(".top .open").on("click", function () {
+            if ($(this).find("img:nth-child(2)").hasClass("hidden")) {
+                $(".roledetails").removeClass("hidden");
+                $(".user:nth-child(n+2) .open img:nth-child(1)").addClass("hidden");
+                $(".user:nth-child(n+2) .open img:nth-child(2)").removeClass("hidden");
+            }
+            else {
+                $(".roledetails").addClass("hidden");
+                $(".user:nth-child(n+2) .open img:nth-child(2)").addClass("hidden");
+                $(".user:nth-child(n+2) .open img:nth-child(1)").removeClass("hidden");
+            }
+        });
+        $(".openbtn:not(.disabled)").on("click", open);
+        $(".userid img").on("click", showid);
+        $(".save").on("click", saverow);
+        $(".loginas").on("click", loginas);
+        $(".delete").on("click", deleterow);
+        $(".RoleID input,.TeamID input,.SeasonID input, .ShirtID input, .Gender input").on("keyup", onechange);
+        $(".newchild").on("click", newchild);
+        $(".newteammate").on("click", newteammate);
+        function loginas() {
+            window.location = "/Members/LoginAs?Username=" + $(this).parent().find(".Username input").val() + "&Password=" + $(this).parent().find(".Password input").val();
+        }
+        function deleterow() {
+            var ref = $(this).parent();
+            //alert(ref.attr("class"));
+            if (ref.find("> .hidelete").length) {
+                //undelete
+                ref.find("> .hidelete").remove();
+                if (!ref.hasClass("user")) {
+                    var p1 = ref.parent();
+                    var p2 = p1.parent();
+                    var p3 = p2.parent();
+                    if (p1.find("> .hidelete").length) {
+                        return;
+                    } else if (!p1.hasClass("user") && p1.find("> .hidelete").length) {
+                        return;
+                    } else if (!(p2.hasClass("user") || p1.hasClass("user")) && p2.find("> .hidelete").length) {
+                        return;
+                    }
+                }
+                var def = ref.find('.strikethrough');
+                
+                //var def2 = def.not('~ .hidelete');
+                var def2 = def.filter(function () {
+                    //alert($(this).attr("class") + " " + $(this).parent().attr("class") + " " + $(this).parent().find(".hidelete").length);
+                    return ($(this).parent().find("> .hidelete").length==0);
+                });
+                def2.addClass("hidden");
+            } else {
+                //delete
+                ref.find(".strikethrough").removeClass("hidden");
+                ref.prepend('<input type="hidden" class="hidelete" value="true"/>');
+            }
+        }
+        function open () {
+            $(this).siblings(".details").toggleClass("hidden");
+            $(this).find("img:nth-child(1)").toggleClass("hidden");
+            $(this).find("img:nth-child(2)").toggleClass("hidden");
+        }
+        function showid(){
+            $(this).parent().siblings(".ids").toggleClass("hidden");
+        }
+        function saverow() {
+            var ref = $(this).parent();
+            var childs = ref.find(".child");
+            
+            var children = [];
+            childs.each(function (i) {
+                var teammobj = [];
+                var teammates = $(this).find(".teammate");
+                teammates.each(function (i) {
+                    teammobj.push(makeTeammateObjectModel(
+                        $(this).find(".teammateid").val(),
+                        $(this).find(".Year input").val(),
+                        $(this).find(".SeasonID input").val(),
+                        $(this).find(".TeamID input").val(),
+                        $(this).find(".ShirtID input").val(),
+                        $(this).find(".Accepted input").val(),
+                        $(this).find(".PicID input").val(),
+                        $(this).find("> .hidelete").val()));
+                });
+                children.push(makeChildObjectModel(
+                    $(this).find(".childid").val(),
+                    $(this).find(".FirstName input").val(),
+                    $(this).find(".Birthdate input").val(),
+                    $(this).find(".Gender input").val(),
+                    teammobj,
+                    $(this).find("> .hidelete").val()));
+            });
+            var parent;
+            if (ref.find(".FatherName").length) {
+                parent = makeParentObjectModel(
+                    ref.find(".ParentRecordID").val(),
+                    ref.find(".FatherName input").val(),
+                    ref.find(".MotherName input").val(),
+                    ref.find(".LastName input").val(),
+                    ref.find(".Address input").val(),
+                    ref.find(".City input").val(),
+                    ref.find(".Zipcode input").val(),
+                    children,
+                    ref.find(".roledetails > .hidelete").val());
+            }
+            var str = makeObjectModel(
+                ref.find(".id").val(),
+                ref.find(".Username input").val(),
+                ref.find(".Password input").val(),
+                ref.find(".Email input").val(),
+                ref.find(".Phone input").val(),
+                ref.find(".RoleID input").val(),
+                parent,
+                ref.find("> .hidelete").val());
+            $.post("/AJAX/SaveObject", { data: JSON.stringify(str) }, function () {
+                window.location.reload();
+            });
+        }
+        function getVal(cont, name, a) {
+            var ref = cont.find("." + name + " input");
+            if (ref.val()!=undefined) {
+                return (name + ":\"" + ref.val() + "\"" + (a ? "" : ","));
+            }
+            else {
+                return "";
+            }
+        }
+        function getUserContent() {
+            return '<div class="user newest">' +
+                    '   <input type="hidden" class="id" value="" />' +
+                    '   <div class="open btn openbtn"><img class="hidden" src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>' +
+                    '   <div class="userid btn"><img src="/Content/icons/cog.png" /></div>' +
+                    '   <fieldset class="ids hidden"><legend>Record ID</legend></fieldset>' +
+                    '   <fieldset class="ids hidden"><legend>UserID</legend></fieldset>' +
+                    '   <fieldset class="Username"><legend>Username</legend><input type="text" value="" /></fieldset>' +
+                    '   <fieldset class="Email"><legend>Email</legend><input type="text" value="" /></fieldset>'+
+                    '   <fieldset class="Password"><legend>Password</legend><input type="text" value="" /></fieldset>' +
+                    '   <fieldset class="RoleID"><legend>Role</legend><input type="text" value="" /><span class="roletitle"></span> </fieldset>' +
+                    '   <div class="new newrole btn"><img src="../../Content/icons/add.png" /></div>' +
+                    '   <div class="save btn"><img src="../../Content/icons/save.png" /></div>' +
+                    '   <div class="push">&nbsp;</div>' +
+                    '   <div class="roledetails details hidden">' +
+                    '       <div class="clear"></div>' +
+                    '   </div>' +
+                    '   <div class="clear"></div>' +
+                    '</div>';
+        }
+        function getParentContent() {
+            return '<input class="role" type="hidden" value="parent" />' +
+                    '<div class="openrole btn openbtn"><img class="hidden" src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>' +
+                    '<fieldset class="FatherName"><legend>Father Name</legend><input type="text" value="" /></fieldset>' +
+                    '<fieldset class="MotherName"><legend>Mother Name</legend><input type="text" value="" /></fieldset>' +
+                    '<fieldset class="LastName"><legend>Last Name</legend><input type="text" value="" /></fieldset>' +
+                    '<fieldset class="Address"><legend>Address</legend><input type="text" value="" /></fieldset>' +
+                    '<fieldset class="City"><legend>City</legend><input type="text" value="" /></fieldset>' +
+                    '<fieldset class="Zipcode"><legend>Zipcode</legend><input type="text" value="" /></fieldset>' +
+                    '<div class="new newchild btn"><img src="../../Content/icons/add.png" /></div>' +
+                    '<div class="push">&nbsp;</div>' +
+                    '<div class="moredetails details hidden">' +
+                    '   <div class="clear"></div>' +
+                    '</div>';
+        }
+        function getChildContent() {
+            return '<div class="child newest">' +
+                    '   <input type="hidden" class="childid" value="" />' +
+                    '   <div class="openteammate btn openbtn"><img class="hidden" src="/Content/icons/down.png" /><img class="hidden" src="/Content/icons/up.png"/>&nbsp;</div>' +
+                    '   <fieldset class="FirstName"><legend>First Name</legend><input type="text" value="" /></fieldset>' +
+                    '   <fieldset class="Birthdate"><legend>Birthdate</legend><input type="text" value="" /></fieldset>' +
+                    '   <fieldset class="Gender"><legend>Gender</legend><input type="text" value="" /><span class="gendertitle"></span></fieldset>' +
+                    '   <div class="new newteammate btn"><img src="../../Content/icons/add.png" /></div>' +
+                    '   <div class="push">&nbsp;</div>' +
+                    '   <div class="teammatedetails details hidden">' +
+                    '       <div class="clear"></div>' +
+                    '   </div>' +
+                    '   <div class="clear"></div>' +
+                    '</div>';
+        }
+        function getTeammateContent() {
+            return  '<div class="teammate ">' +
+                    '   <input type="hidden" class="teammateid" value="" />' +
+                    '   <fieldset class="TeamID"><legend>Team</legend><input type="text" value="" /><span></span></fieldset>' +
+                    '   <fieldset class="Year"><legend>Year</legend><input type="text" value="" /></fieldset>' +
+                    '   <fieldset class="Season"><legend>Season</legend><input type="text" value="" /><span></span></fieldset>' +
+                    '   <fieldset class="ShirtID"><legend>ShirtID</legend><input type="text" value="" /><span></span></fieldset>' +
+                    '   <fieldset class="Accepted"><legend>Accepted</legend><input type="text" value="" /></fieldset>' +
+                    '   <div class="push">&nbsp;</div>' +
+                    '   <div class="clear"></div>' +
+                    '</div>';
+        }
+
+        function getRole(n) {
+            switch (n) {
+                case "0":
+                    return "Parent"
+                    break;
+                case "1":
+                    return "Coach"
+                    break;
+                case "2":
+                    return "Head Coach"
+                    break;
+                case "3":
+                    return "Admin"
+                    break;
+                case "4":
+                    return "Web Admin"
+                    break;
+                case "5":
+                    return "Me"
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
+        function getTeam(n) {
+            switch (n) {
+                case "0":
+                    return "PeeWees"
+                    break;
+                case "1":
+                    return "Middlers"
+                    break;
+                case "2":
+                    return "Intermediates"
+                    break;
+                case "3":
+                    return "Juniors"
+                    break;
+                case "4":
+                    return "Seniors"
+                    break;
+                case "5":
+                    return "Girls Team"
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
+        function getSeason(n) {
+            switch (n) {
+                case "1":
+                    return "Soccer"
+                    break;
+                case "2":
+                    return "Basketball"
+                    break;
+                case "3":
+                    return "Baseball"
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
+        function getGender(n) {
+            switch (n) {
+                case "False":
+                    return "Male"
+                    break;
+                case "True":
+                    return "Female"
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
+        function getShirt(n) {
+            switch (n) {
+                case "0":
+                    return "Youth Small"
+                    break;
+                case "1":
+                    return "Youth Medium"
+                    break;
+                case "2":
+                    return "Youth Large"
+                    break;
+                case "3":
+                    return "Adult Small"
+                    break;
+                case "4":
+                    return "Adult Medium"
+                    break;
+                case "5":
+                    return "Adult Large"
+                    break;
+                case "6":
+                    return "Adult XL"
+                    break;
+                case "7":
+                    return "Adult XXL"
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
+
+        function onechange(ref) {
+            if (ref.target) {
+                ref = $(this).parent();
+            }
+            if (ref.hasClass("RoleID")) {
+                ref.find("span").text(getRole($(this).val()));
+            }
+            else if (ref.hasClass("TeamID")) {
+                ref.find("span").text(getTeam($(this).val()));
+            }
+            else if (ref.hasClass("Season")) {
+                ref.find("span").text(getSeason($(this).val()));
+            }
+            else if (ref.hasClass("ShirtID")) {
+                ref.find("span").text(getShirt($(this).val()));
+            }
+            else if (ref.hasClass("Gender")) {
+                ref.find("span").text(getGender($(this).val()));
+            }
+        }
+
+        function newchild() {
+            var ref = $(this).parent();
+            if (ref.find(".openrole img:first-child").hasClass("hidden")&&ref.find(".openrole img:nth-child(2)").hasClass("hidden")) {
+                ref.find(".openrole").on("click", open);
+                ref.find(".openrole img:first-child").removeClass("hidden");
+            }
+            ref.find(".moredetails").prepend(getChildContent());
+            if (ref.find(".openrole").hasClass("disabled")) {
+                ref.find(".openrole").on("click", open);
+                ref.find(".openrole").removeClass("disabled");
+            }
+            ref.find(".moredetails .child:first-child .newteammate").on("click", newteammate);
+            if (ref.find(".moredetails").hasClass("hidden")) {
+                ref.find(".openrole").click();
+            }
+        }
+        function newteammate() {
+            ref = $(this).parent();
+            if (ref.find(".openteammate img:first-child").hasClass("hidden") && ref.find(".openteammate img:nth-child(2)").hasClass("hidden")) {
+                ref.find(".openteammate").on("click", open);
+                ref.find(".openteammate img:first-child").removeClass("hidden");
+            }
+            ref.find(".teammatedetails").prepend(getTeammateContent());
+            if (ref.find(".openteammate").hasClass("disabled")) {
+                ref.find(".openteammate").on("click", open);
+                ref.find(".openteammate").removeClass("disabled");
+            }
+            ref.find(".teammatedetails .teammate:first-child").find(".TeamID input,.SeasonID input,.ShirtID input").on("keyup", onechange);
+            if (ref.find(".teammatedetails").hasClass("hidden")) {
+                ref.find(".openteammate").click();
+            }
+        }
+    });
+</script>
+    }

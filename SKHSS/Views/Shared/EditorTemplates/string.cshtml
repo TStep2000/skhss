@@ -1,0 +1,8 @@
+﻿@{
+    var placeholder = string.Empty;
+    if (ViewData.ModelMetadata.AdditionalValues.ContainsKey("placeholder"))
+    {
+        placeholder = ViewData.ModelMetadata.AdditionalValues["placeholder"] as string;
+    }
+}
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, new {@class="fncy-box", placeholder = placeholder })

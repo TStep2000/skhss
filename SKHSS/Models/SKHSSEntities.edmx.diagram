@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c2e0c19654a0463d9d9324c255d5a439" Name="Diagram1">
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Album" Width="1.5" PointX="5.25" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Cache" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.CacheItem" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Child" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Coach" Width="1.5" PointX="12" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Contact" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Feedback" Width="1.5" PointX="5.25" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.IPN" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Log" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Order" Width="1.5" PointX="3" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Parent" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Payment" Width="1.5" PointX="5.25" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Phone" Width="1.5" PointX="3" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Picture" Width="1.5" PointX="7.5" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.SysVar" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Team" Width="1.5" PointX="9.75" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.Teammate" Width="1.5" PointX="12" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SKHSSEntitiesModel.UserLogin" Width="1.5" PointX="5.25" PointY="8.125" IsExpanded="true" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Album_UserLogin" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Picture_Album" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_CacheItem_Cache" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Child_Parent" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Teammate_Child" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Coach_Picture" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Coach_Team" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Coach_UserLogin" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Phone_Phone" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Contact_ToParent" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Feedback_UserLogin" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Order_Parent" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Payment_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Parent_UserLogin" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Phone_Parent" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_UserLogin_Parent" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Teammate_Payment" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Team_Picture" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Teammate_Picture" ManuallyRouted="false" />
+        <AssociationConnector Association="SKHSSEntitiesModel.FK_Teammate_Team" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

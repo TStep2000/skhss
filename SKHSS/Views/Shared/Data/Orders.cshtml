@@ -1,0 +1,78 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Order> os = new List<Order>();
+    if (all)
+    {
+        os = Data.GetOs().ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            case "p":
+                os = Data.GetOs(m => m.ORD_PRT_RecordID == Model).ToList();
+            break;
+            default:
+                os.Add(Data.GetO(m => m.ORD_RecordID == Model));
+            break;
+        }
+    }
+}
+@foreach (Order o in os)
+{
+<div class="fancylist o @o.ORD_RecordID" data-group="@o.ORD_RecordID" data-type="o" id="@o.ORD_RecordID">
+    <input type="hidden" class="orid" value="@o.ORD_RecordID" />
+    <span class="title"><b>Order</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@o.ORD_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@o.ORD_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Order" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Payments">Payments</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>Season</legend><input type="text" value="@Definitions.Seasons[o.ORD_SeasonID]" /></fieldset>
+        <fieldset><legend>Year</legend><input type="text" value="@o.ORD_Year" /></fieldset>
+        @*<fieldset><legend>Finished</legend><input type="text" value="@Global.OrderComplete(o)" /></fieldset>*@
+        @if(o.Parent!=null)
+        {
+        <fieldset class="fk highlight" data-id="@o.ORD_PRT_RecordID" data-type="p"><legend>Parent</legend><span>@o.Parent.PRT_LastName</span></fieldset>
+        }
+        else
+        {
+            <div class="data-error"><div class="dot" data-id="@o.ORD_RecordID">&nbsp;</div>No Parent!! :? :P ?? </div> //Delete this order!
+        }
+        @if(o.Payments.Count>0&&!o.Payments.Any(m=>m.PMT_Current==true)){
+            <div class="data-error"><div class="dot" data-error="2" data-id="@o.ORD_RecordID">&nbsp;</div>Payments, but no current Payment</div> //Sort payments by date make .First() the current payment
+        }
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@o.ORD_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>ParentID</legend><input type="text" class="ParentID" value="@o.ORD_PRT_RecordID" /></fieldset>
+        <fieldset><legend>SeasonID</legend><input type="text" class="SeasonID" value="@o.ORD_SeasonID" /></fieldset>
+        <fieldset><legend>Year</legend><input type="text" class="Year" value="@o.ORD_Year" /></fieldset>
+        <fieldset><legend>Date</legend><input type="text" class="Date" value="@o.ORD_Date.ToShortDateString()" /></fieldset>
+        <fieldset><legend>Volunteer</legend><input type="text" class="Volunteer" value="@o.ORD_Volunteer" /></fieldset>
+        <fieldset><legend>Approved</legend><input type="text" class="Approved" value="@o.ORD_Approved" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (os.Count == 0)
+{
+    <text>none</text>
+}

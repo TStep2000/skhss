@@ -1,0 +1,63 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model UserLogin
+@{Layout = null;}
+<div id="@Model.USR_RecordID" class="node fancylist ul @Model.USR_RecordID" >
+    @{Parent p = Model.Parent;}
+    <input type="hidden" class="urid" value="@Model.USR_RecordID" />
+    <div class="leftm fl-start">
+        @if(p!=null){
+        <div class="imgbtn openbtn">
+            <img data-func="open" data-page="1" src="/Content/icons/down.png" alt="open" />
+            <div class="hide hide1 1">
+                <img data-func="close" data-page="0" src="/Content/icons/up.png" alt="close" />
+            </div>
+        </div>
+        }
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+        {
+            <div class="imgbtn ids">
+                <img data-func="show" src="/Content/icons/cog.png" alt="open" />
+            </div>
+        }
+    </div>
+    <fieldset class="settings hide"><legend>Record ID</legend><span style="position:absolute;height:18px;overflow:hidden;">@Model.USR_RecordID</span></fieldset>
+    <fieldset class="settings hide"><legend>UserID</legend>@Model.USR_UserID</fieldset>
+    <div class="fields">
+        @if (Global.IsInRole(User.Identity.Name, Definitions.PresRole)&&(p != null))
+        {
+            <fieldset class="fsLastName"><legend>Last Name</legend><input class="LastName" type="text" value="@p.PRT_LastName" /></fieldset>
+        }
+        <fieldset class="fsUsername"><legend>Username</legend><input class="Username" type="text" value="@Model.USR_Username" /></fieldset>
+        @if (Global.HighestRole(User.Identity.Name) == Definitions.MeRole)
+        {
+            <fieldset class="fsPassword"><legend>Password</legend><input class="Password" type="password" value="@Model.USR_Password" /></fieldset>
+        }
+        <fieldset class="fsRoleID"><legend>Role</legend><input class="RoleID" type="text" value="@Model.USR_ROL_RoleID" /> <span>@Definitions.GetHighestRole(Model.USR_ROL_RoleID)</span></fieldset>
+        <fieldset class="fsEmail"><legend>Email</legend><input class="Email" type="text" value="@Model.USR_Email" /></fieldset>
+        <fieldset class="fsPhone"><legend>Phone</legend><input class="Phone" type="text" value="@Global.FancyPhone(Model.USR_Phone)" /></fieldset>
+        <div class="clear"></div>
+    </div>
+    <div class="rightm fl-end">
+        <div class="imgbtn savebtn" data-group="@Model.USR_RecordID">
+            <img class="save" data-func="save" data-save-type="Object" src="/Content/icons/save.png" alt="save" />
+            <img class="load hide1 hide" src="/Content/loading.gif" alt="loading">
+            <img class="chk hide1 hide" src="/Content/icons/gCheck.png" alt="done">
+        </div>
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole)){
+        <div class="imgbtn" data-username="@Model.USR_Username" data-password="@Model.USR_Password">
+            <img data-func="login" src="/Content/icons/card.png" />
+        </div>
+        <div class="imgbtn" data-group="@Model.USR_RecordID">
+            <img data-func="delete" data-delete-type="s" data-delete-message="Are you sure you want to delete this account?" src="/Content/icons/delete.png" />
+        </div>}
+    </div>
+    <div class="clear"></div>
+    @if (p != null)
+    {
+        <div class="clear"></div>
+        <div class="cont">
+            @Html.Partial("Users/Parent", p)
+        </div>
+    }
+</div>

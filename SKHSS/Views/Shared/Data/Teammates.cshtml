@@ -1,0 +1,76 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Teammate> ts = new List<Teammate>();
+    if (all)
+    {
+        ts = Data.GetTs().ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            case "c":
+                ts = Data.GetTs(m => m.TMT_CLD_RecordID == Model).ToList();
+            break;
+            case "pm":
+                ts = Data.GetTs(m => m.TMT_PMT_RecordID == Model).ToList();
+            break;
+            default:
+                ts.Add(Data.GetT(m => m.TMT_RecordID == Model));
+            break;
+        }
+    }
+}
+@foreach (Teammate t in ts)
+{
+<div class="fancylist t @t.TMT_RecordID" data-group="@t.TMT_RecordID" data-type="t" id="@t.TMT_RecordID">
+    <input type="hidden" class="trid" value="@t.TMT_RecordID" />
+    <span class="title"><b>Teammate</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@t.TMT_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@t.TMT_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Teammate" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+    </div>
+    <div class="navprop">
+        <fieldset><legend>SeasonID</legend><input type="text" value="@t.TMT_SeasonID" /></fieldset>
+        <fieldset><legend>Year</legend><input type="text" value="@t.TMT_Year" /></fieldset>
+        <fieldset class="fk highlight" data-id="@t.TMT_PMT_RecordID" data-type="pm"><legend>PM</legend><span>@t.Payment.Order.Payments.ToList().FindIndex(m => m.PMT_RecordID == t.Payment.PMT_RecordID)</span></fieldset>
+        <fieldset class="fk highlight" data-id="@t.TMT_TEM_TeamID" data-type="tm"><legend>Team</legend><span>@t.TMT_TEM_TeamID, @if(t.Team!=null){@t.Team.TEM_TeamName}</span></fieldset>
+        <fieldset class="fk highlight" data-id="@t.TMT_CLD_RecordID" data-type="c"><legend>Child</legend><span>@t.Child.CLD_FirstName @t.Child.Parent.PRT_LastName</span></fieldset>
+        @if(t.Team==null){
+            <div class="data-error"><div class="dot" data-error="4" data-id="@t.TMT_RecordID">&nbsp;</div>No TeamID/Invalid TeamID</div> //Set Default Team
+        }
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@t.TMT_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>ChildID</legend><input type="text" class="ChildID" value="@t.TMT_CLD_RecordID" /></fieldset>
+        <fieldset class="settings"><legend>PaymentID</legend><input type="text" class="PaymentID" value="@t.TMT_PMT_RecordID" /></fieldset>
+        <fieldset><legend>SeasonID</legend><input type="text" class="SeasonID" value="@t.TMT_SeasonID" /></fieldset>
+        <fieldset><legend>Year</legend><input type="text" class="Year" value="@t.TMT_Year" /></fieldset>
+        <fieldset><legend>ShirtID</legend><input type="checkbox" class="isShirt" @(t.TMT_ShirtID.HasValue?"checked":"") />&nbsp;<input type="text" class="ShirtID" value="@t.TMT_ShirtID" @(t.TMT_ShirtID.HasValue?"":"disabled") /></fieldset>
+        <fieldset><legend>TeamID</legend><input type="text" class="TeamID" value="@t.TMT_TEM_TeamID" /></fieldset>
+        <fieldset><legend>Accepted</legend><input type="text" class="Accepted" value="@t.TMT_Accepted" /></fieldset>
+        <fieldset><legend>PicID</legend><input type="text" class="PicID" value="@t.TMT_PIC_RecordID" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (ts.Count == 0)
+{
+    <text>none</text>
+}

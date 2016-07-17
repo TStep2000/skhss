@@ -1,0 +1,10 @@
+﻿@model SKHSS.Models.Coach
+<div class="coach fancylist">
+    <div class="title"><h4><span>@SKHSS.Helpers.Global.ParentName(Model, false)</span></h4></div>
+    <div class="phone">Phone: @Model.UserLogin.USR_Phone</div>
+    <div class="email">Email: @Model.UserLogin.USR_Email</div>
+    @if(Model.Picture!=null)
+    {
+        <img src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(Model.Picture.PIC_Filename)" />
+    }
+</div>

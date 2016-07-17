@@ -1,0 +1,218 @@
+﻿<style scoped>
+    .lightbox {
+        padding:10px;
+        background:white;
+        position:absolute;
+        width:85%;
+        z-index:5;
+        left:7.5%;
+        top:5%;
+        height:90%;
+        box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+        overflow:auto;
+    }
+    .box{position:relative; float:left; padding:0 5px;margin-bottom:10px;}
+    .box-12{width:100%;}
+    .box-6{width:50%;}
+    .box-8{width:75%}
+    .box-4{width:25%;}
+    .box-2{width:12.5px;}
+    .phname
+    {
+        position:absolute;
+        top:-9px;
+        left:13px;
+        border-top:1px solid #999;
+        border-left:1px solid #999;
+        border-right:1px solid #999;
+        height:9px;
+        padding:0 0px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        white-space:nowrap;
+        z-index:10;
+    }
+    .phname span
+    {
+        font-size:12px;
+        line-height:12px;
+        position:relative;
+        padding:0px 3px;
+        top:0px;
+        background-color:#fafafa;
+    }
+    /*Child CSS*/
+    .Child .inputs {
+        width:40%;
+        width:calc(50% - 45px);
+        float:left;
+        margin-right:5px;
+        position:relative;
+    }
+    .Child {
+        padding:5px;
+        position:relative;
+        margin-bottom:10px;
+    }
+    .removechild {
+        position:absolute;
+        right:5px;
+        top:5px;
+    }
+    .Teammate fieldset{
+        float:left;
+        margin-right:10px;
+    }
+    .Teammate {
+        padding:5px;
+    }
+</style>
+<div class="lightbox fancylist hide">
+    <div class="fncybtn fl-end close">Close</div>
+    <div @*id="registration-form"*@ class="Object">
+        <h2>Create New Account</h2>
+        <div class="row">
+            <div class="box box-12">
+                <input type="text" id="Phone" class="fncy-box req" placeholder="Phone" />
+                @*Html.TextBoxFor(m => m.Phone, new { @class = "fncy-box req", placeholder = "Phone" })*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12 email">
+                <input type="text" id="Email" class="fncy-box" placeholder="Email" />
+                @*Html.TextBoxFor(m => m.Email, new { @class = "fncy-box", placeholder = "Email" })*@
+            </div>
+        </div>
+        <div class="row last" >
+            <div class="box box-12">
+                <span> @*(ViewBag.ErrorText==null?"hide":"")">@(ViewBag.ErrorText!=null?"Error:":"") @ViewBag.ErrorText*@</span>
+            </div>
+        </div>
+        <div class="Parent" data-prefix="Parent_">
+        <div class="row">
+            <div class="box box-6">
+                <input type="text" id="Parent_FatherName" class="fncy-box" placeholder="Father's First Name" />
+                @*Html.TextBoxFor(m => m.Parent.FatherName, new { @class = "fncy-box", placeholder = "Father's First Name" })*@
+            </div>
+            <div class="box box-6">
+                <input type="text" id="Parent_MotherName" class="fncy-box" placeholder="Mother's First Name" />
+                @*Html.TextBoxFor(m => m.Parent.MotherName, new { @class = "fncy-box", placeholder = "Mother's First Name" })*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                <input type="text" id="Parent_LastName" class="fncy-box req" placeholder="Family Name" />
+                @*Html.TextBoxFor(m => m.Parent.LastName, new { @class = "fncy-box req", placeholder = "Family Name" })*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                <input type="text" id="Parent_Address" class="fncy-box req" placeholder="Address" />
+                @*Html.TextBoxFor(m => m.Parent.Address, new { @class = "fncy-box req", placeholder = "Address" })*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-8">
+                <input type="text" id="Parent_City" class="fncy-box req" placeholder="City" />
+                @*Html.TextBoxFor(m => m.Parent.City, new { @class = "fncy-box req", placeholder = "City" })*@
+            </div>
+            <div class="box box-4">
+                <input type="text" id="Parent_Zipcode" class="fncy-box req" placeholder="Zipcode" />
+                @*Html.TextBoxFor(m => m.Parent.Zipcode, new { @class = "fncy-box req", placeholder = "Zip code" })*@
+            </div>
+        </div>
+            <h3>Players</h3>
+            <div class="row last">
+                <div class="childcontainer"></div>
+                <div class="clear"></div>
+                <div class="fncybtn addchild">Add</div>
+            </div>
+            <div id="submitcont">
+                <img id="submitting" class="hide fl-end" src="/Content/loading2.gif" />
+                <input type="submit" id="Object" class="fncybtn fl-end" value="Submit"/>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        function newActions() {
+            var cur = $(".childcontainer .Child:last-child");
+            var pls = cur.find("input[placeholder]");
+            pls.each(function (e) {
+                $(this).after("<div class='phname' name='" + $(this).attr("id") + "' style='display:none;'><span>" + $(this).attr("placeholder") + "</span></div>");
+            });
+            pls.focus(function (e) {
+                $(this).removeAttr("placeholder")
+                cur.find(".phname[name='" + $(this).attr("id") + "']").css("display", "block");
+            });
+            pls.blur(function (e) {
+                $(this).attr("placeholder", cur.find(".phname[name='" + $(this).attr("id") + "'] span").text())
+                cur.find(".phname[name='" + $(this).attr("id") + "']").css("display", "none");
+            });
+            cur.find(".removechild").on("click", function () {
+                if (confirm("Confirm Deletion?")) {
+                    $(this).closest(".Child").remove();
+                }
+            });
+            cur.find(".isShirt").on("click", function () {
+                var obj = $(this).parent().find(".ShirtID");
+                obj.prop("disabled", !obj.prop("disabled"));
+            });
+        }
+        $("#Phone").mask("(999) 999-9999");
+        if ($("#FatherName").is(":focus")) {
+            $("#FatherName").removeAttr("placeholder")
+            $(".phname[name='FatherName']").css("display", "block");
+        }
+        $(".lightbox input[placeholder]").each(function (e) {
+            $(this).after("<div class='phname' name='" + $(this).attr("id") + "' style='display:none;'><span>" + $(this).attr("placeholder") + "</span></div>");
+        });
+        $(".lightbox input[placeholder]").focus(function (e) {
+            $(this).removeAttr("placeholder")
+            $(".lightbox .phname[name='" + $(this).attr("id") + "']").css("display", "block");
+        });
+        $(".lightbox input[placeholder]").blur(function (e) {
+            $(this).attr("placeholder", $(".lightbox .phname[name='" + $(this).attr("id") + "'] span").text())
+            $(".lightbox .phname[name='" + $(this).attr("id") + "']").css("display", "none");
+        });
+        $(".lightbox .close").on("click", function () {
+            $(".lightbox").addClass("hide")
+        });
+        $(document).on("saved", function () {
+            window.location.reload();
+        });
+        $(document).on("cancelsave", function () {
+            $("#Object").removeClass("hide");
+            $("#submitting").addClass("hide");
+        });
+        $(document).on("ajaxfault", function () {
+            $("#Object").removeClass("hide");
+            $("#submitting").addClass("hide");
+        });
+        $("#Object").on("click", function (e) {
+            $("#submitting").removeClass("hide");
+            $("#Object").addClass("hide");
+            var str = getModel($(".Object"), "Object");
+            str.Mode = "AdminCreate";
+            saveDataObject(str, "Object", "");
+        });
+        $(".addchild").on("click", function () {
+            var i = 0;
+            var found = false;
+            while (!found) {
+                if ($("#c" + i).length) {
+                    i++
+                } else {
+                    found = true;
+                }
+            }
+            $.post("/AJAX/GetAction/", { name: "EditorTemplates/Child", data:i }, function (data) {
+                $(".childcontainer").append(data);
+                newActions();
+            });
+        });
+    });
+</script>

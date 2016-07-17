@@ -1,0 +1,61 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Parent
+@{
+    Layout = null;
+    Order o = Data.GetCurrentOrder(Model);
+    Boolean ov = (o != null && o.Payments.Count > 0);
+    Int32 State = 0;
+    if (Model.Children.Count==0)
+    {
+        State = 0;
+    }
+    else if (o==null)
+    {
+        State = 1;
+    }
+    else if (Global.OrderComplete(o))
+    {
+        State = 3;
+    }
+    else
+    {
+        State = 2;
+    }
+    Int32 n = 0;
+    if(o!=null){
+        n = o.Payments.Sum(m => m.PMT_Registrations);
+    }
+}
+<div class="family fancylist @(o == null?"none":"")">
+    <input type="hidden" class="prid" value="@Model.PRT_RecordID" />
+    @if(ViewBag.Me)
+    {
+        <h4><a href="/Members/LoginAs?id=@Model.UserLogin.USR_RecordID&Username=Mathguy&Password=Chickens1!">@(Global.ParentNames(Model, true, true)) @Model.PRT_LastName</a> @(ViewBag.Me ? "S" + State : "")</h4>
+    }
+    else
+    {
+        <h4>@(Global.ParentNames(Model, true, false)) @Model.PRT_LastName</h4>
+    }
+    @if (ViewBag.Me && false)
+    {
+        <div class="account"><div class="fncybtn logas" id="@Model.UserLogin.USR_RecordID">Login As</div>Account Username: @Model.UserLogin.USR_Username</div>
+    }
+    <div class="fl-end">
+    <div class="left fl-start">
+        <span style="margin-right:30px;">Registrations: @(ov ? n : 0) <span class="fncybtn addreg" data-id="@Model.PRT_RecordID">@(n>0?"Edit":"Add")</span></span>
+        <span>Total: $@Global.TotalPrice(o).00 @if(Global.OrderComplete(o)){<img class="paidimg" width="20" src='/Content/icons/gcheck.png' alt='paid' />}</span>
+    </div>
+    @if (o != null)
+    {
+        <div class="right fl-end">
+            <div class="finish">Approved <input class="approve" type="checkbox" data-id="@Model.UserLogin.USR_RecordID" @(Model.UserLogin.USR_Approved?"checked=\"checked\"":"") /></div>
+            <div class="paid">Paid <input class="received" type="checkbox" data-id="@Model.UserLogin.USR_RecordID" @(Global.OrderComplete(Model.UserLogin)?"checked=\"checked\"":"") /></div>
+        </div>
+    } else {
+        <div class="right fl-end">
+
+        </div>
+    }
+    </div>
+</div>

@@ -1,0 +1,148 @@
+﻿#membercontent
+{
+    padding-bottom:0px;
+    min-height:400px;
+}
+#registrations {
+    height:calc(100% - 38px);
+    overflow:auto;
+}
+.family
+{
+    border:1px solid #ccc;
+    background:#f9f9f9;
+    border-radius:2px;
+    padding:10px;
+    margin-bottom:10px;
+    position:relative;
+}
+.reg {padding-bottom: 0px!important;}
+.row.last {
+    height:calc(100% - 35px);
+    overflow:auto;
+}
+.childcontainer {
+    height:calc(100% - 21px);
+    overflow:auto;
+}
+.cld
+{
+    width:710px;
+    margin-left:50px;
+    border:1px solid #ccc;
+    background:#f0f0f0;
+    border-radius:6px;
+    padding:3px;
+    margin-bottom:3px;
+    position:relative;
+}
+.cldfn
+{
+    font-size:18px;
+    font-weight:bold;
+    font-family:Calibri, Sans-Serif;
+}
+.cldtm
+{
+    position:absolute;
+    left:240px;
+}
+.cldsh
+{
+    position:absolute;
+    left:450px;
+}
+.cost{display:inline-block;width:250px;margin-top:3px;margin-bottom:2px;}
+.mop{display:inline-block;position:relative;left:0px;}
+.account{position:absolute;right:5px; top:5px;}
+.cldtot,.finish{float:right;}
+.paid{float:right; margin-right:10px;font-size:14px;}
+.ispaid {display:inline-block;}
+.logas {float:right;margin-left:10px;}
+.left {min-width:290px;width:30%;}
+.right {min-width:230px;width:30%;}
+.family .paidimg {margin-left:5px;vertical-align:bottom;}
+.family h4 {display:inline;}
+.page-title {display:inline-block;margin-bottom:20px;}
+.family.none {background:#ccc;}
+.addact {margin-left:10px;}
+.addextchild {margin-right:10px;}
+.loading {position:absolute;left:75px;top:5px;width:30px;}
+.unreg {background:#eee;}
+.lightbox {
+    padding:10px;
+    background:white;
+    position:absolute;
+    width:85%;
+    z-index:5;
+    left:7.5%;
+    top:5%;
+    height:90%;
+    box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+    overflow:auto;
+}
+.lightbox .submitcont {position:absolute;right:5px;bottom:5px;}
+
+.box{position:relative; float:left; padding:0 5px;margin-bottom:10px;}
+.box-12{width:100%;}
+.box-6{width:50%;}
+.box-8{width:75%}
+.box-4{width:25%;}
+.box-2{width:12.5px;}
+.phname
+{
+    position:absolute;
+    top:-9px;
+    left:13px;
+    border-top:1px solid #999;
+    border-left:1px solid #999;
+    border-right:1px solid #999;
+    height:9px;
+    padding:0 0px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    white-space:nowrap;
+    z-index:10;
+}
+.phname span
+{
+    font-size:12px;
+    line-height:12px;
+    position:relative;
+    padding:0px 3px;
+    top:0px;
+    background-color:#fafafa;
+}
+/*Child CSS*/
+.Child .agecont {
+    float:left;
+    width:50px;
+    height:30px;
+    line-height:30px;
+}
+.Child .inputs {
+    width:25%;
+    width:calc(33% - 55px);
+    float:left;
+    margin-right:5px;
+    position:relative;
+}
+.Child {
+    padding:5px;
+    position:relative;
+    margin-bottom:10px;
+}
+.removechild {
+    position:absolute;
+    right:5px;
+    top:5px;
+}
+.Teammate fieldset{
+    float:left;
+    margin-right:10px;
+}
+.Teammate {
+    padding:5px;
+}

@@ -1,0 +1,11 @@
+﻿@using SKHSS.Helpers
+@{
+    ViewBag.Title = "Construction";
+}
+@if (Global.IsInRoleOrHigher(User.Identity.Name, Definitions.CoachRole))
+{
+   Layout = "~/Views/Shared/_MembersLayout.cshtml"; 
+}
+<h2>Under Construction</h2>
+
+The Account section is under construction temporarily.

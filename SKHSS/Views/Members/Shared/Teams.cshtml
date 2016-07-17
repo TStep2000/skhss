@@ -1,0 +1,10 @@
+﻿@using SKHSS.Helpers
+@model List<SKHSS.Models.Team>
+@{
+    ViewBag.Title = "Teams";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+}
+<h2>@Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear Teams</h2>
+<div id="teams">
+    @Html.DisplayForModel()
+</div>

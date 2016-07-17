@@ -1,0 +1,2 @@
+﻿@model SKHSS.Models.Editable
+<span class="editable" id="@Model.Key"><input class="editable-hidden" type="hidden" value="@Model.Value" /><input data-autosize-input='{ "space": 3 }' class="editable-input hide" @(Model.Key == "Password" ? "type=password" : "") id="@Model.Key-input" value="@Model.Value" /><span>@Model.DisplayValue</span></span>

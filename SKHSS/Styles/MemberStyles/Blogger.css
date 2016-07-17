@@ -1,0 +1,4 @@
+﻿.tags {width:50%;}
+.tags tr:first-child {border-bottom:1px solid black;}
+.tags td:first-child {padding-right:5px;}
+.tags td:nth-child(2) {width:1px;white-space:nowrap;}

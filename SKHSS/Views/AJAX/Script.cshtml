@@ -1,0 +1,813 @@
+﻿@using SKHSS.Helpers
+@{Layout = null;}
+<script>
+
+// Global Variables
+var doc_root = "http://" + window.location.host + "/";
+var seasonid = "@Global.CurrentSeasonID";
+var year = "@Global.CurrentYear";
+var userid = "@User.Identity.Name";
+var susername = "";
+var spassword = "";
+
+/*---------------Global Functions----------------*/
+function calcAge(dateString) {
+    var birthday = +new Date(dateString);
+    return ~~((Date.now() - birthday) / (31557600000));
+}
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) { return pair[1]; }
+    }
+    return (false);
+}
+
+//Error Showing
+function showErrors(width, xpos) { 
+    if (width != null) { $("#errorbanner").css("width", width);}
+    if (xpos != null) { $("#errorbanner").css("left", xpos);}
+    $("#errorbanner").css("max-height", $("#errorcanvas").outerHeight());
+}
+function postError(id, type, message) {
+    if (message == "req") { $("#allrequired").css("display", "block");}
+    else if (message == "") {/*do nothing*/} 
+    else { $("#customerrors").append(message + "<br/>"); }
+    var ids = (id!=null?id.split(","):"");
+    if (ids.length > 1) {
+        for (var i = 0; i < ids.length; i++) {
+            $("#" + ids[i]).find("." + type).addClass("error");
+        }
+    } else {
+        $("#" + id).find("." + type).addClass("error");
+    }
+    $("fieldset:has(input.error)").addClass("error");
+    $("fieldset input.error").removeClass("error")
+    showErrors("100%", 0);
+}
+function hideErrors() {
+    $("#errorbanner").css("max-height", 0);
+    setTimeout(function () {
+        $("#errorbanner").removeAttr("style");
+        $("#customerrors").html("");
+        $("#allrequired").css("display", "none");
+    }, 500);
+}
+$(document).ajaxError(function (event, jqxhr, settings, exception) {
+    if (jqxhr.status != 0) {
+        postError("", "", "An Error occured, please try again.  If it keeps happening, click the 'Report a bug' button on the bottom of the screen to report it to the developer.  Tell him it was an HTTP Error " + jqxhr.status + ". <a id='showrpt' href='#'>Report</a>");
+        $("#showrpt").on("click", function () {
+            $("#rpt").removeClass("hide");
+        });
+        $("#rpt").append(jqxhr.responseText);
+        $("#rpt style").remove();
+        showErrors();
+        $(document).trigger("ajaxfault");
+    }
+});
+$("#rpt .close").on("click", function () {
+    $("#rpt").addClass("hide");
+});
+
+@if (ViewBag.DisableBackspace == true) {<text>
+$(document).unbind('keydown').bind('keydown', function (event) {
+    var doPrevent = false;
+    if (event.keyCode === 8) {
+        var d = event.srcElement || event.target;
+        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))
+                || d.tagName.toUpperCase() === 'TEXTAREA') {
+            doPrevent = d.readOnly || d.disabled;
+        }
+        else {
+            doPrevent = true;
+        }
+    }
+    if (doPrevent) { event.preventDefault(); }
+}); </text>}
+
+function refreshLayout(init) {
+    $("#header img").css("max-width", $("#middle").outerWidth() - 4);
+    if (init) {
+        $("#header img").css("height", ($("#wrapper").outerWidth() / 10) - 2);
+        $("#loginfloater").css("top", $("#header").outerHeight() + $("#navigation").outerHeight());
+        $("#middle").css("height", "calc(100% - " + ($("#header").outerHeight() + $("#navigation").outerHeight() + 32) + "px)");
+    } else {
+        $("#header img").css("height", "auto");
+        $("#loginfloater").css("top", $("#header").outerHeight() + $("#navigation").outerHeight());
+        $("#middle").css("height", "calc(100% - " + ($("#header").outerHeight() + $("#navigation").outerHeight() + 32) + "px)");
+    }
+}
+
+//Cache
+var cacheArr = [];
+function saveCache() {
+    if (cacheArr.length > 0) {
+        $.post("/AJAX/SaveCache", { data: JSON.stringify(cacheArr.shift()), ignoreErrors: true }, saveCache);
+    }
+}
+function addCache(data, num) {
+    cacheArr.push(data);
+    if (cacheArr.length == num) {
+        saveCache();
+    }
+}
+
+$(document).ready(function (e) {
+    //Login
+    $(".loginlink").click(function (e) {
+        e.preventDefault();
+        if ($("#loginfloater").hasClass("hide")) {
+            $("#loginfloater").removeClass("hide");
+            $("#USR_Username").focus();
+        }
+        else{ $("#loginfloater").addClass("hide"); }
+    });
+    $("#loginfloater .close").click(function (e) {
+        $("#loginfloater").addClass("hide");
+        window.location.hash = "";
+    });
+    $("#loginbtn").on("click",function (e) {
+        e.preventDefault();
+        $.post(doc_root + "AJAX/Login", { useremail: $("#USR_Username").val(), password: $("#USR_Password").val() }, LoggedIn);
+        $("#loginerror").html('Logging in <img width="15" src="/Content/loading.gif" alt="loading" />');
+    });
+    function LoggedIn(data) {  // Check responses and data stuff....
+        var actdata = data.substr(0, data.indexOf("#"))
+        if (actdata == "loggedin") {
+            var roleID = data.substr(data.indexOf("#") + 1, data.indexOf("#") + 2);
+            var returnurl = getQueryVariable("ReturnUrl");
+            if (returnurl.length) {
+                window.location = decodeURIComponent(returnurl);
+            }
+            else {
+                window.location = "/Members/";
+            }
+        }
+        else {
+            actdata = data.substr(data.indexOf("#") + 1)
+            data = data.substr(0, data.indexOf("#"));
+            var message = data.substr(data.lastIndexOf("-") + 2);
+            if (actdata == "account-not-activated") {
+                if (actdata == "noemail") {
+                    $("#loginerror").html('Account not activated.<br/> An admin will activate your account<br/> or feel free to <a href=\"/Home/Contact\">Contact Us</a>');
+                } else {
+                    $("#loginerror").html('Account not activated<br/><a id="send-active">Click Here</a> to re-send activation email');
+                }
+                $("#send-active").on("click", function () {
+                    $("#loginerror").html('Sending... <img width="15" src="/Content/loading.gif" alt="loading" />');
+                    $.post("/AJAX/SendActivationEmail", { data: $("#USR_Username").val() }, function () {
+                        $("#loginerror").text('Email sent');
+                    });
+                });
+            } else{
+                $("#loginerror").html(message);
+            }
+        }
+    } // Check responses and data stuff....
+    $(".logoutbtn").click(function (e) {
+        $.ajax({ url: doc_root + "Home/Logout" }).done(function () { window.location = "/"; });
+    });
+    if (getQueryVariable("login") == "1") {
+        $("#loginerror").text("Please login to view that page");
+        $("#loginfloater").css("display", "block");
+    }
+
+    //Misk
+    $(window).load(function (e) {    //Layout Refresh
+        refreshLayout(true);
+        $(window).resize(function (e) {
+            refreshLayout();
+        });
+    }); //Layout Refresh
+    $.each($("#mainmenu li"), function () {    // Active Menu button
+        if (location.pathname.length == 1 && $(this).find("a").attr("href") == "/") {
+            $(this).addClass("active");
+        }
+        else if (location.pathname.indexOf($(this).find("a").attr("href")) == 0 && $(this).find("a").attr("href").length != 1) {
+            $(this).addClass("active");
+        }
+    }); // Active Menu button
+    $(".nojavascript").css("display", "none");
+    $("#navigation .open").on("click", function (e) {
+        $("#navigation .open").addClass("hide");
+        $("#navigation ul").addClass("shownav");
+        $("#navigation").addClass("shownav");
+        if ($("#accountmenu").hasClass("open")) {
+            $(".mobilemenu.open").click()
+        }
+        refreshLayout();
+    });
+    $("#navigation .close").on("click", function (e) {
+        $("#navigation .open").removeClass("hide");
+        $("#navigation ul").removeClass("shownav");
+        $("#navigation").removeClass("shownav");
+        refreshLayout();
+    });
+    $(".mobilemenu.open").click(function () {
+        if ($("#accountmenu").hasClass("open")) {
+            $("#accountmenu").removeClass("open");
+            //$("#accountmenu").css("left", -44);
+        } else {
+            $("#accountmenu").addClass("open");
+            //$("#accountmenu").css("left", 0);
+            $("#navigation .close").click();
+        }
+    });
+    $(".fncy-box.req").before('<span class="fncy-box-req">*</span>');
+    $("#hidebanner").on("click", hideErrors);
+
+    //IMGBtn stuff
+    addImgbtnEvents($("body"));
+
+
+    //FancyRows
+    $(".tlayout").each(function () {
+        var i = 0;
+        var lg = $("." + $(this).data("lgroup"));
+        var pfs = [];
+        var tot = 0;
+        $(this).children().each(function () {
+            var ls = $(this);
+            var val = ls.val()
+            var obj = lg.children(":nth-child(" + i + ")");
+            if (ls.data("class")) {
+                obj = lg.find("." + $(this).data("class"));
+            }
+            switch (val[0]) {
+                case "s":
+                    obj.css("width", val.substr(1));
+                    tot += parseInt(val.substr(1));
+                    break;
+                case "p":
+                    if (val.substr(1, 1) == "f") {
+                        pfs.push(obj);
+                    }
+                    break;
+            }
+            if (!$(this).data("class")) {
+                i++;
+            }
+        });
+        $.each(pfs, function (j, ref) {
+            ref.css("width", "calc(" + (100 / pfs.length) + "% - " + tot + ")");
+        });
+    });
+});
+
+
+//IMGBtn stuff
+function addImgbtnEvents(obj) {
+    obj.find(".imgbtn img[data-page]").on("click", function () {
+        var ref = $(this).closest(".imgbtn");
+        var page = $(this).data("page");
+        if (page == "0") {
+            setMain(ref)
+        }
+        else {
+            setPage(ref, page);
+        }
+        ref.trigger("page" + $(this).data("page"));
+    });
+    obj.find(".imgbtn img[data-func]").on("click", function () {
+        $(this).closest(".imgbtn").trigger($(this).data("func"));
+    });
+    obj.find(".imgbtn img[data-func=edit]").each(function () {
+        $(this).closest(".imgbtn").on("edit", openRowGroupE);
+    });
+    obj.find(".imgbtn img[data-func=cancel]").each(function () {
+        $(this).closest(".imgbtn").on("cancel", cancelRowGroupE);
+    });
+    obj.find(".imgbtn img[data-func=save]").each(function () {
+        $(this).closest(".imgbtn").on("save", saveRowGroupE);
+    });
+    obj.find(".imgbtn img[data-func=login]").each(function () {
+        $(this).closest(".imgbtn").on("login", loginas);
+    });
+    obj.find(".imgbtn img[data-func=askdelete]").each(function () {
+        $(this).closest(".imgbtn").on("askdelete", function () {
+            var ref = $(this)
+            var delref = ref.find("img[data-func='askdelete']");
+            var gid = ref.data("group");
+            var group = $("." + gid);
+            var message = "Are you sure you want to delete this?";
+            if (delref.data("delete-message") != "") {
+                message = delref.data("delete-message");
+            }
+            group.each(function () {
+                if ($(this).hasClass("fancylist")) {
+                    $(this).append('<div class="black_overlay">$nbsp;</div>');
+                }
+                else if ($(this).prop("tagName") == "DIV" || $(this).prop("tagName") == "TR")
+                {
+                    //$(this).append('<hr class="strike" />');
+                    $(this).addClass("strike");
+                }
+            });
+            if (delref.data("delete-type") == "r") {
+                if (confirm(message)) {
+                    ref.trigger("rdelete");
+                }
+                else
+                {
+                    group.find(".black_overlay,.strike").remove();
+                    group.removeClass("strike");
+                }
+            } else {
+                if (confirm(message)) {
+                    if (susername == "") {
+                        susername = "mathguy";//prompt("Username")
+                    }
+                    if (spassword == "") {
+                        spassword = "M.trtlp1!";//prompt("Password")
+                    }
+                    var username = susername;
+                    var password = spassword;
+                    $(this).trigger("delete", [username, password]);
+                } else {
+                    group.find(".black_overlay,.strike").remove();
+                    group.removeClass("strike");
+                }
+            }
+        });
+    });
+}
+function setLoading(ib) {
+    var ref = ib.find(".load");
+    ib.children().addClass("hide");
+    ref.parent().removeClass("hide");
+    ref.parent().children().addClass("hide");
+    ref.removeClass("hide");
+}
+function setDone(ib) {
+    var ref = ib.find(".chk");
+    ib.children().addClass("hide");
+    ref.parent().removeClass("hide");
+    ref.parent().children().addClass("hide");
+    ref.removeClass("hide");
+    setTimeout(function () {
+        setMain(ib);
+    }, 500);
+}
+function setMain(ib) {
+    ib.find("*").removeClass("hide");
+    ib.find(".hide1").addClass("hide");
+}
+function setPage(ib, n) {
+    ib.children().addClass("hide");
+    ib.children("." + n).removeClass("hide");
+}
+function loginas() {
+    window.location = "/Members/LoginAs?Username=" + $(this).data("username") + "&Password=" + $(this).data("password");
+}
+function openRowGroupE() {
+    var gid;
+    var ref = $(this);
+    if (ref.attr("data-group") != null) {
+        gid = ref.attr("data-group");
+    } else {
+        gid = ref.parent().attr("data-group");
+    }
+    return openRowGroup(gid);
+}
+function cancelRowGroupE() {
+    var gid;
+    var ref = $(this);
+    if (ref.attr("data-group") != null) {
+        gid = ref.attr("data-group");
+    } else {
+        gid = ref.parent().attr("data-group");
+    }
+    return closeRowGroup(gid);
+}
+function saveRowGroupE() {
+    var ref = $(this); //.imgbtn
+    setLoading(ref);
+    var group = ref.data("group");
+    var type = ref.find(".save").data("save-type")
+    $(".error").removeClass("error");
+    $("." + group).each(function (i) {
+        saveDataObject(getModel($(this), type), type, $(this).attr("id"), $(this).attr("id"));
+    });
+    $(document).on("cancelsave", function (e, id) {
+        var gid = $("#" + id).data("group");
+        var ref = $('.imgbtn[data-group="' + gid + '"]');
+        setMain(ref);
+        if (ref.find(".edit").length) {
+            setPage(ref, ref.find(".edit").data("page"));
+        }
+    });
+    $(document).on("failsave", function (e, id) {
+        var gid = $("#" + id).data("group");
+        var ref = $('.imgbtn[data-group="' + gid + '"]');
+        setMain(ref);
+        closeRowGroup(gid);
+    });
+    $(document).on("saved", function (e, id) {
+        saveRowDisplay(id);
+        closeRow(id);
+        var gid = $("#" + id).data("group");
+        var any = 0;
+        $("." + gid).each(function () {
+            if ($(this).data("status") == "open") {
+                any++;
+            }
+        });
+        if (!any) {
+            setDone($('.imgbtn[data-group="' + gid + '"]'));
+        }
+    });
+}
+
+
+@if (ViewBag.SaveData == true)
+{<text>
+    //Saving Data
+    function v(a) { return (a != "" && a != null) }
+    function getModel(ref, type) {
+        var model = new Object();
+        switch (type) {
+            case "Object":
+                model = getObjectModel(ref)
+                break;
+            case "Parent":
+                model = getParentModel(ref)
+                break;
+            case "Order":
+                model = getOrderModel(ref)
+                break;
+            case "Payment":
+                model = getPaymentModel(ref)
+                break;
+            case "Child":
+                model = getChildModel(ref)
+                break;
+            case "Teammate":
+                model = getTeammateModel(ref)
+                break;
+            default:
+                model = getObjectModel(ref)
+                break;
+        }
+        return model;
+    }
+    function getObjectModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.Username = ref.find("." + pre + "Username").val();
+        //model.Email = ref.find("." + pre + "Email").val();
+        model.Password = ref.find("." + pre + "Password").val();
+        /*model.Phone = ref.find("." + pre + "Phone").val();
+        if (model.Phone != null && model.Phone != "") {
+            model.Phone = model.Phone.replace(/\D/g, '');
+        }*/
+        //model.PhoneProvider = ref.find("." + pre + "PhoneProvider").val();
+        model.ResetDate = ref.find("." + pre + "ResetDate").val();
+        model.Activated = getBoolean(ref.find("." + pre + "Activated"));
+        model.Approved = getBoolean(ref.find("." + pre + "Approved"));
+        model.Temp = getBoolean(ref.find("." + pre + "Temp"));
+        model.Test = getBoolean(ref.find("." + pre + "Test"));
+        model.RoleID = ref.find("." + pre + "RoleID").val();
+        model.UserRecordID = ref.find(".urid").val();
+        if (!ref.hasClass("Parent")) {
+            var obj = ref.find(".Parent");
+            if (obj.length) ref = obj;
+            else ref = null;
+        }
+        if (ref != null) {
+            model.Parent = getParentModel(ref);
+        }
+        return model;
+    }
+    function getParentModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.FatherName = ref.find("." + pre + "FatherName").val();
+        model.FatherEmail = ref.find("." + pre + "FatherEmail").val();
+        model.FatherPhone = ref.find("." + pre + "FatherPhone").val();
+        model.MotherName = ref.find("." + pre + "MotherName").val();
+        model.MotherEmail = ref.find("." + pre + "MotherEmail").val();
+        model.MotherPhone = ref.find("." + pre + "MotherPhone").val();
+        model.LastName = ref.find("." + pre + "LastName").val();
+        model.Address = ref.find("." + pre + "Address").val();
+        model.City = ref.find("." + pre + "City").val();
+        model.Zipcode = ref.find("." + pre + "Zipcode").val();
+        model.ParentRecordID = ref.find(".prid").val();
+        var children = ref.find(".Child");
+        if (children.length > 0) {
+            model.Children = [];
+            children.each(function () {
+                model.Children.push(getChildModel($(this)));
+            });
+        }
+        return model;
+    }
+    function getOrderModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.SeasonID = ref.find("." + pre + "SeasonID").val();
+        model.Year = ref.find("." + pre + "Year").val();
+        model.Date = ref.find("." + pre + "Date").val();
+        model.Volunteer = ref.find("." + pre + "Volunteer").val();
+        model.Approved = ref.find("." + pre + "Approved").val();//Boolean radio?
+        model.OrderRecordID = ref.find(".orid").val();
+        var payment = ref.find(".Payment");
+        if (payment.length > 0) {
+            model.Payments = [];
+            payment.each(function () {
+                model.Payments.push(getPaymentModel($(this)));
+            });
+        }
+        return model;
+    }
+    function getPaymentModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.Current = ref.find("." + pre + "Current").val();//Boolean radio?
+        model.Date = ref.find("." + pre + "Date").val();
+        model.Registrations = ref.find("." + pre + "Registrations").val();
+        model.Uniforms = ref.find("." + pre + "Uniforms").val();
+        model.Total = ref.find("." + pre + "Total").val();
+        model.TransactionID = ref.find("." + pre + "TransactionID").val();
+        model.TransactionDate = ref.find("." + pre + "TransactionDate").val();
+
+        model.LateFee = ref.find("." + pre + "LateFee").val(); //Boolean radio?
+        model.Paid = ref.find("." + pre + "Paid").val();//Boolean radio?
+        model.Approved = ref.find("." + pre + "Approved").val();//Boolean radio?
+
+        model.PaymentRecordID = ref.find(".pmrid").val();
+        return model;
+    }
+
+    function getChildModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.FirstName = ref.find("." + pre + "FirstName").val();
+        model.LastName = ref.find("." + pre + "LastName").val();
+        model.Birthdate = ref.find("." + pre + "Birthdate").val();
+        model.Gender = ref.find("." + pre + "Gender:checked").val();//Boolean radio?
+        if (model.Gender == null) {
+            model.Gender = ref.find("." + pre + "Gender").val();
+        }
+        if (model.Gender == null) {
+            model.Gender = (ref.find("." + pre + "Gender").length ? "" : null);
+        }
+        model.Notes = ref.find("." + pre + "Notes").val();
+        model.ChildRecordID = ref.find(".crid").val();
+        var rext = ref.next();
+        if (rext.hasClass("Child2")) {
+            model.Notes = rext.find("." + pre + "Notes").val();
+        }
+        var teammates = ref.find(".Teammate");
+        if (teammates.length > 0) {
+            model.Teammates = [];
+            teammates.each(function () {
+                model.Teammates.push(getTeammateModel($(this)));
+            });
+        } else if (ref.attr("data-also") == "Teammate") {
+            model.Teammates = [];
+            var tmmt = new Object();
+            tmmt.TeammateRecordID = ref.find(".trid").val();
+            tmmt.TeamID = ref.find("." + pre + "TeamID").val();
+            model.Teammates.push(tmmt);
+        }
+        return model;
+    }
+    function getTeammateModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.TeamID = ref.find("." + pre + "TeamID").val();
+        model.Year = ref.find("." + pre + "Year").val();
+        model.SeasonID = ref.find("." + pre + "SeasonID").val();
+        model.ShirtID = ref.find("." + pre + 'ShirtID:enabled').val();
+        if (ref.find("." + pre + 'ShirtID:disabled').length) {
+            model.ShirtID = "-1";
+        }
+        model.TeammateRecordID = ref.find(".trid").val();
+
+        return model;
+    }
+    function getRegModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.Medical = ref.find("." + pre + "Medical").is(":checked");
+        model.Volunteer = ref.find("input:radio[name=" + pre + "Volunteer]:checked").val();
+        model.Parent = new Object();
+        model.Parent.PRT_RecordID = ref.find(".prid").val();
+        var regchildren = ref.find(".RegChild");
+        if (regchildren.length > 0) {
+            model.RegChildren = [];
+            regchildren.each(function () {
+                model.RegChildren.push(getRegChildModel($(this)));
+            });
+        }
+        return model;
+    }
+    function getRegChildModel(ref) {
+        var model = new Object();
+        var pre = "";
+        if (ref.attr("data-prefix") != null) {
+            pre = ref.attr("data-prefix");
+        }
+        model.Reg = ref.find("." + pre + "Reg").is(":checked:not(:disabled)");
+        model.TeamSelect = ref.find("." + pre + "TeamSelect").val();
+        model.UniSize = ref.find("." + pre + "UniSize").val();
+        model.Uni = ref.find("." + pre + "Uni").is(":checked:not(:disabled)");
+        model.Child = new Object();
+        //model.Child.CLD_Birthdate = ref.find("." + pre + "Birthdate").val();
+        model.Child.CLD_RecordID = ref.find(".crid").val();
+        return model;
+    }
+    function getBoolean(ref) {
+        return ref.val();
+    }
+    function saveFieldDisplay(id) {
+        var ref = $("#ef-" + id);
+        var edit = ref.find(".edit");
+        var disp = ref.find(".display");
+        var title = ref.find(".title").val();
+        var type = edit.attr("type");
+        if (type == undefined) {
+            if (edit.prop("tagName") == "TEXTAREA") {
+                type = "multiline";
+            }
+        }
+        if (type == "text" || type == "multiline") {
+            disp.html(edit.val());
+            edit.attr("value", edit.val());
+        }
+        if (type == "select") {
+            disp.html(edit.children(":selected").text());
+            if (title == "TeamID") {
+                disp.html('<a href="/Members/Team/' + edit.val() + '">' + edit.children(':selected').text() + "</a>");
+            }
+        }
+        if (title == "Birthdate") {
+            disp.html("<b>" + calcAge(edit.val()) + "</b>");
+        }
+        if (title == "Phone") {
+            var phone = edit.val();
+            disp.html("(" + phone.substr(0, 3) + ") " + phone.substr(3, 3) + "-" + phone.substr(6, 4));
+        }
+    }
+    function saveRowDisplay(rid) {
+        var row = $("#" + rid).find(".editable-field");
+        var i = 0;
+        var obj2 = $("#ef-" + rid + i);
+        while (obj2.length != 0) {
+            saveFieldDisplay(rid + i);
+            i++;
+            obj2 = $("#ef-" + rid + i);
+        }
+    }
+    function saveDataObject(data, type, eventid, containerid, lvlid) {
+        $(".error").removeClass("error");
+        $("#errorbanner").css("max-height", 0);
+        $("#customerrors").html("");
+        $("#allrequired").css("display", "none");
+        if (type == "Object" || type == null) { type = ""; }
+        $.post("/AJAX/Save" + type + "Object", { data: JSON.stringify(data), contid: containerid, lvlid: lvlid }, function (data) {
+            if (data[0] == "~") {
+                validateObject(data.substr(1));
+                $(document).trigger("cancelsave", [eventid]);
+            } else {
+                $(document).trigger("saved", [eventid]);
+            }
+        }).fail(function () {
+            $(document).trigger("failsave", [eventid]);
+        });
+    }
+    function deleteObject(type, id, username, password) {
+        if (type == "UserLogin" || type == null) { type = ""; }
+        $.post("/AJAX/Delete" + type + "Object", { id: id, username: username, password: password }, function (data) {
+            if (data == "u") {
+                postError("", "", "Username was incorrect");
+            }
+            else if (data == "p") {
+                postError("", "", "Password was incorrect");
+            }
+            else {
+                $(document).trigger("finishdelete");
+            }
+        });
+    }
+    function openField(id) {
+        var ref = $("#ef-" + id);
+        var edit = ref.find(".edit");
+        var disp = ref.find(".display");
+        edit.removeClass("hide");
+        disp.addClass("hide");
+        return edit;
+    }
+    function openRow(rid) {
+        var row = $("#" + rid)
+        var fields = row.find(".editable-field");
+        row.data("status", "open");
+        var i = 0;
+        var obj2 = $("#ef-" + rid + i);
+        while (obj2.length != 0) {
+            openField(rid + i);
+            i++;
+            obj2 = $("#ef-" + rid + i);
+        }
+    }
+    function openRowGroup(gid) {
+        var group = $("." + gid);
+        group.each(function (i) {
+            openRow($(this).attr("id"));
+        });
+    }
+
+    function closeField(id) {
+        var ref = $("#ef-" + id);
+        var edit = ref.find(".edit");
+        var disp = ref.find(".display");
+        var title = ref.find(".title").val();
+        var type = edit.attr("type");
+        edit.addClass("hide");
+        disp.removeClass("hide");
+        //ref.data("status", "closed");
+        if (edit.attr("type") == "text") {
+            edit.val(edit.attr("value"));
+            edit.removeClass("error");
+        }
+        edit.keydown();
+        return edit;
+    }
+    function closeRow(rid) {
+        var row = $("#" + rid)
+        var fields = row.find(".editable-field");
+        row.data("status", "closed");
+        var i = 0;
+        var obj2 = $("#ef-" + rid + i);
+        while (obj2.length != 0) {
+            closeField(rid + i);
+            i++;
+            obj2 = $("#ef-" + rid + i);
+        }
+    }
+    function closeRowGroup(gid) {
+        var group = $("." + gid);
+        group.each(function (i) {
+            closeRow($(this).attr("id"));
+        });
+    }
+
+    function validateObject(validationData, b) {
+        b = typeof b !== 'undefined' ? b : false;
+        var data = b ? validationData : JSON.parse(validationData);
+        var val = true;
+        for (var error in data) {
+            var id = data[error][0].id;
+            var message = data[error][0].Message;
+            if (error.substr(0, 1) == "c") {
+                var obj = $("#"+id).find(".Child").eq(parseInt(error.substr(1, 1)));
+                if(obj!=null){
+                    id = obj.attr("id");
+                    if (error.substr(2, 1) == "t") {
+                        var obj2 = obj.find(".Teammate").eq(parseInt(error.substr(3, 1)))
+                        if (obj != null) {
+                            id = obj2.attr("id");
+                            error = error.substr(4);
+                        }
+                    }
+                    else {
+                        error = error.substr(2);
+                    }
+                }
+            }
+            else if (error.substr(0, 1) == "t") {
+                var obj = $("#"+id).find(".Teammate").eq(parseInt(error.substr(1, 1)));
+                if (obj != null) {
+                    id = obj.attr("id");
+                    error = error.substr(2);
+                }
+            }
+            postError(id, error, message);
+            val = false;
+        }
+        return val;
+    } </text>}
+</script>

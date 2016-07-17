@@ -1,0 +1,3 @@
+﻿@model SKHSS.Models.Picture
+
+<div class="picture fancylist"><a href="/Content/uploads/@Model.PIC_Filename" title="@(ViewBag.UserRole==1?"<div id='addtoprof' class='fncybtn'>Make Profile Picture</div><div id='addtoteam' class='fncybtn'>Make Team Picture</div>":"")@Model.PIC_Caption" data-lightbox-gallery="1" class="shadow"><img src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(Model.PIC_Filename)" /></a><span class="caption">@Model.PIC_Caption</span><div class="innershadow"></div></div>

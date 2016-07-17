@@ -1,0 +1,55 @@
+﻿@model SKHSS.Models.ChildRegistration
+@{
+    
+    Int32 teamID = SKHSS.Helpers.Global.TeamID(Model.Child.CLD_Birthdate);
+    String team = SKHSS.Helpers.Global.TeamName(teamID);
+    Int32 age = SKHSS.Helpers.Global.Age(Model.Child.CLD_Birthdate);
+    //SKHSS.Models.Teammate t = db.Teammates.SingleOrDefault(m => m.TMT_CLD_RecordID == Model.Child.CLD_RecordID && m.TMT_Year == SKHSS.Helpers.Global.CurrentYear);
+    //var ShirtSizes = new SelectList(db.Shirts, "SRT_ShirtID", "SRT_ShirtText",(t!=null)?t.TMT_SRT_ShirtID.ToString():"");
+}
+@*@if (t == null)
+{*@
+<div class="registerselect">
+    @Html.HiddenFor(m => m.Child.CLD_RecordID)
+    @Html.HiddenFor(m => m.Child.CLD_Birthdate)
+    @Html.HiddenFor(m => m.Child.CLD_Gender)
+    @Html.HiddenFor(m => m.Child.CLD_FirstName)
+    @Html.HiddenFor(m => m.Season)
+    @if (teamID != 6 && t == null)
+    {
+        <span class="regchk">
+            @Html.CheckBoxFor(m => m.Register)
+        </span>
+    }
+    else if (teamID == 6)
+    {
+        <span class="regchk">
+            @Html.CheckBoxFor(m => m.Register, htmlAttributes: new { @disabled = "true" })
+        </span>
+    }
+    else
+    {
+        <span class="regchk">
+            @Html.CheckBoxFor(m => m.Register, htmlAttributes: new {@* @disabled = "true", *@@class = "checkme" })
+        </span>
+    }
+    <span class="name">@Html.DisplayFor(m => m.Child.CLD_FirstName)</span>
+    <span class="age">@age</span>
+    <span class="team">@team</span>
+    <!--if (t == null||!Model.ShirtSize)
+    {
+        <span class="shirt">Html.CheckBoxFor(m => m.ShirtSize, new { disabled = "true" }) $25</span>
+    }
+    else
+    {
+        <span class="shirt">Html.CheckBoxFor(m => m.Shirt, new {@* disabled = "true",*@ class = "checkme" }) $25</span>
+    }
+    if (t == null || !Model.Shirt)
+    {
+        <span class="ddshirt">Html.DropDownListFor(m => m.ShirtSize, ShirtSizes)</span>
+    }
+    else
+    {
+        <span class="ddshirt">Html.DropDownListFor(m => m.ShirtSize, ShirtSizes, new {@* disabled="true"*@ })</span>
+    }-->
+</div>

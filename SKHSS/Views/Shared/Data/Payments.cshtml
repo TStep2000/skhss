@@ -1,0 +1,90 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Payment> pms = new List<Payment>();
+    if (all)
+    {
+        pms = Data.GetPMs().OrderBy(m=>m.Order.ORD_PRT_RecordID).ThenBy(m=>m.PMT_ORD_RecordID).ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            case "o":
+                pms = Data.GetPMs(m => m.PMT_ORD_RecordID == Model).ToList();
+            break;
+            case "t":
+                pms.Add(Data.GetPM(m => m.PMT_RecordID == Model));
+            break;
+            case "tr":
+            //os.Add(Data.GetPM(m => m.PMT_IPN_TransactionID == Model));
+            break;
+            default:
+                pms.Add(Data.GetPM(m => m.PMT_RecordID == Model));
+            break;
+        }
+    }
+}
+@foreach (Payment pm in pms)
+{
+<div class="fancylist pm @pm.PMT_RecordID" data-group="@pm.PMT_RecordID" data-type="pm" id="@pm.PMT_RecordID">
+    <input type="hidden" class="pmrid" value="@pm.PMT_RecordID" />
+    <span class="title"><b>Payment</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@pm.PMT_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@pm.PMT_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Payment" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Teammates">Teammates</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>Current</legend><input type="text" value="@pm.PMT_Current" /></fieldset>
+        <fieldset><legend>Total</legend><input type="text" value="@pm.PMT_Total" /></fieldset>
+        <fieldset><legend>Paid</legend><input type="text" value="@pm.PMT_Paid" /></fieldset>
+        <fieldset class="fk highlight" data-id="@pm.PMT_ORD_RecordID" data-type="o"><legend>Order</legend><span>@Definitions.Seasons[pm.Order.ORD_SeasonID] @pm.Order.ORD_Year </span></fieldset>
+        <fieldset class="fk settings hide"><legend>TransactionID</legend><input type="text" value="@pm.PMT_IPN_TransactionID" /></fieldset>
+        @if(pm.PMT_Date.HasValue==false){
+            <div class="data-error"><div class="dot" data-error="3" data-id="@pm.PMT_RecordID">&nbsp;</div>No date/Empty date</div> //Set date to now. If none current, pick first payment for first
+        }
+        @if(pm.PMT_Registrations!=pm.Teammates.Count){
+            <div class="data-error"><div class="dot" data-id="@pm.PMT_RecordID">&nbsp;</div>Wrong # of Regs</div> //Reset Regs
+        }
+        @if(pm.PMT_Uniforms!=pm.Teammates.Count(m=>m.TMT_ShirtID.HasValue)){
+            <div class="data-error"><div class="dot" data-id="@pm.PMT_RecordID">&nbsp;</div>Wrong # of Uniforms</div> //Reset Uniforms
+        }
+        @if(pm.PMT_Total!=Global.PaymentTotal(pm)){
+            <div class="data-error"><div class="dot" data-id="@pm.PMT_RecordID">&nbsp;</div>Wrong total for data</div> //Reset Total
+        }
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@pm.PMT_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>OrderID</legend><input type="text" class="OrderID" value="@pm.PMT_ORD_RecordID" /></fieldset>
+        <fieldset><legend>Current</legend><input type="text" class="Current" value="@pm.PMT_Current" /></fieldset>
+        <fieldset><legend>Date</legend><input type="text" class="Date" value="@pm.PMT_Date.Value.ToShortDateString()" /></fieldset>
+        <fieldset><legend>Registrations</legend><input type="text" class="Registrations" value="@pm.PMT_Registrations" /></fieldset>
+        <fieldset><legend>Uniforms</legend><input type="text" class="Uniforms" value="@pm.PMT_Uniforms" /></fieldset>
+        <fieldset><legend>LateFee</legend><input type="text" class="LateFee" value="@pm.PMT_LateFee.ToString()" /></fieldset>
+        <fieldset><legend>Total</legend><input type="text" class="Total" value="@pm.PMT_Total" /></fieldset>
+        <fieldset><legend>TransactionID</legend><input type="text" class="TransactionID" value="@pm.PMT_IPN_TransactionID" /></fieldset>
+        <fieldset><legend>TransactionDate</legend><input type="text" class="TransactionDate" value="@pm.PMT_TransactionDate.ToShortDateString()" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (pms.Count == 0)
+{
+    <text>none</text>
+}

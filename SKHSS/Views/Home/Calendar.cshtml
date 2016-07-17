@@ -1,0 +1,66 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model List<Cache>
+@{
+    ViewBag.Title = "Calendar";
+    ViewBag.Script1 = "date.js";
+    ViewBag.Cache = true;
+    //String s = "thing";
+}
+<!--[if IE]>
+	<style>
+        .loadingif{display:none!important;}
+    </style>
+<![endif]-->
+<div id="year">
+    <img id="lloading" class="loadingif" src="/Content/loading.gif" alt="loading" />
+    <h2>Calendar</h2>
+    <br />
+    <div id="calendar">
+    @{
+        List<String> names = Definitions.Seasons;
+        Int32 sid = ViewBag.CurrentSeasonID;
+        Int32 year = ViewBag.CurrentYear;
+        Int32 num = Definitions.Seasons.Count;
+    }
+    @for (int i = 0; i < num; i++)
+    {
+        int modId = (sid + i) % num;
+        List<CacheItem> season = Model[0].CacheItems.Where(m => m.CCI_Labels.IndexOf(names[modId].ToLower()) != -1).OrderBy(m => m.CCI_Published).ToList();
+        <h3 class="title"><span>@((sid + i > 2) ? year + 1 : year) @names[modId]</span></h3>
+        <ul id="@names[modId].ToLower()">
+            @foreach(CacheItem ci in season){
+                <li>
+                    @if(ci.CCI_Labels.IndexOf("icontrophy") != -1){
+                        <img src="/Content/icons/trophy.png" style="margin-right:-18px;" />
+                    }
+                    else if (ci.CCI_Labels.IndexOf("iconpage") != -1){
+                        <img src="/Content/icons/page.png" />
+                    }
+                    <span class="date" style="margin-right:7px;">@ci.CCI_Published.ToString("MMM d")</span>
+                    <span class="desc">@ci.CCI_Content</span>
+                </li>
+            }
+        </ul><br/>
+    }
+    </div>
+</div>
+<div id="season">
+    <img id="rloading" class="loadingif" src="/Content/loading.gif" alt="loading" />
+    <h2>Season Events</h2>
+    <div class="nojavascript">&nbsp;Javascript is disabled, many features may not work.</div>
+    <div id="list">
+        @foreach (CacheItem ci in Model[1].CacheItems.OrderBy(m=>m.CCI_Published).ToList())
+        {
+            <div class="li @(ci.CCI_Content.Length > 0 ? "hastext" : "")">
+                <div class="upper">
+                    <span class="date1">@ci.CCI_Published.ToString("dddd,")</span>
+                    <span class="date2">@ci.CCI_Published.ToString("M/d")</span>
+                    <span class="text">@ci.CCI_Title.Replace("|", "")</span>
+                    <div class="arr @(ci.CCI_Content==""?"hide":"")">&nbsp;</div>
+                </div>
+                <div class="lower">@Html.Raw(ci.CCI_Content)</div>
+            </div>
+        }
+    </div>
+</div>

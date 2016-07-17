@@ -1,0 +1,112 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@{
+    Layout = null;
+    SKHSSEntities db = new SKHSSEntities();
+    IEnumerable<Teammate> ts = db.Teammates.Where(m => m.TMT_Accepted && m.TMT_SEA_SeasonID == Global.CurrentSeasonID && m.TMT_Year == Global.CurrentYear).OrderBy(m => m.Child.Parent.PRT_RecordID).ThenBy(m => m.Child.CLD_Birthdate);
+    Guid currP = Guid.Empty;
+}
+<style type="text/css">
+    #regreport > div {
+        display:table;
+        width:100%;
+        font-size:12px;
+    }
+    #regreport > div > div {
+        display:table-row;
+    }
+    #regreport > div > div > div {
+        display:table-cell;
+    }
+    #grid {
+        border-top:1px solid black;
+        border-left:1px solid black;
+    }
+    /*cells*/
+    #grid > div > div {
+        border-bottom:1px solid black;
+        border-right:1px solid black;
+        padding:2px 5px 2px 3px;
+        position:relative;
+    }
+    /*row*/
+    #grid > div:not(:first-child):not(.parents) > div:first-child {
+        padding-left:10px;
+    }
+    /*column*/
+    #grid > div > div:first-child {
+        min-width:70px;
+        font-size:16px;
+    }
+    #parenttoprow, .childrentoprow,#coachtoprow, #playertoprow {
+        font-weight:bold;
+    }
+    .birthdate {font-size:14px;position:absolute;left:23px;}
+    .parents > div:first-child {font-size:18px!important;font-weight:bold;}
+</style>
+<div id="regreport">
+<h2>Registrations</h2> 
+<div id="grid">
+    <div id="parenttoprow">
+        <div>Last Name</div>
+        <div>Parent's names</div>
+        <div>Phone</div>
+        <div>Email</div>
+        <div>Paid</div>
+    </div>
+@foreach (Teammate t in ts)
+{
+    if (t.Child.Parent.PRT_RecordID != currP)
+    {
+        Parent p = t.Child.Parent;
+        if (currP != Guid.Empty)
+        {
+            <div><div></div><div></div><div></div><div></div><div></div></div>
+        }
+        <div class="parents">
+        <div>@p.PRT_LastName</div>
+        <div>@p.PRT_FatherName & @p.PRT_MotherName</div>
+        <div>@Global.FancyPhone(p.PRT_Phone)</div>
+        <div>@p.PRT_Email</div>
+        <div>@(t.Order!=null&&t.Order.ORD_Paid?"Yes":"No")</div>
+        </div>
+        <div class="childrentoprow">
+            <div>First Name</div>
+            <div>Age</div>
+            <div>Shirt Size</div>
+            <div>Comments</div>
+            <div></div>
+        </div>
+        currP = t.Child.Parent.PRT_RecordID;
+    }
+    <div>
+        <div>@t.Child.CLD_FirstName</div>
+        <div>@Global.Age(t.Child.CLD_Birthdate) <span class="birthdate">(@t.Child.CLD_Birthdate.ToShortDateString())</span></div>
+        <div>@(t.TMT_SRT_ShirtID!=null?t.Shirt.SRT_ShirtText:"No Shirt")</div>
+        <div></div>
+        <div></div>
+    </div>
+}
+    @*<div id="playertoprow">
+        <div>Players</div>
+        <div>First Name</div>
+        <div>Last Name</div>
+        <div>Age</div>
+    </div>*@
+@*foreach (SKHSS.Models.Teammate t in db.Teammates.Where(m => m.Team.TEM_TeamID == Model).OrderBy(m => m.Child.Parent.PRT_LastName))
+{ 
+    <div>
+        <div></div>
+        <div>
+            @t.Child.CLD_FirstName
+        </div>
+        <div>
+            @t.Child.Parent.PRT_LastName
+        </div>
+        <div>
+            @SKHSS.Helpers.Global.Age(t.Child.CLD_Birthdate)
+        </div>
+    </div>
+}*@
+</div>
+    </div>

@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Request Login";
+}
+<style>
+    .fncy-box {
+        display:inline;
+        width:200px;
+    }
+    #Phone {
+        width:150px;
+    }
+</style>
+<h2>Request Login</h2>
+
+<div id="small-page">
+    <div id="small-page-inner">
+        To recieve login credentials and instructions:<br /><br />
+        Enter <b>Email</b> <input type="text" id="Email" class="fncy-box" /> or
+        <b>Phone #</b> <input type="text" id="Phone" class="fncy-box" /><br /><br />
+        <div class="fncybtn fl-end" id="submit">Submit</div>
+    </div>
+</div>
+@section PageScript{
+    <script type="text/ecmascript">
+        $(document).on("ready", function () {
+            $("#submit").on("click", function () {
+                $.post("ReqLogin", { phone: $("#Phone").val(), email: $("#Email").val() }, function (data) {
+                    switch (data) {
+                        case "email-success":
+                            $("#small-page-inner").html("An email has been sent to the address you provided with login instructions.");
+                            break;
+                        case "email-fail":
+                            $("#small-page-inner").html("There was no account associated with that email address.");
+                            break;
+                        case "phone-success":
+                            $("#small-page-inner").html("An administrator will be in contact with you to allow you to login.");
+                            break;
+                        case "phone-fail":
+                            $("#small-page-inner").html("There was no account associated with that phone number.");
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            });
+        });
+    </script>
+}

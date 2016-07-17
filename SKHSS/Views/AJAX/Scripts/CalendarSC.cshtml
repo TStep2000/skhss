@@ -1,0 +1,158 @@
+﻿@using SKHSS.Helpers
+@{Layout = null;}
+<script>
+    $(document).ready(function (e) {
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=calendar&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(function (data) {
+            $("#calendar").html("");
+            var ind = parseInt("@Global.CurrentSeasonID");
+            var names = ["Basketball", "Baseball", "Soccer"];
+            for (var i = 0; i < 3; i++) {
+                var modi = (ind + i) % 3
+                var sea = names[modi].toLowerCase();
+
+                var year = parseInt("@Global.CurrentYear");
+                year = (ind + i > 2) ? year + 1 : year;
+
+                var box = '<h3 class="title"><span>' + year + " " + names[modi] + "</span></h3>";
+                box += '<ul id="' + sea + '">';
+
+                var dates = $(data.items).filter(function (ref) {
+                    return this.labels.indexOf(sea) > -1;
+                });
+                
+                for (var m = dates.length - 1; m > -1; m--) {
+                    var row = "";
+                    row += "<li>";
+                    for (var j = 0; j < dates[m].labels.length; j++) {
+                        var str = '<img src="/Content/icons/';
+                        switch (dates[m].labels[j]) {
+                            case "icontrophy":
+                                str += "trophy.png";
+                                break;
+                            case "iconpage":
+                                str += "page.png";
+                                break;
+                            default:
+                                continue;
+                                break;
+                        }
+                        str += '" />';
+                        row += str;
+                        break;
+                    }
+                    row += '<span class="date">' + Date.parse(dates[m].published.substring(0, 10)).toString("MMM d") + "</span>" + '<span class="desc">' + dates[m].content + '</span>' + "</li>";
+                    box += row;
+                }
+                box += "</ul><br/>";
+                $("#calendar").append(box);
+            }
+            data.CAC_Type = "calendar";
+            addCache(data, 2);
+            $("#lloading").addClass("hide");
+        });
+        function openevent(event) {
+            closePrev(event);
+            var ref = $(this);
+            ref.addClass("selected");
+            ref.off()
+            ref.children(".upper").on("click", closePrev);
+        }
+        function closePrev(event) {
+            var tar = $(event.target);
+            if (tar.closest(".lower").length && tar.closest(".li").length == 1 && tar.closest(".li").hasClass("selected") || tar.attr("id") == "season") {
+                return;
+            }
+            if (tar.closest(".upper").length && tar.closest(".li").length == 1 && tar.closest(".li").hasClass("selected")) {
+                event.stopImmediatePropagation();
+            }
+            var ref = $(".selected");
+            ref.children(".upper").off();
+
+            ref.attr("style", "");
+            ref.removeClass("selected");
+            window.setTimeout(function () { ref.on("click", openevent); }, 300);
+        }
+        $("#content").mousedown(closePrev);
+        $(".li").each(function (index, value) {
+            if ($(this).children(".lower").text() != "") {
+                $(this).addClass("hastext");
+                $(this).find(".arr").css("display", "block");
+                $(this).on("click", openevent);
+            }
+        });
+        function fastrev(array) {
+            var left = null;
+            var right = null;
+            var length = array.length;
+            for (left = 0; left < length / 2; left += 1) {
+                right = length - 1 - left;
+                var temporary = array[left];
+                array[left] = array[right];
+                array[right] = temporary;
+            }
+            return array;
+        }
+        var allData = new Object();
+        allData.CAC_Type = "events";
+        allData.items = [];
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=events,@Global.CurrentYear,@Definitions.Seasons[Global.CurrentSeasonID].ToLower()&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(fetchlist);
+        function fetchlist(data) {
+            var end = false;
+            if (data.items) {
+                for (var i = 0; i < data.items.length; i++) {
+                    var dt = Date.parse(data.items[i].published.substring(0, 10));
+                    var today = Date.today().add(-1).days();
+                    if (dt.compareTo(today) == -1) {
+                        end = true;
+                        break;
+                    }
+                    allData.items.unshift(data.items[i]);
+                }
+                if (!end) {
+                    var pt = data.nextPageToken;
+                    if (data.nextPageToken) {
+                        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=events,@Global.CurrentYear,@Definitions.Seasons[Global.CurrentSeasonID].ToLower()&pageToken=" + pt + "&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(fetchlist);
+                    } else {
+                        postlist();
+                    }
+                } else {
+                    postlist();
+                }
+            } else {
+                postlist();
+            }
+        }
+        function postlist() {
+            $("#rloading").addClass("hide");
+            //allData.items = fastrev(allData.items);
+            addCache(allData, 2);
+            $("#list").html("");
+            for (var i = 0; i < allData.items.length; i++) {
+                var item = allData.items[i];
+                var dt = Date.parse(item.published.substring(0, 10));
+                var strtitle = item.title.replace("|", "");
+                $("#list").append(
+                    "<div class='li'>" +
+                        "<div class='upper'>" +
+                            "<span class='date1'>" + dt.toString("dddd,") + "</span><span class='date2'>" + dt.toString("M/d") + "</span><span class='text'> " + strtitle + "</span>" +
+                            "<div class='arr'>&nbsp;</div>" +
+                        "</div>" +
+                        "<div class='lower'>" +
+                            item.content +
+                        "</div>" +
+                    "</div>"
+                );
+            }
+            $(".li").each(function (index, value) {
+                if ($(this).children(".lower").text() != "") {
+                    $(this).addClass("hastext");
+                    $(this).find(".arr").css("display", "block");
+                    $(this).on("click", openevent);
+                }
+            });
+        }
+        $("#year li span:first-of-type").each(function () {
+            $(this).text(Date.parse($(this).text()).toString("MMM d"));
+        });
+    });
+</script>

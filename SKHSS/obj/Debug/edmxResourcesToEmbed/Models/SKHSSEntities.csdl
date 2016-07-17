@@ -1,0 +1,609 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SKHSSEntitiesModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityType Name="Album">
+    <Key>
+      <PropertyRef Name="ALB_RecordID" />
+    </Key>
+    <Property Name="ALB_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="ALB_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ALB_Description" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="ALB_USR_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="ALB_Private" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK_Album_UserLogin" FromRole="Album" ToRole="UserLogin" />
+    <NavigationProperty Name="Pictures" Relationship="Self.FK_Picture_Album" FromRole="Album" ToRole="Picture" />
+  </EntityType>
+  <EntityType Name="Cache">
+    <Key>
+      <PropertyRef Name="CAC_RecordID" />
+    </Key>
+    <Property Name="CAC_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CAC_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CAC_Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="CacheItems" Relationship="Self.FK_CacheItem_Cache" FromRole="Cache" ToRole="CacheItem" />
+  </EntityType>
+  <EntityType Name="CacheItem">
+    <Key>
+      <PropertyRef Name="CCI_RecordID" />
+    </Key>
+    <Property Name="CCI_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CCI_CAC_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CCI_Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CCI_Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CCI_Published" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CCI_Labels" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Cache" Relationship="Self.FK_CacheItem_Cache" FromRole="CacheItem" ToRole="Cache" />
+  </EntityType>
+  <EntityType Name="Child">
+    <Key>
+      <PropertyRef Name="CLD_RecordID" />
+    </Key>
+    <Property Name="CLD_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CLD_PRT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CLD_FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CLD_LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CLD_Birthdate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="CLD_Gender" Type="Boolean" Nullable="false" />
+    <Property Name="CLD_Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Parent" Relationship="Self.FK_Child_Parent" FromRole="Child" ToRole="Parent" />
+    <NavigationProperty Name="Teammates" Relationship="Self.FK_Teammate_Child" FromRole="Child" ToRole="Teammate" />
+  </EntityType>
+  <EntityType Name="Coach">
+    <Key>
+      <PropertyRef Name="CCH_RecordID" />
+    </Key>
+    <Property Name="CCH_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CCH_USR_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CCH_PRT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CCH_PositionID" Type="Int32" Nullable="false" />
+    <Property Name="CCH_TEM_TeamID" Type="Int32" Nullable="false" />
+    <Property Name="CCH_PIC_RecordID" Type="Guid" />
+    <Property Name="CCH_PRTID" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Picture" Relationship="Self.FK_Coach_Picture" FromRole="Coach" ToRole="Picture" />
+    <NavigationProperty Name="Team" Relationship="Self.FK_Coach_Team" FromRole="Coach" ToRole="Team" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK_Coach_UserLogin" FromRole="Coach" ToRole="UserLogin" />
+    <NavigationProperty Name="Phones" Relationship="Self.FK_Phone_Phone" FromRole="Coach" ToRole="Phone" />
+  </EntityType>
+  <EntityType Name="Contact">
+    <Key>
+      <PropertyRef Name="CON_RecordID" />
+    </Key>
+    <Property Name="CON_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CON_PRT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="CON_Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="CON_Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CON_PRTID" Type="Boolean" />
+    <NavigationProperty Name="Parent" Relationship="Self.FK_Contact_ToParent" FromRole="Contact" ToRole="Parent" />
+  </EntityType>
+  <EntityType Name="Feedback">
+    <Key>
+      <PropertyRef Name="FBK_RecordID" />
+    </Key>
+    <Property Name="FBK_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="FBK_USR_RecordID" Type="Guid" />
+    <Property Name="FBK_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_Message" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_Browser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_OS" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_BrowserString" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FBK_Viewed" Type="Boolean" Nullable="false" />
+    <Property Name="FBK_Complete" Type="Boolean" Nullable="false" />
+    <Property Name="FBK_Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK_Feedback_UserLogin" FromRole="Feedback" ToRole="UserLogin" />
+  </EntityType>
+  <EntityType Name="IPN">
+    <Key>
+      <PropertyRef Name="IPN_TransactionID" />
+    </Key>
+    <Property Name="IPN_TransactionID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IPN_RecieptDate" Type="DateTime" Precision="3" />
+    <Property Name="IPN_Amount" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="IPN_Response" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_PayerEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_PayerLastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_PMT_RecordID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IPN_Error" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Log">
+    <Key>
+      <PropertyRef Name="LOG_RecordID" />
+    </Key>
+    <Property Name="LOG_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="LOG_Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="ORD_RecordID" />
+    </Key>
+    <Property Name="ORD_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="ORD_PRT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="ORD_SeasonID" Type="Int32" Nullable="false" />
+    <Property Name="ORD_Year" Type="Int32" Nullable="false" />
+    <Property Name="ORD_Volunteer" Type="Int32" Nullable="false" />
+    <Property Name="ORD_Date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ORD_Approved" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Parent" Relationship="Self.FK_Order_Parent" FromRole="Order" ToRole="Parent" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Order" FromRole="Order" ToRole="Payment" />
+  </EntityType>
+  <EntityType Name="Parent">
+    <Key>
+      <PropertyRef Name="PRT_RecordID" />
+    </Key>
+    <Property Name="PRT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PRT_USR_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PRT_FatherName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PRT_MotherName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PRT_LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PRT_Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PRT_City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PRT_Zipcode" Type="String" MaxLength="5" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="PRT_PrimaryEmail" Type="Boolean" />
+    <Property Name="PRT_PrimaryPhone" Type="Boolean" />
+    <NavigationProperty Name="Children" Relationship="Self.FK_Child_Parent" FromRole="Parent" ToRole="Child" />
+    <NavigationProperty Name="Contacts" Relationship="Self.FK_Contact_ToParent" FromRole="Parent" ToRole="Contact" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK_Order_Parent" FromRole="Parent" ToRole="Order" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK_Parent_UserLogin" FromRole="Parent" ToRole="UserLogin" />
+    <NavigationProperty Name="Phones" Relationship="Self.FK_Phone_Parent" FromRole="Parent" ToRole="Phone" />
+    <NavigationProperty Name="UserLogins" Relationship="Self.FK_UserLogin_Parent" FromRole="Parent" ToRole="UserLogin" />
+  </EntityType>
+  <EntityType Name="Payment">
+    <Key>
+      <PropertyRef Name="PMT_RecordID" />
+    </Key>
+    <Property Name="PMT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PMT_ORD_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PMT_Uniforms" Type="Int32" Nullable="false" />
+    <Property Name="PMT_Registrations" Type="Int32" Nullable="false" />
+    <Property Name="PMT_LateFee" Type="Boolean" Nullable="false" />
+    <Property Name="PMT_Total" Type="Int32" Nullable="false" />
+    <Property Name="PMT_IPN_TransactionID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PMT_TransactionDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="PMT_Paid" Type="Boolean" Nullable="false" />
+    <Property Name="PMT_Current" Type="Boolean" Nullable="false" />
+    <Property Name="PMT_Date" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="Order" Relationship="Self.FK_Payment_Order" FromRole="Payment" ToRole="Order" />
+    <NavigationProperty Name="Teammates" Relationship="Self.FK_Teammate_Payment" FromRole="Payment" ToRole="Teammate" />
+  </EntityType>
+  <EntityType Name="Phone">
+    <Key>
+      <PropertyRef Name="PHN_PhoneNumber" />
+    </Key>
+    <Property Name="PHN_PhoneNumber" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="PHN_Type" Type="Int32" />
+    <Property Name="RecordID" Type="Guid" />
+    <Property Name="PHN_ProviderName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Coach" Relationship="Self.FK_Phone_Phone" FromRole="Phone" ToRole="Coach" />
+    <NavigationProperty Name="Parent" Relationship="Self.FK_Phone_Parent" FromRole="Phone" ToRole="Parent" />
+  </EntityType>
+  <EntityType Name="Picture">
+    <Key>
+      <PropertyRef Name="PIC_RecordID" />
+    </Key>
+    <Property Name="PIC_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PIC_Filename" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PIC_Caption" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="PIC_ALB_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="PIC_Year" Type="Int32" Nullable="false" />
+    <Property Name="PIC_SeasonID" Type="Int32" Nullable="false" />
+    <Property Name="PIC_TeamID" Type="Int32" Nullable="false" />
+    <Property Name="PIC_Private" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Album" Relationship="Self.FK_Picture_Album" FromRole="Picture" ToRole="Album" />
+    <NavigationProperty Name="Coaches" Relationship="Self.FK_Coach_Picture" FromRole="Picture" ToRole="Coach" />
+    <NavigationProperty Name="Teams" Relationship="Self.FK_Team_Picture" FromRole="Picture" ToRole="Team" />
+    <NavigationProperty Name="Teammates" Relationship="Self.FK_Teammate_Picture" FromRole="Picture" ToRole="Teammate" />
+  </EntityType>
+  <EntityType Name="SysVar">
+    <Key>
+      <PropertyRef Name="GBL_ID" />
+    </Key>
+    <Property Name="GBL_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="GBL_Data" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Team">
+    <Key>
+      <PropertyRef Name="TEM_TeamID" />
+    </Key>
+    <Property Name="TEM_TeamID" Type="Int32" Nullable="false" />
+    <Property Name="TEM_TeamName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TEM_PIC_RecordID" Type="Guid" />
+    <Property Name="TEM_MinAge" Type="Int32" Nullable="false" />
+    <Property Name="TEM_MaxAge" Type="Int32" Nullable="false" />
+    <Property Name="TEM_Gender" Type="Boolean" />
+    <Property Name="TEM_Enabled" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Coaches" Relationship="Self.FK_Coach_Team" FromRole="Team" ToRole="Coach" />
+    <NavigationProperty Name="Picture" Relationship="Self.FK_Team_Picture" FromRole="Team" ToRole="Picture" />
+    <NavigationProperty Name="Teammates" Relationship="Self.FK_Teammate_Team" FromRole="Team" ToRole="Teammate" />
+  </EntityType>
+  <EntityType Name="Teammate">
+    <Key>
+      <PropertyRef Name="TMT_RecordID" />
+    </Key>
+    <Property Name="TMT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="TMT_CLD_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="TMT_TEM_TeamID" Type="Int32" Nullable="false" />
+    <Property Name="TMT_PMT_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="TMT_Year" Type="Int32" Nullable="false" />
+    <Property Name="TMT_SeasonID" Type="Int32" Nullable="false" />
+    <Property Name="TMT_ShirtID" Type="Int32" />
+    <Property Name="TMT_Accepted" Type="Boolean" Nullable="false" />
+    <Property Name="TMT_PIC_RecordID" Type="Guid" />
+    <NavigationProperty Name="Child" Relationship="Self.FK_Teammate_Child" FromRole="Teammate" ToRole="Child" />
+    <NavigationProperty Name="Payment" Relationship="Self.FK_Teammate_Payment" FromRole="Teammate" ToRole="Payment" />
+    <NavigationProperty Name="Picture" Relationship="Self.FK_Teammate_Picture" FromRole="Teammate" ToRole="Picture" />
+    <NavigationProperty Name="Team" Relationship="Self.FK_Teammate_Team" FromRole="Teammate" ToRole="Team" />
+  </EntityType>
+  <EntityType Name="UserLogin">
+    <Key>
+      <PropertyRef Name="USR_RecordID" />
+    </Key>
+    <Property Name="USR_RecordID" Type="Guid" Nullable="false" />
+    <Property Name="USR_PRT_RecordID" Type="Guid" />
+    <Property Name="USR_UserID" Type="Int32" Nullable="false" />
+    <Property Name="USR_ROL_RoleID" Type="Int32" Nullable="false" />
+    <Property Name="USR_Username" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="USR_Password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="USR_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="USR_Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="USR_ResetDate" Type="DateTime" Precision="3" />
+    <Property Name="USR_Activated" Type="Boolean" Nullable="false" />
+    <Property Name="USR_Approved" Type="Boolean" Nullable="false" />
+    <Property Name="USR_Test" Type="Boolean" />
+    <Property Name="USR_Temp" Type="Boolean" />
+    <NavigationProperty Name="Albums" Relationship="Self.FK_Album_UserLogin" FromRole="UserLogin" ToRole="Album" />
+    <NavigationProperty Name="Coaches" Relationship="Self.FK_Coach_UserLogin" FromRole="UserLogin" ToRole="Coach" />
+    <NavigationProperty Name="Feedbacks" Relationship="Self.FK_Feedback_UserLogin" FromRole="UserLogin" ToRole="Feedback" />
+    <NavigationProperty Name="Parents" Relationship="Self.FK_Parent_UserLogin" FromRole="UserLogin" ToRole="Parent" />
+    <NavigationProperty Name="Parent" Relationship="Self.FK_UserLogin_Parent" FromRole="UserLogin" ToRole="Parent" />
+  </EntityType>
+  <Association Name="FK_Album_UserLogin">
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="1" />
+    <End Role="Album" Type="Self.Album" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserLogin">
+        <PropertyRef Name="USR_RecordID" />
+      </Principal>
+      <Dependent Role="Album">
+        <PropertyRef Name="ALB_USR_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Picture_Album">
+    <End Role="Album" Type="Self.Album" Multiplicity="1" />
+    <End Role="Picture" Type="Self.Picture" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Album">
+        <PropertyRef Name="ALB_RecordID" />
+      </Principal>
+      <Dependent Role="Picture">
+        <PropertyRef Name="PIC_ALB_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CacheItem_Cache">
+    <End Role="Cache" Type="Self.Cache" Multiplicity="1" />
+    <End Role="CacheItem" Type="Self.CacheItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cache">
+        <PropertyRef Name="CAC_RecordID" />
+      </Principal>
+      <Dependent Role="CacheItem">
+        <PropertyRef Name="CCI_CAC_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Child_Parent">
+    <End Role="Parent" Type="Self.Parent" Multiplicity="1" />
+    <End Role="Child" Type="Self.Child" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="PRT_RecordID" />
+      </Principal>
+      <Dependent Role="Child">
+        <PropertyRef Name="CLD_PRT_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Teammate_Child">
+    <End Role="Child" Type="Self.Child" Multiplicity="1" />
+    <End Role="Teammate" Type="Self.Teammate" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Child">
+        <PropertyRef Name="CLD_RecordID" />
+      </Principal>
+      <Dependent Role="Teammate">
+        <PropertyRef Name="TMT_CLD_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Coach_Picture">
+    <End Role="Picture" Type="Self.Picture" Multiplicity="0..1" />
+    <End Role="Coach" Type="Self.Coach" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Picture">
+        <PropertyRef Name="PIC_RecordID" />
+      </Principal>
+      <Dependent Role="Coach">
+        <PropertyRef Name="CCH_PIC_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Coach_Team">
+    <End Role="Team" Type="Self.Team" Multiplicity="1" />
+    <End Role="Coach" Type="Self.Coach" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="TEM_TeamID" />
+      </Principal>
+      <Dependent Role="Coach">
+        <PropertyRef Name="CCH_TEM_TeamID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Coach_UserLogin">
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="1" />
+    <End Role="Coach" Type="Self.Coach" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserLogin">
+        <PropertyRef Name="USR_RecordID" />
+      </Principal>
+      <Dependent Role="Coach">
+        <PropertyRef Name="CCH_USR_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Phone_Phone">
+    <End Role="Coach" Type="Self.Coach" Multiplicity="0..1" />
+    <End Role="Phone" Type="Self.Phone" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Coach">
+        <PropertyRef Name="CCH_RecordID" />
+      </Principal>
+      <Dependent Role="Phone">
+        <PropertyRef Name="RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Contact_ToParent">
+    <End Role="Parent" Type="Self.Parent" Multiplicity="1" />
+    <End Role="Contact" Type="Self.Contact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="PRT_RecordID" />
+      </Principal>
+      <Dependent Role="Contact">
+        <PropertyRef Name="CON_PRT_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Feedback_UserLogin">
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="0..1" />
+    <End Role="Feedback" Type="Self.Feedback" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserLogin">
+        <PropertyRef Name="USR_RecordID" />
+      </Principal>
+      <Dependent Role="Feedback">
+        <PropertyRef Name="FBK_USR_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Order_Parent">
+    <End Role="Parent" Type="Self.Parent" Multiplicity="1" />
+    <End Role="Order" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="PRT_RecordID" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="ORD_PRT_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Payment_Order">
+    <End Role="Order" Type="Self.Order" Multiplicity="1" />
+    <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="ORD_RecordID" />
+      </Principal>
+      <Dependent Role="Payment">
+        <PropertyRef Name="PMT_ORD_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Parent_UserLogin">
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="1" />
+    <End Role="Parent" Type="Self.Parent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserLogin">
+        <PropertyRef Name="USR_RecordID" />
+      </Principal>
+      <Dependent Role="Parent">
+        <PropertyRef Name="PRT_USR_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Phone_Parent">
+    <End Role="Parent" Type="Self.Parent" Multiplicity="0..1" />
+    <End Role="Phone" Type="Self.Phone" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="PRT_RecordID" />
+      </Principal>
+      <Dependent Role="Phone">
+        <PropertyRef Name="RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserLogin_Parent">
+    <End Role="Parent" Type="Self.Parent" Multiplicity="0..1" />
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="PRT_RecordID" />
+      </Principal>
+      <Dependent Role="UserLogin">
+        <PropertyRef Name="USR_PRT_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Teammate_Payment">
+    <End Role="Payment" Type="Self.Payment" Multiplicity="1" />
+    <End Role="Teammate" Type="Self.Teammate" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Payment">
+        <PropertyRef Name="PMT_RecordID" />
+      </Principal>
+      <Dependent Role="Teammate">
+        <PropertyRef Name="TMT_PMT_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Team_Picture">
+    <End Role="Picture" Type="Self.Picture" Multiplicity="0..1" />
+    <End Role="Team" Type="Self.Team" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Picture">
+        <PropertyRef Name="PIC_RecordID" />
+      </Principal>
+      <Dependent Role="Team">
+        <PropertyRef Name="TEM_PIC_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Teammate_Picture">
+    <End Role="Picture" Type="Self.Picture" Multiplicity="0..1" />
+    <End Role="Teammate" Type="Self.Teammate" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Picture">
+        <PropertyRef Name="PIC_RecordID" />
+      </Principal>
+      <Dependent Role="Teammate">
+        <PropertyRef Name="TMT_PIC_RecordID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Teammate_Team">
+    <End Role="Team" Type="Self.Team" Multiplicity="1" />
+    <End Role="Teammate" Type="Self.Teammate" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="TEM_TeamID" />
+      </Principal>
+      <Dependent Role="Teammate">
+        <PropertyRef Name="TMT_TEM_TeamID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SKHSSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Albums" EntityType="Self.Album" />
+    <EntitySet Name="Caches" EntityType="Self.Cache" />
+    <EntitySet Name="CacheItems" EntityType="Self.CacheItem" />
+    <EntitySet Name="Children" EntityType="Self.Child" />
+    <EntitySet Name="Coaches" EntityType="Self.Coach" />
+    <EntitySet Name="Contacts" EntityType="Self.Contact" />
+    <EntitySet Name="Feedbacks" EntityType="Self.Feedback" />
+    <EntitySet Name="IPNs" EntityType="Self.IPN" />
+    <EntitySet Name="Logs" EntityType="Self.Log" />
+    <EntitySet Name="Orders" EntityType="Self.Order" />
+    <EntitySet Name="Parents" EntityType="Self.Parent" />
+    <EntitySet Name="Payments" EntityType="Self.Payment" />
+    <EntitySet Name="Phones" EntityType="Self.Phone" />
+    <EntitySet Name="Pictures" EntityType="Self.Picture" />
+    <EntitySet Name="SysVars" EntityType="Self.SysVar" />
+    <EntitySet Name="Teams" EntityType="Self.Team" />
+    <EntitySet Name="Teammates" EntityType="Self.Teammate" />
+    <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
+    <AssociationSet Name="FK_Album_UserLogin" Association="Self.FK_Album_UserLogin">
+      <End Role="UserLogin" EntitySet="UserLogins" />
+      <End Role="Album" EntitySet="Albums" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Picture_Album" Association="Self.FK_Picture_Album">
+      <End Role="Album" EntitySet="Albums" />
+      <End Role="Picture" EntitySet="Pictures" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CacheItem_Cache" Association="Self.FK_CacheItem_Cache">
+      <End Role="Cache" EntitySet="Caches" />
+      <End Role="CacheItem" EntitySet="CacheItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Child_Parent" Association="Self.FK_Child_Parent">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="Child" EntitySet="Children" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Teammate_Child" Association="Self.FK_Teammate_Child">
+      <End Role="Child" EntitySet="Children" />
+      <End Role="Teammate" EntitySet="Teammates" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Coach_Picture" Association="Self.FK_Coach_Picture">
+      <End Role="Picture" EntitySet="Pictures" />
+      <End Role="Coach" EntitySet="Coaches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Coach_Team" Association="Self.FK_Coach_Team">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Coach" EntitySet="Coaches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Coach_UserLogin" Association="Self.FK_Coach_UserLogin">
+      <End Role="UserLogin" EntitySet="UserLogins" />
+      <End Role="Coach" EntitySet="Coaches" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Phone_Phone" Association="Self.FK_Phone_Phone">
+      <End Role="Coach" EntitySet="Coaches" />
+      <End Role="Phone" EntitySet="Phones" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Contact_ToParent" Association="Self.FK_Contact_ToParent">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="Contact" EntitySet="Contacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Feedback_UserLogin" Association="Self.FK_Feedback_UserLogin">
+      <End Role="UserLogin" EntitySet="UserLogins" />
+      <End Role="Feedback" EntitySet="Feedbacks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Order_Parent" Association="Self.FK_Order_Parent">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Payment_Order" Association="Self.FK_Payment_Order">
+      <End Role="Order" EntitySet="Orders" />
+      <End Role="Payment" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Parent_UserLogin" Association="Self.FK_Parent_UserLogin">
+      <End Role="UserLogin" EntitySet="UserLogins" />
+      <End Role="Parent" EntitySet="Parents" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Phone_Parent" Association="Self.FK_Phone_Parent">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="Phone" EntitySet="Phones" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserLogin_Parent" Association="Self.FK_UserLogin_Parent">
+      <End Role="Parent" EntitySet="Parents" />
+      <End Role="UserLogin" EntitySet="UserLogins" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Teammate_Payment" Association="Self.FK_Teammate_Payment">
+      <End Role="Payment" EntitySet="Payments" />
+      <End Role="Teammate" EntitySet="Teammates" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Team_Picture" Association="Self.FK_Team_Picture">
+      <End Role="Picture" EntitySet="Pictures" />
+      <End Role="Team" EntitySet="Teams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Teammate_Picture" Association="Self.FK_Teammate_Picture">
+      <End Role="Picture" EntitySet="Pictures" />
+      <End Role="Teammate" EntitySet="Teammates" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Teammate_Team" Association="Self.FK_Teammate_Team">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Teammate" EntitySet="Teammates" />
+    </AssociationSet>
+    <FunctionImport Name="SP_Nearforums_AuthenticateUser_TSQL" ReturnType="Collection(SKHSSEntitiesModel.SP_Nearforums_AuthenticateUser_TSQL_Result)">
+      <Parameter Name="UserName" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="SP_Nearforums_AuthenticateUser_TSQL_Result">
+    <Property Type="Int32" Name="UserId" Nullable="false" />
+    <Property Type="String" Name="UserName" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="UserEmail" Nullable="true" MaxLength="100" />
+  </ComplexType>
+</Schema>

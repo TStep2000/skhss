@@ -1,0 +1,15 @@
+﻿@model SKHSS.Models.UserLogin
+@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "WipeAll";
+}
+<style>
+    #membercontent {border:5px solid red;}
+</style>
+<h2>WipeAll</h2>
+@using (Html.BeginForm())
+{
+    @Html.TextBoxFor(m => m.USR_RecordID, new { @Value = "" })<br />
+    @Html.TextBoxFor(m => m.USR_Password)<br />
+    <input type="submit" />
+}

@@ -1,0 +1,16 @@
+﻿@model SKHSS.Models.UserLogin
+<style type="text/css">
+    .centerpage {display:table;height:100%;margin:0 auto;}
+    #loginbox { height:160px;display:table-cell;vertical-align:middle;position:relative; top:-50px; }
+    #close { display:none;}
+    #loginbtn {position:initial!important;bottom:initial!important;left:initial!important;}
+    #loginerror {top:-30px!important;white-space:nowrap;}
+</style>
+
+<div class="centerpage">
+    <div id="loginbox">
+        <div style="height:160px; position:relative;">
+            @Html.Partial("_Login", Model)
+        </div>
+    </div>
+</div>

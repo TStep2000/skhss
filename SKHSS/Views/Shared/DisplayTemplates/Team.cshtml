@@ -1,0 +1,14 @@
+﻿@using SKHSS.Helpers
+@using SKHSS.Models
+@model Team
+<a href="@Url.Action("Team", new { id = Model.TEM_TeamID })" class="fancylist clickable">
+    @if(Model.Picture!=null)
+    {
+        <img style="min-height:100%;min-width:100%;position:absolute;z-index:40;" src="/Content/uploads/@(SKHSS.Helpers.Global.ThumbnailFilename(Model.Picture.PIC_Filename))" />
+    }
+    @{
+        Coach c = SKHSS.Helpers.Data.GetCHs(m => m.CCH_TEM_TeamID == Model.TEM_TeamID && m.CCH_PositionID == 0).FirstOrDefault();
+    }
+    <span class="title"><h3><span>@Model.TEM_TeamName</span></h3></span>
+    <span class="coach"><h3><span>Coach: @((c != null) ? SKHSS.Helpers.Global.ParentName(c, false) : "N/A")</span></h3></span>
+</a>

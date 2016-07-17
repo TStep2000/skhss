@@ -1,0 +1,21 @@
+﻿.item:first-child {border-top:1px solid #ccc;}
+.item {width:100%;border-bottom:1px solid #ccc;padding:5px;}
+.fncy-box{max-width:200px;width:50%;}
+.left {float:left;width:50%;padding-left:5px;line-height:35px;}
+.left input[type=text] {width:100px;}
+#save {margin-left:10px;padding:4px 5px;}
+#membercontent {padding:10px!important;}
+.teams h4 {margin:8px 0 8px 0;}
+.teams {border:0;}
+.teams .left {width:40%;}
+.teams select {display:inline;width:60px;}
+.team {border-bottom:1px solid #ccc;}
+.team:first-of-type {border-top:1px solid #ccc;margin-top:5px;padding-top:10px;}
+.minc, .maxc,.genc {width:100px;float:left;margin-right:20px;}
+.genc {width:150px;}
+.min, .max,.gen {padding:1px 5px;}
+.gen {width:85px!important;margin-top:5px;}
+@media screen and (max-width: 460px) {
+    .teams .left {width:38.5%;}
+    .minc, .maxc,.gen {margin-right:0px;}
+}

@@ -1,0 +1,115 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+
+@{
+    ViewBag.Title = "Roles";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.SaveData = true;
+}
+<h2>Set Coaches for @Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear</h2>
+@foreach (Team t in Data.db.Teams.Where(m => m.TEM_Enabled).ToList())
+{
+    List<Coach> cs = t.Coaches.Where(m => m.CCH_PositionID == 0).ToList();
+    List<Coach> acs = t.Coaches.Where(m => m.CCH_PositionID == 1).ToList();
+    <div class="fancylist team">
+        <div class="tname"><h4>@t.TEM_TeamName</h4></div>
+        <div class="selcch"><div class="fncybtn selcchbtn" data-teamid="@t.TEM_TeamID" data-team="@t.TEM_TeamName">Select Coaches</div></div>
+        <div class="cname">
+            <b>Coach@(cs.Count>1?"es":""):</b>
+            @for (Int32 i = 0; i < cs.Count; i++)
+            {
+                Parent p = cs[i] != null ? cs[i].UserLogin.Parent : null;
+                String gid = cs[i].CCH_RecordID.ToString() + (cs[i].CCH_PRTID ? "1" : "0");
+                if(p != null){
+                    <span class="cchname @gid">@Global.ParentName(cs[i])</span>
+                }
+                <div class="imgbtn delcoach na" data-id="@cs[i].CCH_RecordID" data-group="@gid">
+                    <img data-func="askdelete" data-delete-message="Delete coach?" src="/Content/icons/delete.png" alt="delete" />
+                </div>
+                if (i != cs.Count - 1)
+                {
+                    <text>| </text>
+                }
+            }
+            @if (cs.Count == 0)
+            {
+                <text>None</text>
+            }
+            <br />
+            <b>Assistant Coach@(acs.Count>1?"es":""):</b>
+            @for (Int32 i = 0; i < acs.Count; i++)
+            {
+                Parent p = acs[i] != null ? acs[i].UserLogin.Parent : null;
+                String gid = acs[i].CCH_RecordID.ToString()+(acs[i].CCH_PRTID?"1":"0");
+                if(p != null){
+                    <span class="cchname @gid">@Global.ParentName(acs[i])</span>
+                }
+                <div class="imgbtn delcoach na" data-id="@acs[i].CCH_RecordID" data-group="@gid">
+                    <img data-func="askdelete" data-delete-message="Delete coach?" src="/Content/icons/delete.png" alt="delete" />
+                </div>
+                @*<span class="fncybtn delcoach" data-cchid="@acs[i].CCH_RecordID">x</span>*@
+                if (i != acs.Count - 1)
+                {
+                    <text>| </text>
+                }
+            }
+            @if (acs.Count == 0)
+            {
+                <text>None</text>
+            }
+        </div>
+    </div>
+}
+<div class="select fancylist hide">
+    <div class="teamselect">
+        <h2>Select <span class="teamname"></span>'s coach</h2><div class="fncybtn closesel">close</div>
+        <input class="teamid" type="hidden" value="" />
+        <div class="selcoach">
+            <h3>Parents</h3>
+            <div class="parlist">
+                @{Int32 j = 0;}
+                @foreach (Parent p in Data.GetPs(m => !m.UserLogin.USR_Test.HasValue || m.UserLogin.USR_Test == false).OrderBy(m => m.PRT_LastName).ToList())
+                {
+                    for (Int32 i = 0; i < 2; i++)
+                    {
+                        if ((i == 0 && p.PRT_FatherName != null) || (i == 1 && p.PRT_MotherName != null))
+                        {
+                            List<Coach> cs = Data.GetCHs(m => m.CCH_USR_RecordID == p.PRT_USR_RecordID && m.CCH_PRTID == (i == 1)).ToList();
+                            <div id="@(j + "" + i)" class="parent fancylist">
+                                @foreach (Coach c in cs)
+                                {
+                                    <input class="cteamid" type="hidden" value="@c.CCH_TEM_TeamID" />
+                                }
+                                <input type="hidden" class="Phone" value="@Global.FancyPhone(p.UserLogin.USR_Phone)" />
+                                <input type="hidden" class="Email" value="@p.UserLogin.USR_Email" />
+                                <span class="pname">@p.PRT_LastName, @(i == 0 ? p.PRT_FatherName : p.PRT_MotherName)</span><div class="selparbtn fncybtn" data-urid="@p.UserLogin.USR_RecordID" data-id="@i">Select</div>
+                            </div>
+                        }
+                    }
+                    j++;
+                }
+            </div>
+            <div id="newcoach" class="coachform hide">
+                <h3 class="coachname"></h3>
+                <div class="coach">
+                    <input class="urid" type="hidden" value="" />
+                    <input class="prid" type="hidden" value="" />
+                    <h5>Confirm Information</h5>
+                    <br />
+                    Phone: <input disabled class="parphone" /><br />
+                    Email: &nbsp;<input disabled class="paremail" />
+                    <br /><br />
+                    <h5>New Information</h5>
+                    <br />
+                    Position:
+                    <select class="positionid">
+                        <option value="0">Coach</option>
+                        <option value="1">Assistant Coach</option>
+                    </select>
+                    @*<span class="noinfo">No new information required</span>*@
+                    <div class="fncybtn confirm" data-type="coach">Save</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

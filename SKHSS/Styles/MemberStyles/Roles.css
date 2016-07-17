@@ -1,0 +1,33 @@
+﻿.fancylist {border-top:1px solid #dadada;padding:5px;}
+.team {margin-bottom:10px;}
+.tname, .cname, .selcch {float:left;}
+.tname {width:140px;}
+.selcch {width:140px;margin-top:8px;}
+
+/*SELECTION BOX*/
+.select {
+    padding:10px;
+    background:white;
+    position:absolute;
+    width:70%;
+    min-width:500px;
+    left:15%;
+    top:50px;
+    height:80%;
+    box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5);
+}
+.select h2 {border-bottom:1px solid #ccc;}
+.teamselect {height:95%;height:calc(100% - 30px);}
+.closesel {position:absolute;top:5px;right:10px;}
+/*     Sports Dir selecting coaches:    */
+.selcoach {height:90%;height:calc(100% - 30px);}
+.parlist, .coachform {float:left;}
+.parlist {width:50%;height:100%;padding:5px;overflow:auto;border-right:1px solid #ccc;}
+.parent {margin:0 8px 5px 2px;}
+.coachform {position:relative;width:50%;height:100%;padding:10px;padding-top:0px;}
+.selparbtn {float:right;}
+.confirm {position:absolute;right:5px;bottom:0px;}
+.delcoach {position:relative;bottom:1px;}
+.delcoach img {width:11px!important;}

@@ -1,0 +1,22 @@
+﻿@*using SKHSS.Models
+@model MakeCoach
+@{
+    ViewBag.Title = "Sandbox";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    var TeamNames = new SelectList(Data.db.Teams, "TEM_TeamID", "TEM_TeamName");
+    var PositionNames = new SelectList(Data.db.CoachPositions, "CPO_PositionID", "CPO_PositionText");
+}
+
+<h2>Make Coach</h2>
+
+<div style="width:200px;background:#e1e1e1;">
+@using (Html.BeginForm("MakeCoach", "Members", FormMethod.Post))
+{
+@Html.TextBoxFor(m => m.FirstName, new { @class = "fncy-box", placeholder = "First Name" })
+@Html.TextBoxFor(m => m.LastName, new { @class = "fncy-box", placeholder = "Last Name" })
+@Html.TextBoxFor(m => m.Username, new { @class = "fncy-box", placeholder = "UserName" })
+@Html.TextBoxFor(m => m.Password, new { @class = "fncy-box", type="password", placeholder = "Password" })
+@Html.DropDownListFor(m => m.PositionID, PositionNames)
+@Html.DropDownListFor(m => m.TeamID, TeamNames)<input type="submit" value="Make!" />
+}
+</div>*@

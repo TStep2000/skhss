@@ -1,0 +1,68 @@
+﻿@using SKHSS.Models
+@model List<Cache>
+@{
+    ViewBag.Title = "South Kitsap Homeschool Sports Club";
+    ViewBag.Script1 = "date.js";
+    ViewBag.Script2 = "jquery.ellipsis.js";
+    ViewBag.Cache = true;
+    Cache main = Model[0];
+    CacheItem mainI = new CacheItem();
+    if (main.CacheItems.Count > 0)
+       {mainI = main.CacheItems.ToList()[0];}
+    Cache news = Model[1];
+    Cache events = Model[2];
+}
+<!--[if IE]>
+	<style>
+        .loadingif{display:none!important;}
+        #content{overflow:auto!important;}
+    </style>
+<![endif]-->
+
+
+<div class="l t" id="tl">
+    <img id="tlloading" class="loadingif" src="/Content/loading.gif" alt="loading" />
+    <h1 id="mainheader">@(Request.Url.ToString().Contains("http://localhost:1994/") ? "Home" : "") @mainI.CCI_Title</h1>
+    <div id="mainparagraph">
+        @Html.Raw(mainI.CCI_Content)
+        <div class="nojavascript">Javascript is disabled, many features may not work.</div>
+    </div>
+</div>
+<div class="r t" id="tr">
+    @switch (SKHSS.Helpers.Global.CurrentSeasonID)
+    {
+        case 0:
+            <img src="../../Content/basketballsmall.jpg" alt="basketball" />
+        break;
+        case 1:
+            <img src="../../Content/baseballsmall.jpg" alt="baseball" />
+        break;
+        case 2:
+            <img src="../../Content/soccersmall.jpg" alt="soccer" />
+        break;
+    }
+</div>
+<div class="l b" id="bl">
+    <img id="blloading" class="loadingif" src="/Content/loading.gif" alt="loading" />
+    <div class="nojavascript">Javascript is disabled, many features may not work.</div>
+    @foreach (CacheItem ci in news.CacheItems.OrderByDescending(m => m.CCI_Published).ToList())
+    {
+    <div class="update">
+        <h3 class="subheader">@ci.CCI_Title</h3> <span class="date">@ci.CCI_Published.ToShortDateString()</span>
+        <div class="subparagraph">@Html.Raw(ci.CCI_Content)</div>
+    </div>
+    }
+</div>
+<div class="r b" id="br">
+    <img id="brloading" class="loadingif" src="/Content/loading.gif" alt="loading" />
+    <div style="font-weight:bold;margin-bottom:3px;">Upcoming Events: <span class="fl-end"><a href="Home/Calendar">Calendar &#8594;</a></span></div>
+    <hr />
+    <div id="weekly">
+        @{List<CacheItem> cis = events.CacheItems.OrderBy(m=>m.CCI_Published).ToList();
+          var index = (cis.Count < 7 ? cis.Count : 7);}
+        @for (int i = 0; i < index; i++) 
+        {
+            <span class='up-date fl-end'>@cis[i].CCI_Published.ToString("ddd, MMM d")</span><span class='up-note fl-start'>@cis[i].CCI_Title</span><br/>
+        }
+    </div>
+</div>

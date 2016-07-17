@@ -1,0 +1,10 @@
+﻿@model SKHSS.Models.Team
+<div class="teamblock">
+    <h4><a href="@Url.Action("Team", new { id = Model.TEM_TeamID })">@Model.TEM_TeamName</a></h4>
+    <div class="coaches">
+        <h5>Coaches:</h5>
+        @Html.DisplayFor(m => m.Coaches)
+    </div>
+    <h5>Players:</h5>
+    @Html.DisplayFor(m => m.Teammates)
+</div>

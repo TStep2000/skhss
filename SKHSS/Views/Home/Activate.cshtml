@@ -1,0 +1,26 @@
+﻿@model String
+@{
+    ViewBag.Title = "Activate";
+    ViewBag.NoIndex = true;
+}
+<script>
+    $(document).ready(function () {
+        window.setTimeout(function () {
+            window.location = "/Members/";
+        },4000)
+    });
+</script>
+<h2>Activation</h2>
+<div id="text">
+    @if(Model == "y") {
+        <text>
+            Congratulations!&ensp;Your account has been activated!&ensp;You will be redirected to your account dashboard in a moment.<br />
+            Or click <a href='/Members/'>this link</a> to go there directly.
+        </text>
+    } else {
+        <text>
+            The ID that was submitted does not exist, please check the url.<br/>
+            If you're sure it is correct, please contact the administrator of this website.
+        </text>
+    }
+</div>

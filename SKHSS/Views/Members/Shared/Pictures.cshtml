@@ -1,0 +1,137 @@
+﻿@model SKHSS.Models.GalleryModel
+@{
+    ViewBag.Title = "Pictures";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Script1 = "Lightbox.js";
+    ViewBag.Style1 = "css/album.css";
+}
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $("#uploadbtncont a").on("click", open);
+        /*if (qs["upload"] == "1") {
+            open();
+        }*/
+        var breakwidth = 200;
+        var picwidth = $("#publicAlbums").outerWidth();
+        if (picwidth / 4 > breakwidth) {
+            $("#albumstyle").html(".album{width:calc(25% - 6px);}.album:nth-child(4n){margin-right:0;}")
+        } else if (picwidth / 3 > breakwidth) {
+            $("#albumstyle").html(".album{width:calc(33% - 5px);}.album:nth-child(3n){margin-right:0;}")
+        } else if (picwidth / 2 > 175) {
+            $("#albumstyle").html(".album{width:calc(50% - 5px);}.album:nth-child(2n){margin-right:0;}")
+        } else {
+            $("#albumstyle").html(".album{width:100%;margin-right:0;}")
+        }
+        $(window).resize(function () {
+            var picwidth = $("#publicAlbums").outerWidth();
+            if (picwidth / 4 > breakwidth) {
+                $("#albumstyle").html(".album{width:calc(25% - 6px);}.album:nth-child(4n){margin-right:0;}")
+            } else if (picwidth / 3 > breakwidth) {
+                $("#albumstyle").html(".album{width:calc(33% - 5px);}.album:nth-child(3n){margin-right:0;}")
+            } else if (picwidth / 2 > 175) {
+                $("#albumstyle").html(".album{width:calc(50% - 5px);}.album:nth-child(2n){margin-right:0;}")
+            } else {
+                $("#albumstyle").html(".album{width:100%;margin-right:0;}")
+            }
+        });
+    });
+    function open(e) {
+        if (e != null) {
+            e.preventDefault();
+        }
+        $.ajax({ url: $("#uploadbtncont a").attr("href") }).done(function (data) {
+            openlightbox(data, 850, $(window).height(), true);
+            $("#closelightbox").on("click", closelightbox);
+            $("#closelightbox").css("transition", "0").css("position", "absolute").css("padding", "1px 3px").css("left", 6).css("top", 6);
+        });
+        $(window).on("closelightbox", function (e) {
+            var errors = e.errors;
+            if (errors.length == 0) {
+                finalmessage("Your album was saved successfully");
+                setTimeout(function () { window.location = "/Members/Pictures"; }, 1000);
+            }
+            else {
+                finalmessage("" + errors.length + " picture" + (errors.length == 1 ? "" : "s") + " did not upload properly. <div id='errors'></div><div id='closeerror' class='fncybtn'>Ok</div>");
+                for (var i = 0; i < errors.length; i++) {
+                    $("#errors").append(errors[i].substring(errors[i].lastIndexOf("/")) + "<br/>");
+                }
+                $("#closeerror").on("click", function () {
+                    closefinalmessage();
+                    setTimeout(function () {
+                        location.reload();
+                    }, 300);
+                });
+            }
+        });
+        function finalmessage(data) {
+            if ($("#finalmessage").length > 0) {
+                $("#finalmessage").remove();
+            }
+            $("body").append("<div id='finalmessage'>" + data + "</div>");
+            $("#finalmessage").css("top", "calc(50% - " + ($("#finalmessage").height() / 2) + "px)");
+            $("#nope").on("click", closefinalmessage);
+        }
+    }
+    function loaded(e) {
+        $.each($("#uploads img"), function (index, value) {
+            var ref = $(value);
+            var gt = ref.width() > ref.height();
+            if (gt) {
+                ref.css("height", 150);
+            } else {
+                ref.css("width", 150);
+            }
+        });
+    }
+</script>
+<style type="text/css">
+    #uploadbtncont {
+        font-size:18px;
+        width:150px;
+        position:absolute;
+        top:7px;
+        right:10px;
+    }
+    .piclist {
+        width:100%;
+    }
+    .only {
+        width:100% !important;
+    }
+    @@media screen and (-webkit-min-device-pixel-ratio: 3.0) and (max-width: 980px) and (orientation:portrait), screen and (max-width: 600px) {
+        #uploadbtncont {
+            width:100px;
+            font-size:14px;
+        }
+        .album {
+            width:100%;
+            height:150px;
+        }
+        .album img {
+            min-height:130px;
+        }
+    }
+</style>
+<style id="albumstyle" type="text/css"></style>
+<h2>My Uploads</h2>
+
+<div id="uploadbtncont" class="fancybtn2"><a href="@Url.Action("EditAlbum", new { id = ViewBag.AlbumID })">New Album</a></div>
+<div id="uploads" class="piclist">
+    @Html.DisplayFor(m => m.MyAlbumList)
+    <div class="clear"></div>
+</div>
+<h2>Pictures by team</h2>
+<hr />
+<div id="byteam" class="piclist">
+    @for (var i = 0; i < Model.TeamsList.Count;i++ )
+    {
+        @*Html.DisplayFor(m => m.TeamsList[i], "PictureAlbum");*@
+    }
+    <div class="clear"></div>
+</div>
+<h2>Public albums</h2>
+<hr />
+<div id="publicAlbums" class="piclist">
+    @Html.DisplayFor(m => m.PublicAlbums)
+    <div class="clear"></div>
+</div>

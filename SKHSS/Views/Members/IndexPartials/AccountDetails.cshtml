@@ -1,0 +1,36 @@
+﻿@using SKHSS.Helpers
+@using SKHSS.Models
+@using SKHSS.Helpers.HTMLObjects
+<h2>Account Details</h2>
+    <div class="accountinner" id="accountDetails">
+        @if (Global.IsInRole(Model.UserLogin,Definitions.ParentRole))
+        {
+        <div id="p1" class="p1 acc" data-group="p1" data-prefix="p1">
+            <span class="act-1"><b>Name: </b></span>@(new EditableField().create("p1", 0, "FatherName", Model.Parent.PRT_FatherName,"text","","",new List<string>{"Father"}))@(Model.Parent.PRT_FatherName==null||Model.Parent.PRT_MotherName==null?"":" and ")@(new EditableField().create("p1", 1, "MotherName", Model.Parent.PRT_MotherName,"text","","",new List<string>{"Mother"})) @(new EditableField().create("p1", 2, "LastName", Model.Parent.PRT_LastName))
+            <input class="prid" type="hidden" value="@Model.Parent.PRT_RecordID" />
+            @(new EditLoadSaveBtn().create("p1", "Parent","fl-end"))
+        </div>
+        <div id="p2" class="p2 acc"  data-group="p2"  data-prefix="p2">
+            <span class="act-1"><b>Address:</b></span> <div style="display:inline-block;vertical-align:top;margin-left:-3px;">@(new EditableField().create("p2", 0, "Address", Model.Parent.PRT_Address,"text","","",new List<string>{"Address"}))<br />
+                                 @(new EditableField().create("p2", 1, "City", Model.Parent.PRT_City,"text","","",new List<string>{"City"})), WA @(new EditableField().create("p2", 2, "Zipcode", Model.Parent.PRT_Zipcode))
+                            </div>
+            <input class="prid" type="hidden" value="@Model.Parent.PRT_RecordID" />
+            @(new EditLoadSaveBtn().create("p2", "Parent","fl-end"))
+        </div>
+        }
+        <div id="p3" class="p3 acc"  data-group="p3"  data-prefix="p3">
+            <span class="act-1"><b>Email: </b></span>@(new EditableField().create("p3", 0, "Email", Model.UserLogin.USR_Email))<br />
+            <span class="act-1"><b>Phone: </b></span>@(new EditableField().create("p3", 1, "Phone", Model.UserLogin.USR_Phone, "text", Global.FancyPhone(Model.UserLogin.USR_Phone)))
+            <input class="urid" type="hidden" value="@Model.UserLogin.USR_RecordID" />
+            @(new EditLoadSaveBtn().create("p3", "Object","fl-end"))
+        </div>
+        <div id="p4" class="p4 acc"  data-group="p4"  data-prefix="p4">
+            <span class="act-1"><b>Username: </b></span>@(new EditableField().create("p4", 0, "Username", Model.UserLogin.USR_Username))<br />
+            <input class="urid" type="hidden" value="@Model.UserLogin.USR_RecordID" />
+            @(new EditLoadSaveBtn().create("p4", "Object","fl-end"))
+        </div>
+    </div>
+
+<div id="profiletabs">
+    <div class="profiletab" id="pat">Parent Details</div>
+</div>

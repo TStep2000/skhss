@@ -1,0 +1,22 @@
+﻿@using SKHSS.Models
+@model Picture
+           
+@{
+    List<Team> teams = sp.Teams.ToList();
+}
+<div class="albumpic fancylist" id="a@(Model.PIC_RecordID)">
+    <div class="delete" id="@Model.PIC_RecordID">x</div>
+    <input type="hidden" value=""/>
+    <div class="image">
+        <img alt="" src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(Model.PIC_Filename)" />
+    </div>
+    <div class="rope">
+        <textarea cols="40" rows="4" class="caption fncy-box" placeholder="Picture Caption">@Model.PIC_Caption</textarea>
+        <select class="team">
+            @foreach(Team t in teams){
+                <option @if(Model.PIC_TeamID==t.TEM_TeamID){<text>selected="selected"</text>} value="@t.TEM_TeamID">@t.TEM_TeamName</option>
+            }
+        </select>
+    </div>
+    <div style="clear:both;"></div>
+</div>

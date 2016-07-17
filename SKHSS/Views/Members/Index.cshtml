@@ -1,0 +1,34 @@
+﻿@using SKHSS.Models
+@using SKHSS.Authentication
+@using SKHSS.Helpers
+@model SKHSS.Models.PageModels.AccountPageModel
+@{
+    ViewBag.Title = "Account";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    //ViewBag.Style1 = "css/album.css";
+    ViewBag.Script1 = "jquery.autosize.input.js";
+    ViewBag.SaveData = true;
+    ViewBag.InlineField = true;
+    ViewBag.DisableBackspace = true;
+}
+<div class="t l" id="tl">
+    @Html.Partial("IndexPartials/AccountDetails")
+</div>
+<div class="t c" id="tc">
+    @Html.Partial("IndexPartials/PlayerDetails")
+</div>
+<div class="t r disabled" id="tr" style="display:none;">
+    <div class="cover"><div class="cover2">Coming Soon</div></div>
+    <h2>Messages</h2>
+</div>
+<div class="b l disabled" id="bl">
+    <div class="cover"><div class="cover2">Coming Soon</div></div>
+    <h2>Registration History</h2>
+</div>
+<div class="b r scrollh disabled" id="br">
+    <div class="cover"><div class="cover2">Coming Soon</div></div>
+    <h2>My Albums</h2>
+    <div id="myalbums">
+
+    </div>
+</div>

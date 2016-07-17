@@ -1,0 +1,61 @@
+﻿@using SKHSS.Models
+@model List<Feedback>
+@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "ViewFeedback";
+    int i = 0;
+}
+<style>
+    .fancylist {padding:5px;padding-top:15px;margin-top:10px;border-top:1px solid #ddd;}
+    .rec {position:absolute;right:0;top:0;padding:2px 5px 0 0 ;border-left:1px solid #ccc;border-bottom:1px solid #ccc; background-color:#eee;}
+    textarea {display:block;width:calc(100% - 10px);}
+    .viewd, .complete {position:relative;float:right;width:22px;height:22px;margin-top:10px;margin-right:3px;border-radius:3px;border:1px solid #ccc;}
+    .comp {margin-top:3px!important;margin-left:4px;}
+    .compy {position:absolute;left:0;top:0;width:100%;height:100%;}
+    .complete.y {background-color:green;}
+    .complete.n {background-color:red;}
+    .viewd.y {display:none;}
+    .viewd.n {background-color:yellow;}
+    .str {}
+    @@media screen and (max-width: 650px) {
+        .rec {font-size:12px;line-height:12px;}
+        .viewd, .complete {margin-top:5px;}
+    }
+</style>
+<h2>ViewFeedback</h2>
+
+@foreach(Feedback f in Model){
+    <div class="fancylist">
+        <span class="rec">@f.FBK_RecordID</span>
+        <span class="complete @(f.FBK_Complete?"y":"n")"><label class="compy"><input type="checkbox" class="comp" id="@f.FBK_RecordID" @(f.FBK_Complete?"checked=\"checked\"":"")/></label></span>
+        <span class="viewd @(f.FBK_Viewed?"y":"n")">&nbsp;</span>
+        <span><b>Name:</b> @f.FBK_Name</span><br /> 
+        <span><b>Email:</b> @f.FBK_Email</span><br />
+        <span><b>Browser:</b> @f.FBK_Browser, @f.FBK_OS</span> <br /> 
+        <span class="str"><b>String:</b> <span class="browstr">@f.FBK_BrowserString</span></span><br />
+        <div><b>Message:</b> <textarea disabled class="fncy-box" rows="3">@f.FBK_Message</textarea></div>
+    </div>
+    i++;
+}
+@{
+    SKHSSEntities db = new SKHSSEntities();
+    foreach(Feedback fb in db.Feedbacks){
+        fb.FBK_Viewed = true;
+    }
+    db.SaveChanges();
+}
+<script>
+    $(document).ready(function () {
+        $(".comp").click(function () {
+            var ref = $(this);
+            $.post("ViewFeedback", { id: ref.attr("id") }, function (data) {
+                if (data == "y") {
+                    ref.closest(".complete").removeClass("n").addClass("y");
+                }
+                else {
+                    ref.closest(".complete").removeClass("y").addClass("n");
+                }
+            });
+        });
+    });
+</script>

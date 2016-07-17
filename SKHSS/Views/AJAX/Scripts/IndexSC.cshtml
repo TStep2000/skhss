@@ -1,0 +1,117 @@
+﻿@{
+    Layout = null;
+}
+<script>
+    $(document).ready(function (e) {
+        var topheight = $("#tl").outerHeight() + 20;
+        var totalheight = 0;
+        var nextheight = 0;
+
+        if (getQueryVariable("login") == "1") {
+            $("#loginfloater").removeClass("hide");
+        }
+        $(".up-note").each(function () {
+            var str = $(this).text();
+            if (str.indexOf("|") != -1) {
+                str = str.substring(0, str.indexOf("|"));
+            }
+            $(this).text(str);
+        });
+        $(window).resize(function () {
+            var topheight = $("#tl").outerHeight() + 20;
+            $("update").each(function () {
+                $(this).find(".subparagraph span").html($(this).find(".subparagraph .text").attr("value"));
+            });
+            $(".hidden").removeClass("hidden");
+            $("#bl").css("height", "calc(100% - " + topheight + "px)");
+        });
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=welcome&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c", crossDomain:true, cache:false }).done(function (data) {
+            $("#mainheader").text(data.items[0].title);
+            $("#mainparagraph").html(data.items[0].content);
+            $("#tlloading").addClass("hide");
+            var topheight = $("#tl").outerHeight() + 20;
+            $("#bl").css("height", "calc(100% - " + topheight + "px)");
+            data.CAC_Type = "main";
+            addCache(data, 3);
+        });
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=main&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c", crossDomain:true, cache: false }).done(function (data) {
+            if (data.items != 0) {
+                $("#bl").html("");
+                for (var i = 0; i < data.items.length; i++) {
+                    $("#bl").append('<div class="update">' +
+                                        '<h3 class="subheader"></h3> <span class="date"></span>' +
+                                        '<div class="subparagraph"><input class="text" type="hidden" value="" /><input class="link" type="hidden" value="" /><span class="ellipsis_text"></span>' +
+                                        '</div>' +
+                                    '</div>');
+                    $("#bl .update:last-child .subheader").text(data.items[i].title);
+                    $("#bl .update:last-child .date").text(Date.parse(data.items[i].published.substring(0, 10)).toString("M/d/yyyy"));
+                    $("#bl .update:last-child .subparagraph span").html(data.items[i].content);//.ellipsis({ row: 4, onlyFullWords: true, char: '<a class="lipsis" href="Home/News/' + data.items[i].id + '">...</a>' });
+                    $("#bl .update:last-child .subparagraph .text").attr("value", data.items[i].content);
+                    $("#bl .update:last-child .subparagraph .link").attr("value", 'Home/News/' + data.items[i].id);
+                    totalheight += ($("#bl .update:last-child").outerHeight(true));
+                }
+                var topheight = $("#tl").outerHeight() + 20;
+                $("#bl").css("height", "calc(100% - " + topheight + "px)");
+            }
+            $("#blloading").addClass("hide");
+            data.CAC_Type = "news";
+            addCache(data, 3);
+        });
+        function shorten() {
+            var ref = $(".update:not(.hidden)").last();
+            nextheight = ref.outerHeight(true);
+            totalheight = totalheight - nextheight;
+            ref.addClass("hidden");
+            if (totalheight > $("#bl").outerHeight(true)) {
+                shorten();
+            }
+        }
+        $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?start-index=1&labels=events&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c", crossDomain: true, cache: false }).done(collectDates);
+        var datelist = [];
+        var posted = false;
+        function collectDates(data) {
+            if (data.items) {
+                for (var i = 0; i < data.items.length; i++) {
+                    var currDate = Date.parse(data.items[i].published.substring(0, 10));
+                    var today = Date.today();
+                    if (currDate.compareTo(today) <= 0) {
+                        if (currDate.compareTo(today) == 0) {
+                            datelist.push(data.items[i]);
+                        }
+                        postDates(datelist, data);
+                        break;
+                    }
+                    datelist.push(data.items[i]);
+                }
+                if (!posted) {
+                    $.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?pageToken=" + data.nextPageToken + "&start-index=1&labels=events&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(collectDates);
+                }
+            }
+            else {
+                postDates(datelist, data);
+            }
+        }
+        function postDates(items, data) {
+            $("#weekly").html("");
+            var count = 0;
+            for (var i = items.length - 1; i > -1; i--) {
+                var currDate = Date.parse(items[i].published.substring(0, 10));
+                var today = Date.today();
+                var yesterday = today.add(-1).days();
+                count++;
+                if (currDate.compareTo(today) >= 0 && count <= 7) {
+                    var str = items[i].title;
+                    if (str.indexOf("|") != -1) {
+                        str = str.substring(0, str.indexOf("|"));
+                    }
+                    $("#weekly").append("<span class='up-date fl-end'>" + currDate.toString("ddd, MMM d") + "</span><span class='up-note fl-start'>" + str + "</span><br/>");
+                }
+            }
+            data.items = items;
+            data.CAC_Type = "events";
+            addCache(data, 3);
+            posted = true;
+            $("#brloading").addClass("hide");
+        }
+    });
+</script>

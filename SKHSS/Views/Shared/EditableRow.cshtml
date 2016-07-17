@@ -1,0 +1,27 @@
+﻿@using SKHSS.Models
+@model EditableRow
+@{
+    String namelist = "";
+    for (int i = 0; i < Model.Keys.Count; i++)
+    {
+        if (i < Model.Keys.Count - 1)
+        {
+            namelist += Model.Keys[i] + ",";
+        }
+        else
+        {
+            namelist += Model.Keys[i];
+        }
+    }
+}
+<div class="editable-row @(Model.ClickBtn?"clickbtn":"")">
+    <div class="row-left">
+        @Html.Raw(Model.Content)
+    </div>
+    <img class="edit" src="/Content/icons/edit.png" />
+    <div class="hide opts">
+        <img class="save" id="@Model.Number@namelist" src="/Content/icons/save.png"/>
+        <img class="close" src="/Content/icons/undo2.png"/>
+    </div>
+    <div class="clear"></div>
+</div>

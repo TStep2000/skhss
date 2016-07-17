@@ -1,0 +1,17 @@
+﻿@{Layout = null;}
+<script>
+    $(document).ready(function () {
+        $("#chars").text(255 - $("#FBK_Message").val().length);
+        $("#browser").text("Browser: " + $.browser.name + ", OS: " + $.os.name);
+        $("#FBK_Browser").val($.browser.name);
+        $("#FBK_OS").val($.os.name);
+        $("#FBK_BrowserString").val(navigator.userAgent);
+        $("#sub").click(function (e) {
+            $("#loadingarea").css("display", "block");
+            $("#sub").css("display", "none");
+        });
+        $('#FBK_Message').bind('input propertychange', function () {
+            $("#chars").text(255 - $(this).val().length);
+        });
+    });
+</script>

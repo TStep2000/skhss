@@ -1,0 +1,219 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model List<UserLogin>
+
+@{
+    ViewBag.Title = "ViewUsers";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.DisableBackspace = true;
+    ViewBag.SaveData = true;
+    List<String> tm = Definitions.Teams;
+    List<String> se = Definitions.Seasons;
+    List<String> sh = Definitions.ShirtSizes;
+    //ViewBag.OrigError = true;
+}
+@if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+{
+    <style scoped>
+        .Username, .Email, .Password, .RoleID {width:23%;width:calc(25% - 49px);}
+        .LastName, .FatherName, .MotherName {width:31%;width:calc(33% - 18px);}
+        .SeasonID {width:32%;width:calc(40% - 26px);}
+        @@media screen and (max-width: 760px) {
+            .userpush {height:90px!important;}
+            .Username, .Password, .RoleID, .Phone {width:45%;width:calc(50% - 55px);}
+            .Phone {margin-left:0px;}
+            .Email {width:100%;width:calc(100% - 108px);margin-left:40px;}
+            .Password, .Email {margin-top:5px;}
+            .Password {margin-left:40px;}
+            .saveimg {right:8px;}
+            .loginas {right:36px;}
+            .delete {right:64px;}
+            .FirstName {width:calc(100% - 220px);}
+        }
+    </style>
+}
+<h2 class="pagetitle">Users</h2>
+
+<div id="users" class="fillmiddle">
+    @{Int32 i = 0;}
+    @foreach (UserLogin login in Model)
+    {
+        if (Global.IsInRole(login, Definitions.MeRole) && !Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+        {
+            break;
+        }
+        Parent p = login.Parent;
+        //Int32 hr = Definitions.GetHighestRole();
+        <div id="o@(i)" class="Object user fancylist node" data-group="o@(i)" data-prefix="o@(i)">
+            <hr class="strike hide Delete" />
+            <input type="hidden" class="urid" value="@login.USR_RecordID" />
+            <div class="open btn openbtn @(p == null ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hide" src="/Content/icons/up.png"/>&nbsp;</div>
+            @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+            {
+                <div class="userid btn"><img src="/Content/icons/cog.png" /></div>
+                <fieldset class="ids hide"><legend>Record ID</legend><span style="position:absolute;height:18px;overflow:hidden;">@login.USR_RecordID</span></fieldset>
+                <fieldset class="ids hide"><legend>UserID</legend>@login.USR_UserID</fieldset>
+            }
+            <div class="userdata">
+                @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                {
+                    <fieldset class="Username"><legend>Username</legend><input id="Username" type="text" value="@login.USR_Username" /></fieldset>
+                }
+                else if(p != null)
+                {
+                    <fieldset class="LastName"><legend>Last Name</legend><input id="LastName" type="text" value="@p.PRT_LastName" /></fieldset>
+                }
+                @if (Global.HighestRole(User.Identity.Name) == Definitions.MeRole)
+                {
+                    <fieldset><legend>Role</legend><input class="RoleID" type="text" value="@login.USR_ROL_RoleID" /> <span>@Definitions.GetHighestRole(login.USR_ROL_RoleID)</span></fieldset>
+                    <fieldset><legend>Password</legend><input class="Password" type="password" value="@login.USR_Password" /></fieldset>
+                    <fieldset><legend>Phone</legend><input class="Phone" type="text" value="@Global.FancyPhone(login.USR_Phone)" /></fieldset>
+                    <fieldset><legend>Email</legend><input class="Email" type="text" value="@login.USR_Email" /></fieldset>
+                }
+                @if (Global.HighestRole(User.Identity.Name) == Definitions.PresRole)
+                {
+                    <fieldset><legend>Email</legend><input class="Email" type="text" value="@login.USR_Email" /></fieldset>
+                    <fieldset @(p!=null?"dd":"")"><legend>Role</legend><input class="RoleID" type="text" value="@login.USR_ROL_RoleID" /> <span>@Definitions.GetHighestRole(login.USR_ROL_RoleID)</span></fieldset>
+                    <fieldset @(p!=null?"dd":"")"><legend>Phone</legend><input class="Phone" type="text" value="@Global.FancyPhone(login.USR_Phone)" /></fieldset>
+                } 
+            </div>
+            @*<div class="saveimg btn" data-group="o@(i)" data-type="Object">
+                <img class="save" src="/Content/icons/save.png" alt="save" />
+                <img class="load hide" src="/Content/loading.gif" alt="loading"  />
+                <img class="check hide" src="/Content/icons/greenCheck.png" alt="green check"  />
+            </div>*@
+            <div class="imgbtn" data-group="o@(i)">
+                <img class="save" data-func="save" data-save-type="Object" src="/Content/icons/save.png" alt="save" />
+                <img class="load hide1 hide" src="/Content/loading.gif" alt="loading">
+                <img class="chk hide1 hide" src="/Content/icons/gCheck.png" alt="done">
+            </div>
+            @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+            {
+                <div class="loginas btn"><img src="/Content/icons/card.png" alt="login" /></div>
+                <div class="delete btn"><img src="/Content/icons/delete.png" alt="delete" /></div>
+            }
+            @if (p != null)
+            {
+            <div class="push userpush hide">&nbsp;</div>
+            <div class="clear">&nbsp</div>
+            <div class="Parent roledetails details hide node" data-prefix="o@(i)">
+                    <hr class="strike hide Delete" />
+                    <input class="prid" type="hidden" value="@p.PRT_RecordID" />
+                    <div class="openrole btn openbtn @(p.Children.Count == 0 ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hide" src="/Content/icons/up.png"/>&nbsp;</div>
+                    <div class="parentdata">
+                        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                        {
+                            <fieldset class="LastName"><legend>Last Name</legend><input class="LastName" type="text" value="@p.PRT_LastName" /></fieldset>
+                        }
+                        @if(p.PRT_FatherName!=""&&p.PRT_FatherName!=null){
+                        <fieldset class="FatherName @(p!=null?"dd":"")"><legend>Father Name</legend><input class="FatherName" type="text" value="@p.PRT_FatherName" /></fieldset>
+                        }
+                        @if(p.PRT_MotherName!=""&&p.PRT_MotherName!=null){
+                        <fieldset class="MotherName @(p!=null?"dd":"")"><legend>Mother Name</legend><input class="MotherName" type="text" value="@p.PRT_MotherName" /></fieldset>
+                        }
+                        <fieldset class="Address"><legend>Address</legend><input class="Address" type="text" value="@p.PRT_Address" /></fieldset>
+                        <fieldset class="City"><legend>City</legend><input class="City" type="text" value="@p.PRT_City" /></fieldset>
+                        <fieldset class="Zipcode"><legend>Zipcode</legend><input class="Zipcode" type="text" value="@p.PRT_Zipcode" /></fieldset>
+                    </div>
+                    @*<div class="new newchild btn"><img src="/Content/icons/add.png" /></div>*@
+                    @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                    {
+                        <div class="delete btn"><img src="/Content/icons/delete.png" /></div>
+                    }
+                    @if(p.Children.Count>0)
+                    {
+                        Int32 i2 = 0;
+                    <div class="push parentpush hide">&nbsp;</div>
+                    <div class="clear">&nbsp</div>
+                    <div class="moredetails details hide">
+                        @foreach (Child c in p.Children.OrderByDescending(m=>m.CLD_Birthdate).ToList())
+                        {
+                            List<Teammate> ts = c.Teammates.OrderBy(m=>m.TMT_Year).ThenBy(m=>m.TMT_SeasonID).ToList();
+                            <div class="child Child node" data-group="c@(i + "" + i2)" data-prefix="c@(i + "" + i2)">
+                                <hr class="strike hide Delete" />
+                                <input type="hidden" class="crid" value="@c.CLD_RecordID" />
+                                <div class="openteammate btn openbtn @(ts.Count == 0 ? "disabled" : "")"><img src="/Content/icons/down.png" /><img class="hide" src="/Content/icons/up.png"/>&nbsp;</div>
+                                <div class="childata">
+                                    <fieldset class="FirstName"><legend>First Name</legend><input id="c@(i + "" + i2)FirstName" type="text" value="@c.CLD_FirstName" /></fieldset>
+                                    <fieldset class="Birthdate"><legend>Birthdate</legend><input id="c@(i + "" + i2)Birthdate" type="text" value="@c.CLD_Birthdate.ToShortDateString()" /></fieldset>
+                                    @*<fieldset class="Gender"><legend>Gender</legend><input id="c@(i + "" + i2)Gender" type="text" value="@c.CLD_Gender" /><span>@(c.CLD_Gender ? "Female" : "Male")</span></fieldset>*@
+                                    <fieldset class="Gender"><legend>Gender</legend><select id="c@(i + "" + i2)Gender"><option value="false" @(c.CLD_Gender==false?"selected":"")>Male</option><option value="true" @(c.CLD_Gender==true?"selected":"")>Female</option></select></fieldset>
+                                    <fieldset class="Notes"><legend>Comments</legend><input id="c@(i + "" + i2)Notes" type="text" value="@c.CLD_Notes" /></fieldset>
+                                </div>
+                                @*<div class="new newteammate btn"><img src="/Content/icons/add.png" /></div>*@
+                                @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                                {
+                                    <div class="delete btn"><img src="/Content/icons/delete.png" /></div>
+                                }
+                                @if (ts.Count > 0)
+                                {
+                                    Int32 i3 = 0;
+                                <div class="push childpush hide">&nbsp;</div>
+                                <div class="clear">&nbsp</div>
+                                <div class="teammatedetails details hide">
+                                @foreach (Teammate t in ts)
+                                {
+                                    <div class="teammate Teammate node" data-group="t@(i + "" + i2 + "" + i3)" data-prefix="t@(i + "" + i2 + "" + i3)">
+                                        <hr class="strike hide Delete" />
+                                        <input type="hidden" class="trid" value="@t.TMT_RecordID" />
+                                        <div class="teammatedata">
+                                            @*<fieldset class="TeamID"><legend>Team</legend><input id="t@(i + "" + i2 + "" + i3)Team" type="text" value="@t.TMT_TEM_TeamID" /><span>@t.Team.TEM_TeamName</span></fieldset>
+                                            <fieldset class="Year"><legend>Year</legend><input id="t@(i + "" + i2 + "" + i3)Year" type="text" value="@t.TMT_Year" /></fieldset>
+                                            <fieldset class="SeasonID"><legend>Season</legend><input id="t@(i + "" + i2 + "" + i3)Season" type="text" value="@t.TMT_SEA_SeasonID" /><span>@Definitions.Seasons[t.TMT_SEA_SeasonID]</span></fieldset>
+                                            <fieldset class="ShirtID"><legend>Shirt</legend><input id="t@(i + "" + i2 + "" + i3)Shirt" type="text" value="@t.TMT_SRT_ShirtID" /><span>@(t.TMT_SRT_ShirtID.HasValue ? Definitions.ShirtSizes[t.TMT_SRT_ShirtID.Value] : "")</span></fieldset>*@
+                                            <fieldset class="TeamID"><legend>Team</legend><select id="t@(i + "" + i2 + "" + i3)TeamID">
+                                                @for (int l = 0; l < tm.Count; l++ )
+                                                {
+                                                    <option value="@l" @(l == t.TMT_TEM_TeamID ? "selected" : "")>@tm[l]</option>
+                                                }
+                                            </select></fieldset>
+                                            <fieldset class="Year"><legend>Year</legend><select id="t@(i + "" + i2 + "" + i3)Year">
+                                                @for (int k = DateTime.Now.Year - 10; k <= DateTime.Now.Year + 1; k++)
+                                                {
+                                                    <option value="@k" @(k == t.TMT_Year ? "selected" : "")>@k</option>
+                                                }
+                                            </select></fieldset>
+                                            <fieldset class="SeasonID"><legend>Season</legend><select id="t@(i + "" + i2 + "" + i3)SeasonID">
+                                                @for (int l = 0; l < se.Count; l++ )
+                                                {
+                                                    <option value="@l" @(l == t.TMT_SeasonID ? "selected" : "")>@se[l]</option>
+                                                }
+                                            </select></fieldset>
+                                            <fieldset class="ShirtID"><legend>Shirt</legend><select id="t@(i + "" + i2 + "" + i3)ShirtID">
+                                                @for (int l = 0; l < sh.Count; l++ )
+                                                {
+                                                    <option value="@l" @(l == t.TMT_ShirtID ? "selected" : "")>@sh[l]</option>
+                                                }
+                                            </select></fieldset>
+                                            @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                                            {
+                                             <fieldset class="Accepted"><legend>Accepted</legend><input id="t@(i + "" + i2 + "" + i3)Accepted" type="text" value="@t.TMT_Accepted" /></fieldset>
+                                            }
+                                        </div>
+                                        @*<fieldset class="PicID"><legend>PicID</legend><input type="text" value="@t.TMT_PIC_RecordID" /></fieldset>*@
+                                        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+                                        {
+                                            <div class="delete btn"><img src="/Content/icons/delete.png" /></div>
+                                        }
+                                        <div class="push">&nbsp;</div>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                        i3++;
+                                }
+                                </div>
+                                }
+                                <div class="clear"></div>
+                            </div>
+                                i2++;
+                        }
+                        <div class="clear"></div>
+                    </div>
+                    }
+                <div class="clear"></div>
+            </div>
+            }
+            <div class="clear"></div>
+        </div>
+        i++;
+    }
+</div>

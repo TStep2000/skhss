@@ -1,0 +1,45 @@
+﻿@using SKHSS.Models
+@using SKHSS.Models.PageModels
+@using SKHSS.Helpers
+@model IEnumerable<Parent>
+@{
+    ViewBag.Title = "Registrations";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Script1 = "jquery.maskedinput.min.js";
+    ViewBag.MaxWidth = "1024px";
+    UserLogin ul = Data.GetLogin(User.Identity.Name);
+    ViewBag.Me = Global.IsInRole(ul, Definitions.MeRole);
+    ViewBag.SaveData = true;
+    List<Parent> ureg = new List<Parent>();
+}
+<h2 class="page-title fl-start">Registrations for @Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear</h2>
+<div class="fl-end fncybtn addact">Add Account</div>
+<div class="clear"></div>
+<div class="newact">
+    @Html.Partial("RegistrationsPartials/AccountPart")
+</div>
+<div class="newreg">
+    @Html.Partial("RegistrationsPartials/RegistrationPart")
+</div>
+<div id="registrations">
+@using(Html.BeginForm())
+{
+    foreach (Parent p in Model)
+    {
+        Order o = Data.GetCurrentOrder(p);
+        if (o != null && o.Payments.Count != 0) {
+            <text>@Html.Partial("RegistrationsPartials/AdminRegistration", p)</text>
+        } else {
+            ureg.Add(p);
+        }
+    }
+    <br />
+    <h2>Unregistered</h2>
+    <div class="unreg">
+    @foreach (Parent p in ureg)
+    {
+        <text>@Html.Partial("RegistrationsPartials/AdminRegistration", p)</text>
+    }
+    </div>
+}
+</div>

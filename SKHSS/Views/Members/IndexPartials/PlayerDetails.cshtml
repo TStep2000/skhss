@@ -1,0 +1,130 @@
+﻿@using SKHSS.Helpers
+@using SKHSS.Helpers.HTMLObjects
+@using SKHSS.Models
+@{
+    Parent p = Data.GetLogin(User.Identity.Name).Parent;
+    Order o = new Order();
+    if (p != null)
+    {
+        o = Data.GetCurrentOrder(p);
+    }
+    if (o == null)
+    {
+        o = new Order();
+    }
+}
+@*
+<div class="saveimg btn" data-group="o@(i)" data-type="Object"><img class="save" src="/Content/icons/save.png" alt="save" /><img class="load hide" src="/Content/loading.gif" alt="loading"  /><img class="check hide" src="/Content/icons/greenCheck.png" alt="green check"  /></div>
+<span class="imgbtn fl-end" data-group="Child" data-status="closed"><img class="edit" src="/Content/icons/edit.png"/><img class="hide cancel" src="/Content/icons/undo.png"/><img data-save-type="Child" class="hide save" src="/Content/icons/save.png"/></span>
+*@
+<h2>Player Details @(new EditLoadSaveBtn().create("Child", "Child","inline"))</h2>
+
+@if (Global.IsInRole(Model.UserLogin,Definitions.ParentRole))
+{
+    <div id="childcontainer">
+    <div class="accountinner" id="registeredChildDetails">
+        <div class="childrow">
+            <span>Player Name</span>
+            <span>Gender</span>
+            <span>Age</span>
+            <span>Team</span>
+            <span>Comments</span>
+        </div>
+        @{List<Child> cs = new List<Child>();}
+        @for (int i = 0; i < Model.ChildrenByBirthdate.Count; i++)
+        {
+            Child c = Model.ChildrenByBirthdate[i];
+            Teammate t = Data.GetCurrentTeammate(c);
+            if (t != null){
+            <div class="childrow Child reg" id="c@(i)" data-prefix="c@(i)" data-status="closed" data-group="Child" data-also="Teammate">
+                <span>
+                    @(new EditableField().create("c" + i, 0, "FirstName", c.CLD_FirstName,"text","","",new List<string>{"First Name"}))
+                    @(new EditableField().create("c" + i, 1, "LastName", c.CLD_LastName,"text","","",new List<string>{"Last Name"}))
+                </span>
+                <span>@(new EditableField().create("c" + i, 2, "Gender", (t.Child.CLD_Gender?"1":"0"), "select", (t.Child.CLD_Gender?"F":"M"), "", new List<String> {"M", "F"}))</span>
+                @if(!Global.OrderComplete(o)){
+                    <span>@(new EditableField().create("c" + i, 3, "Birthdate", c.CLD_Birthdate.ToShortDateString(), "text", "<b>" + Global.Age(c.CLD_Birthdate).ToString() + "</b>"))</span>
+                    if (Global.IsInRoleOrHigher(Model.UserLogin,Definitions.PresRole)){
+                    <span>@(new EditableField().create("c" + i, 4, "TeamID", t.TMT_TEM_TeamID.ToString(), "select", t.Team.TEM_TeamName, "tem", Definitions.Teams))</span>
+                    }else{
+                    <span><a href="/Members/Team/@t.TMT_TEM_TeamID">@t.Team.TEM_TeamName</a></span>
+                    }
+                } else{
+                    <span><b>@Global.Age(c.CLD_Birthdate)</b></span>
+                    <span><a href="/Members/Team/@t.TMT_TEM_TeamID">@t.Team.TEM_TeamName</a></span>
+                }
+                <span>
+                    <div class="imgbtn medical">
+                        <img data-page="1" class="down" src="/Content/icons/down.png" width="16" />
+                        <div class="hide1 1 hide">
+                            <img data-page="0" class="up" src="/Content/icons/up.png" width="16" />
+                        </div>
+                    </div>
+                </span>
+                <input type="hidden" class="crid" value="@c.CLD_RecordID" />
+                <input type="hidden" class="trid" value="@t.TMT_RecordID" />
+            </div>
+            <div class="childrow2 Child2" data-status="closed" data-group="Child" style="height:auto;">
+                <div>
+                    <div>
+                        @(new EditableField().create("c" + i, 5, "Notes", c.CLD_Notes,"multiline"))
+                    </div>
+                </div>
+            </div>
+            }else{
+                cs.Add(c);
+            }
+        }
+        @if(cs.Count>0){
+        <div class="childrow notregs">
+            <span>
+                <span>
+                    Not Registered
+                </span>
+            </span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        }
+        @for (int i = 0; i < cs.Count; i++)
+        {
+            <div class="childrow Child reg" id="cu@(i)" data-prefix="cu@(i)" data-status="closed" data-group="Child">
+                <span>
+                    @(new EditableField().create("cu" + i, 0, "FirstName", cs[i].CLD_FirstName,"text","","",new List<string>{"First Name"}))
+                    @(new EditableField().create("cu" + i, 1, "LastName", cs[i].CLD_LastName,"text","","",new List<string>{"Last Name"}))
+                </span>
+                
+                <span>@(new EditableField().create("cu" + i, 2, "Gender", (cs[i].CLD_Gender?"1":"0"), "select", (cs[i].CLD_Gender?"F":"M"), "", new List<String> {"M", "F"}))</span>
+                <span><b>@(new EditableField().create("cu" + i, 3, "Birthdate", cs[i].CLD_Birthdate.ToShortDateString(), "text", "<b>" + Global.Age(cs[i].CLD_Birthdate).ToString() + "</b>"))</b></span>
+                <span>None</span>
+                <span>
+                    <div class="imgbtn medical">
+                        <img data-page="1" class="down" src="/Content/icons/down.png" width="16" />
+                        <div class="hide1 1 hide">
+                            <img data-page="0" class="up" src="/Content/icons/up.png" width="16" />
+                        </div>
+                    </div>
+                </span>
+                <input type="hidden" class="crid" value="@cs[i].CLD_RecordID" />
+            </div>
+            <div class="childrow2 Child2" style="height:auto;">
+                <div>
+                    <div>
+                        @(new EditableField().create("cu" + i, 4, "Notes", cs[i].CLD_Notes,"multiline"))
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @*<div class="accountinner" id="childDetails">
+        @for (int i = 0; i < children.Count; i++)
+        {
+            String childContent = "<input type='hidden' value='" + children[i].CLD_RecordID + "'/>" + Html.Partial("Editable", new Editable(i + "CLD_FirstName", children[i].CLD_FirstName)).ToHtmlString() + "<br/>";
+            @Html.Partial("EditableRow", new EditableRow(new List<String> { i + "CLD_FirstName" }, childContent, (i + 1)));
+        }
+    </div>*@
+    </div>
+}

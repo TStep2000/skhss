@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "DeletePics";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#delete").on("click", function (e) {
+            e.preventDefault();
+            alert(":P");
+            $.ajax({ type: "POST", url: "DeleteAllPics" }).done(function () {
+                alert("it is finished");
+            });
+        });
+    });
+</script>
+<h2>DeletePics</h2>
+@using(Html.BeginForm())
+{
+    <a id="delete" href="#">Delete ALL Pictures</a><br />
+}
+(Only use in case of a dire emergency!(or if it's just your pictres on there))

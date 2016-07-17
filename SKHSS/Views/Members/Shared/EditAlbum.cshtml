@@ -1,0 +1,334 @@
+﻿@model SKHSS.Models.Album
+@{
+    ViewBag.Title = "Album";
+    Layout = "";
+}
+
+<style>
+    #membercontent{padding-right:0;}
+    #fileupload{margin-top:5px;}
+
+    .uploadfiles
+    {
+        z-index:500;
+        border-bottom:1px solid #000;
+        box-shadow: 0 5px 10px -5px #000;
+        -moz-box-shadow: 0 5px 10px -5px #000;
+        -webkit-box-shadow: 0 5px 10px -5px #000;
+        margin:6px;
+        margin-top:38px;
+    }
+    #albumtitle{display:block;margin-top:5px;text-align:center;font-size:18px;width:200px;}
+    #albumdesc{transition:0;top:43px;height:43px;width:calc(100% - 325px);}
+    #addImages
+    {
+        float:left;
+        padding:4px;
+        /*width:78px;*/
+        position:relative;
+        width:150px;
+        margin: 5px auto;
+        font-size:18px;
+    }
+    #currentfile
+    {
+        opacity:0;
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        cursor:pointer;
+    }
+    #currentfile::-webkit-file-upload-button { cursor:pointer; }
+    #savealbum
+    {
+        float:right;
+        position:relative;
+        width:150px;
+        padding:4px;
+        margin-top: 5px;
+        font-size:18px;
+    }
+    #error{position:absolute;right:6px;top:6px;}
+
+    #allpics{overflow-y: scroll;-webkit-overflow-scrolling: touch;height:calc(100% - 104px);}
+    .albumpic
+    {
+        position:relative;
+        padding:10px 5px 5px 5px;
+        min-height:150px;
+        margin-left:6px;
+        margin-bottom:5px;
+        width:calc(33% - 5px);
+        float:left;
+    }
+    .albumpic:last-of-type{margin-bottom:0;}
+    .albumpic .image {
+        width:100%;
+        float:left;
+        height:150px;
+        overflow:hidden;
+        margin-bottom:5px;
+    }
+    .albumpic img
+    {
+        width:100%;
+        float:left;
+    }
+    .albumpic:hover .delete {
+        display:block;
+    }
+    .rope
+    {
+        width:100%;
+    }
+    .rope .fncy-box{border-color:#888;}
+    .team{margin-left:5px;margin-bottom:5px;width:calc(100% - 10px);float:left;}
+    .rope .caption{float:left;margin-bottom:5px;width:100%;height:100px;}
+    .delete {
+        display:none;
+        position:absolute;
+        left:10px;
+        line-height:17px;
+        top:15px;
+        height:22px;
+        width:20px;
+        color:white;
+        text-shadow:0px 0px 2px #000;
+        user-select:none;
+        cursor:pointer;
+        padding-left:3.5px;
+        background-color:#fff;
+        font-size:18px;
+        font-weight:bolder;
+        border-radius:100%;
+        border:1px solid #000;
+    }
+    .delete:hover {text-shadow:0px 0px 4px #000;}
+    #nope {float:right;width:50px;}
+    #yup {float:left;width:50px;}
+    .ok {float:none !important;width:auto !important;}
+    @@media screen and (-webkit-min-device-pixel-ratio: 3.0) and (max-width: 980px) and (orientation:portrait), screen and (max-width: 600px) {
+        #addImages,#savealbum {
+            width:100px;
+            font-size:14px;
+        }
+        #albumdesc {
+            height:33px;
+            width:calc(100% - 225px);
+        }
+        #addImages span, #savealbum span {
+            line-height:25px;
+        }
+        .albumpic {
+            width:calc(50% - 10px);
+        }
+        .albumpic .image {
+            height:100px;
+        }
+        #black_overlay {
+            display:none;
+        }
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var index = 0;
+        var news = 0;
+        var imagedata = [];
+        var errors = [];
+        $('#currentfile').on("change", function () {
+            $.each(this.files, function () {
+                var file = this;
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var result = event.target.result;
+                    var name = file.name;
+                    news++;
+                    $("#newpics").append("" +
+                    '<div class="albumpic fancylist new" id="a' + news + '">' +
+                    '   <div class="delete" id="' + news + '">x</div>' +
+                    '   <input class="dataid" type="hidden" value=""/>' +
+                    '   <div class="image">' +
+                    '       <img alt="' + file.name + '" src="' + result + '" />' +
+                    '   </div>' +
+                    '   <div class="rope">' +
+                    '       <textarea cols="40" rows="4" class="caption fncy-box" placeholder="Picture Caption"></textarea>' +
+                    '       <select class="team"><option selected="selected" value="-1">None</option><option value="0">PeeWees</option><option value="1">Middlers</option><option value="2">Intermediates</option><option value="3">Juniors</option><option value="4">Seniors</option><option value="5">Girls Team</option></select>' +
+                    '   </div>' +
+                    '   <div style="clear:both;"></div>' +
+                    '</div>');
+                    $("#" + news).on("click", deleteClick);
+                }
+                reader.readAsDataURL(file);
+                //reader.onprogress = testing;
+            });
+        });
+        $("#savealbum").on("click", function () {
+            savetoalbum("@Model.ALB_RecordID");
+        });
+        $(".delete").off("click");
+        $(".delete").on("click", deleteClick);
+        function savetoalbum(data) {
+            $.each($(".albumpic"), function (value, index) {
+                imagedata.push({ Filename: $(this).find("img").attr("alt"), Caption: $(this).find(".caption").val(), Team: $(this).find(".team").val(), PictureData: $(this).find("img").attr("src"), PIC_RecordID: $(this).attr("id").substr(1) });
+            });
+            var albumdata = { ALB_RecordID: data, Title: $("#albumtitle").val(), Description: $("#albumdesc").val() }
+            var str = JSON.stringify(albumdata);
+            trace("start album save");
+            $.post("/Members/UploadAlbum",
+            {
+                data: str,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            console.log(percentComplete);
+                        }
+                    }, false);
+                    return xhr;
+                }
+            },
+            function (data) {
+                trace("album saved: " + data);
+                if (data.indexOf("!") == 0) {
+                    errors.push(data);
+                }
+                recursiveUpload(data, index++);
+                //recursiveUpload(data, index++);
+            });
+        }
+        function recursiveUpload(albid, lowindex) {
+            if (lowindex < imagedata.length) {
+                trace(lowindex);
+                var str = JSON.stringify(imagedata[lowindex]);
+                if (str.length < 1100000) {
+                    $.post("/Members/UploadPicture",
+                    {
+                        data: str,
+                        name: albid,
+                        xhr: function () {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function (evt) {
+                                if (evt.lengthComputable) {
+                                    var percentComplete = evt.loaded / evt.total;
+                                    console.log(percentComplete);
+                                }
+                            }, false);
+                            return xhr;
+                        }
+                    },
+                    function (data) {
+                        trace(data);
+                        if (data.indexOf("!") == 0) {
+                            errors.push(data);
+                        }
+                        recursiveUpload(albid, index++);
+                    });
+                }
+                else {
+                    trace("error");
+                    errors.push("!Size Error: /" + imagedata[lowindex].Filename);
+                    recursiveUpload(albid, index++);
+                }
+            }
+            else {
+                lowindex = 0;
+                trace("all pictures saved");
+                $(window).trigger({ type: "closelightbox", errors: errors });
+            }
+        }
+        function trace(words) {
+            $("#error").html(words);
+        }
+        function finalmessage(data) {
+            if ($("#finalmessage").length > 0) {
+                $("#finalmessage").remove();
+            }
+            $("body").append("<div id='finalmessage'>" + data + "</div>");
+            $("#finalmessage").css("top", "calc(50% - " + ($("#finalmessage").height() / 2) + "px)");
+            $("#nope").on("click", closefinalmessage);
+        }
+        function closefinalmessage() {
+            $("#finalmessage").css("opacity", 0);
+            setTimeout(function () {
+                $("#finalmessage").remove();
+            }, 300);
+        }
+        function deleteClick() {
+            finalmessage("Are you sure you want to delete this picture?<br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+            $("#yup").addClass($(this).attr("id")).on("click", deletepicture);
+            $("#nope").on("click", closefinalmessage);
+        }
+        function deletepicture() {
+            var id = $("#yup").attr("class").substr(8);
+            var canc = false;
+            if (!$("#a" + id).hasClass("new")) {
+                $.post("/Members/DeletePicture", { id: id }, function (data) {
+                    if (data[0] == "!") {
+                        finalmessage("Oh, no! there was an error!<br/>" + data.substr(1) + " <div class='fncybtn ok' id='nope'>OK</div>");
+                        canc = true;
+                    }
+                    else if (data[0] == "~") {
+                        if (data[1] == "c") {
+                            finalmessage("This picture is being used as a profile picture, if you delete it, they will not be able to use it anymore. Continue? <br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+                        }
+                        else {
+                            finalmessage("This picture is being used as a primary team picture, if you delete it, they will not be able to use it anymore. Continue? <br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+                        }
+                        canc = truel
+                        $("#yup").on("click", function () {
+                            $.post("/Members/DeletePicture", { id: id, over: true }, success);
+                            $("#a" + id).remove();
+                        });
+                    }
+                    else {
+                        success();
+                        canc = false;
+                    }
+                    $("#nope").on("click", closefinalmessage);
+                });
+            }
+            if (!canc) {
+                $("#a" + id).remove();
+                closefinalmessage();
+            }
+        }
+        function success(d) {
+            finalmessage("Picture sucessfuly deleted! <div class='fncybtn ok' id='nope'>OK</div>");
+            setTimeout(closefinalmessage, 1500);
+        }
+    });
+</script>
+
+<input id="albumtitle" type="text" class="hcenter fncy-box" placeholder="Album Title" value="@((Model != null)?Model.ALB_Title:"")" />
+<textarea id="albumdesc" class="hcenter fncy-box" placeholder="Album Description">@((Model != null)?Model.ALB_Description:"")</textarea>
+
+<div id="error"></div>
+<div id='closelightbox' class='fncybtn'>Close</div>
+<form action="/Members/Upload" enctype="multipart/form-data" class="uploadfiles" method="post" novalidate="novalidate">
+    <div id="addImages" class="fancybtn2">
+        <input type="file" multiple="true" name="file" id="currentfile" accept="image/*">
+        <span>
+            Add Images
+        </span>
+    </div>
+    <div id="savealbum" class="fancybtn2">
+        <span>Save Album</span>
+    </div>
+    <div style="clear:both;"></div>
+</form>
+<div id="allpics">
+    <div id="newpics">
+        @Html.EditorFor(m => m.Pictures)
+        @*for (int i = 0; i < Model.Pictures.Count; i++)
+        {
+            <text>
+                @Html.EditorFor(m=>m.Pictures[i]
+            </text>
+        }*@
+    </div>
+</div>

@@ -1,0 +1,72 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Coach> chs = new List<Coach>();
+    if (all)
+    {
+        chs = Data.GetCHs().ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            case "p":
+                chs = Data.GetCHs(m => m.CCH_RecordID == Model).ToList();
+            break;
+            case "ul":
+            chs = Data.GetCHs(m => m.CCH_USR_RecordID == Model).ToList();
+            break;
+            case "tr":
+            //os.Add(Data.GetPM(m => m.PMT_IPN_TransactionID == Model));
+            break;
+            default:
+            chs = Data.GetCHs(m => m.CCH_RecordID == Model).ToList();
+            break;
+        }
+    }
+}
+@foreach (Coach ch in chs)
+{
+<div class="fancylist ch @ch.CCH_RecordID" data-group="@ch.CCH_RecordID" data-type="ch" id="@ch.CCH_RecordID">
+    <input type="hidden" class="chrid" value="@ch.CCH_RecordID" />
+    <span class="title"><b>Coach</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@ch.CCH_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@ch.CCH_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Coach" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Team">Team</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>FirstName</legend><input type="text" value="@Global.ParentName(ch, false, false, true)" /></fieldset>
+        <fieldset><legend>LastName</legend><input type="text" value="@ch.UserLogin.Parent.PRT_LastName" /></fieldset>
+        <fieldset class="fk highlight" data-id="@ch.CCH_USR_RecordID" data-type="ul"><legend>User</legend><span>@ch.UserLogin.USR_Username</span></fieldset>
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@ch.CCH_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>UserLoginID</legend><input type="text" class="UserLoginID" value="@ch.CCH_USR_RecordID" /></fieldset>
+        <fieldset><legend>PRTID</legend><input type="text" class="PRTID" value="@ch.CCH_PRTID" /></fieldset>
+        <fieldset><legend>PositionID</legend><input type="text" class="PositionID" value="@ch.CCH_PositionID" /></fieldset>
+        <fieldset><legend>TeamID</legend><input type="text" class="TeamID" value="@ch.CCH_TEM_TeamID" /></fieldset>
+        <fieldset><legend>PicID</legend><input type="text" class="PicID" value="@ch.CCH_PIC_RecordID" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (chs.Count == 0)
+{
+    <text>none</text>
+}

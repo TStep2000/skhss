@@ -1,0 +1,278 @@
+﻿@model SKHSS.Models.ObjectModel
+
+@{
+    ViewBag.Title = "Registration";
+    ViewBag.Style1 = "bootstrap.min.css";
+    ViewBag.Style2 = "RegistrationForm.css";
+    ViewBag.Script1 = "jquery.maskedinput.min.js";
+    ViewBag.Script2 = "jquery-ui-1.8.24.min.js";
+    ViewBag.Script3 = "bootstrap.min.js";
+    ViewBag.DisableBackspace = true;
+    //ViewBag.ScrollPage = true;
+    ViewBag.SaveData = true;
+}
+<style>
+    #content,#container,#middle{min-height:500px;}
+    #registration {text-align:center;padding-bottom:5px;}
+    .Object {max-width:500px;display:inline-block;margin:0 auto;}
+    h2 {text-align:left;margin-left:5px;margin-bottom:20px;}
+    .phname
+    {
+        position:absolute;
+        top:-9px;
+        left:13px;
+        border-top:1px solid #999;
+        border-left:1px solid #999;
+        border-right:1px solid #999;
+        height:9px;
+        padding:0 0px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        white-space:nowrap;
+        z-index:10;
+    }
+    .phname span
+    {
+        font-size:12px;
+        line-height:12px;
+        position:relative;
+        padding:0px 3px;
+        top:0px;
+        background-color:#fafafa;
+    }
+    /*.text-box {background:#eee;border:1px solid #bbb;}*/
+    .row {margin-top:10px;}
+    .row:nth-of-type(3) {margin-top:15px;}
+    .row:nth-of-type(6) {margin-top:15px;}
+    .row:after {content:'.';visibility:hidden;clear:both;height:0;display:block;}
+    ::-webkit-input-placeholder {color:#999;}
+    :-moz-placeholder {color:#999;}
+    ::-moz-placeholder {color:#999;}
+    :-ms-input-placeholder {color:#999;}
+    .center-page {display:table;height:100%;margin:0 auto;}
+    #registration {display:table-cell;vertical-align:middle;}
+    #submitting {display:none;margin-right:5px;}
+    .top-right-message {position:absolute;right:7%;top:5px;}
+    form .error {float:left;text-align:left;}
+    @@media screen and (max-width: 460px) {
+        .top-right-message{display:none;}
+        #content,#container,#middle{min-height:460px;}
+    }
+    @@media screen and (max-width: 365px) {
+        .email {width: calc(100% - 85px);}
+    }
+</style>
+<style>
+    #@ViewBag.ErrorID {border:1px solid red!important;}
+</style>
+<div class="top-right-message">If you already have an account click here to login <img height="20" src="../../Content/arrowsm.png" /></div>
+<div class="center-page">
+@using (Html.BeginForm("Registration", "Home", FormMethod.Post, htmlAttributes: new { @id = "registration", @autocomplete = "off" }))
+{
+    <div @*id="registration-form"*@ class="Object">
+        <h2>Account Registration</h2>
+        <div class="parentobj" id="Parent_">
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.FatherName, new { @class = "text-box", placeholder = "Father's First Name" })
+            </div>
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.MotherName, new { @class = "text-box", placeholder = "Mother's First Name" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                @Html.TextBoxFor(m => m.Parent.LastName, new { @class = "text-box req", placeholder = "Family Name" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                @Html.TextBoxFor(m => m.Parent.Address, new { @class = "text-box req", placeholder = "Address" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-8">
+                @Html.TextBoxFor(m => m.Parent.City, new { @class = "text-box req", placeholder = "City" })
+            </div>
+            <div class="box box-4">
+                @Html.TextBoxFor(m => m.Parent.Zipcode, new { @class = "text-box req", placeholder = "Zip code" })
+            </div>
+        </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                @Html.TextBoxFor(m => m.Phone, new { @class = "text-box req", placeholder = "Phone" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12 email">
+                @Html.TextBoxFor(m => m.Email, new { @class = "text-box", placeholder = "Email" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Username, new { @class = "text-box req", placeholder = "Username" })
+            </div>
+            <div class="box box-6">
+                @Html.PasswordFor(m => m.Password, new { @class = "text-box req", placeholder = "Password" })
+            </div>
+        </div>
+        <div class="row last" >
+            <div class="box box-8">
+                <span class="error @(ViewBag.ErrorText==null?"hide":"")">@(ViewBag.ErrorText!=null?"Error:":"") @ViewBag.ErrorText</span>
+            </div>
+            <div id="chk" class="box box-4">
+                <input type="checkbox" id="show" value="true" /> <label for="show">Show Password</label>
+            </div>
+        </div>
+        <div id="submitcont">
+            <img id="submitting" src="/Content/loading2.gif" />
+            <input type="submit" id="Object" value="Submit"/>
+        </div>
+    </div>
+}
+</div>
+@section PageScript{
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        //Init
+        $("#chk").css("display","block");
+        $("#qu").tooltip({
+            html: true,
+            trigger: "hover click",
+            title: "This will allow you to see your password to make sure you entered it correctly"
+        });
+        $("#FatherName").focus();
+        $("#Phone").mask("(999) 999-9999");
+        $(".date").mask("99/99/9999");
+        if ($("#FatherName").is(":focus")) {
+            $("#FatherName").removeAttr("placeholder")
+            $(".phname[name='FatherName']").css("display", "block");
+        }
+        $("#show").click(function (e) {
+            passchecked = true;
+            $(this).is(':checked') ? $("#Password").attr("type", "text") : $("#Password").attr("type", "password");
+        });
+            //Placeholder functions
+        $("input[placeholder]").each(function (e) {
+            $(this).after("<div class='phname' name='" + $(this).attr("id") + "' style='display:none;'><span>" + $(this).attr("placeholder") + "</span></div>");
+        });
+        $("input[placeholder]").focus(function (e) {
+            $(this).removeAttr("placeholder")
+            $(".phname[name='" + $(this).attr("id") + "']").css("display", "block");
+        });
+        $("input[placeholder]").blur(function (e) {
+            $(this).attr("placeholder", $(".phname[name='" + $(this).attr("id") + "'] span").text())
+            $(".phname[name='" + $(this).attr("id") + "']").css("display", "none");
+        });
+
+        //Submit
+        var noemail = false;
+        $(document).on("cancelsave", function () {
+            $("#Object").css("display", "block");
+            $("#submitting").css("display", "none");
+        });
+        $(document).on("save", function () {
+            //$.post("/Forum/formsauth/register", { "username": $("#Username").val(), "password": $("#Password").val(), "confirmPassword": $("#Password").val(), "email": $("#Email").val(), "agreeTerms": true }, function () {
+            //window.location = "/Members/";
+            //});
+            if (!noemail) {
+                $(".center-page form").remove();
+                $(".center-page").append("<div id='registration'>Before you can login, you must activate your account.<br/> An email with activation instructions has been sent to the email address you provided.</div>");
+            }
+            else {
+                $(".center-page form").remove();
+                $(".center-page").append("<div id='registration'>The administrator will look over your application and be in contact soon.</div>");
+            }
+        });
+        $(document).on("ajaxfault", function () {
+            $("#Object").css("display", "block");
+            $("#submitting").css("display", "none");
+        });
+        $("#registration").submit(function (e) {
+            e.preventDefault();
+            var str = getModel($(".Object"));
+            $("#Object").css("display", "none");
+            $("#submitting").css("display", "block");
+            if ($("#Email").val() == "") {
+                noemail = true;
+            }
+            else {
+                noemail = false;
+            }
+            //saveDataObject(str, "Object", "");
+        });
+
+        //(hopefully)Unobtrusive validation
+        $("#Username").blur(Check);
+        $("#Email").blur(Check);
+        $("#Password").blur(Check);
+        $("#Zipcode").blur(Check);
+        function Check() {
+            var id = $(this).attr('id');
+            if ($(this).val().length > 0) {
+                $.post("/Home/Check" + id, { id: $(this).val() }, Checked);
+            }
+            else {
+                $(this).tooltip('hide');
+                $(this).removeClass("input-validation-error")
+            }
+        }
+        function Checked(data) {
+            var response = data;
+            var id = data.slice(0, response.indexOf("-"));
+            response = response.slice(response.indexOf("-") + 1, response.length);
+            var obj = $("#" + id);
+            if (response == "taken") {
+                obj.addClass("input-validation-error")
+                obj.addClass("check-error")
+                obj.tooltip('destroy');
+                obj.tooltip({
+                    html: true,
+                    trigger: "manual",
+                    title: "This " + id + " is already registered"
+                });
+                obj.tooltip("show");
+            }
+            else if (response == "nomatch") {
+                obj.addClass("input-validation-error")
+                obj.addClass("check-error")
+                obj.tooltip('destroy');
+                if (id == "Username") {
+                    obj.tooltip({
+                        html: true,
+                        trigger: "manual",
+                        title: "Username must be between 5-15 characters, with no special characters",
+                    });
+                } else if (id == "Password") {
+                    obj.tooltip({
+                        html: true,
+                        trigger: "manual",
+                        title: "Password must be between 5-15 characters"
+                    });
+                } else if (id == "Email") {
+                    obj.tooltip({
+                        html: true,
+                        trigger: "manual",
+                        title: "Please enter a valid email address"
+                    });
+                } else if (id == "Zipcode") {
+                    obj.tooltip({
+                        html: true,
+                        trigger: "manual",
+                        title: "Please enter a 5 digit zip code",
+                        container: "#leftside"
+                    });
+                }
+                obj.tooltip("show");
+            }
+            else {
+                obj.tooltip('hide');
+                obj.removeClass("check-error")
+                obj.removeClass("input-validation-error")
+            }
+        }
+        
+    });
+</script>
+}

@@ -1,0 +1,33 @@
+﻿@using SKHSS.Helpers
+@{
+    Layout = null;
+    
+    List<String> tm = Definitions.Teams;
+    List<String> se = Definitions.Seasons;
+    List<String> sh = Definitions.ShirtSizes;
+}
+<style scoped>
+    .undoext {width:20px!important; margin-right:5px;}
+</style>
+<div class="lightbox reg fancylist hide Parent" id="regbox">
+    <input type="hidden" class="prid" />
+    <div class="fncybtn fl-end close">Close</div>
+    <h3>Players</h3>
+    <div class="row last">
+        <div class="childcontainer">
+            
+        </div>
+        <img class="loading" alt="loading" src="/Content/loading2.gif" />
+        <div class="clear"></div>
+        <div class="fncybtn addextchild fl-start">Add Existing</div>
+        <div class="fncybtn addnewchild fl-start">Add New</div>
+        <img class="undoext imgbtn hide fl-start" alt="undo" src="/Content/icons/undo.png" />
+        <select class="extchild hide fl-start">
+        </select>
+        <img class="loading hide" alt="loading" src="/Content/loading2.gif" />
+    </div>
+    <div class="submitcont">
+        <img class="submitting hide fl-end" src="/Content/loading2.gif" />
+        <div class="fncybtn fl-end regsub">Save</div>
+    </div>
+</div>

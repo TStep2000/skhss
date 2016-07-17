@@ -1,0 +1,344 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model SKHSS.Models.PageModels.RegisterPageModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.SaveData = true;
+    ViewBag.DisableBackspace = true;
+    //Html.EnableClientValidation(false);
+    Int32 n = 0;
+    Int32 i = 0;
+    Boolean nul = ViewBag.nul;
+    Boolean paid = ViewBag.Paid;
+    Int32 tcur = ViewBag.tcur;
+    Int32 tpaid = ViewBag.tpaid;
+    Int32 treg = ViewBag.treg;
+    Int32 tgrand = ViewBag.tgrand;
+}
+@if (Request.Url.ToString().Contains("http://localhost:1994/"))
+{
+    <text>
+    @section MePanel{
+        @*Name: @User.Identity.Name<br />
+        Num Reg: @ViewBag.NumReg<br />
+        Num Uni: @ViewBag.NumUni<br />
+        @*tcur: @tcur<br />
+        nul: @nul<br />
+        paid: @paid<br />*@
+    }
+    </text>
+}
+@*if (paid)
+{
+    <style>
+        #reg-data {
+            border-bottom:none;
+            margin-bottom:0;
+        }
+    </style>
+}*@
+@if (ViewBag.State == 0)
+{
+    <style type="text/css">
+        /*#registerbtn {display:none;}*/
+        #totalcostcont {display:none;}
+        #update {display:none;}
+        .bottom-message {display:none;}
+        #step-one form {margin-top:20px;}
+    </style>
+}
+@if (ViewBag.State < 2)
+{
+    <style type="text/css">
+        #step-two {display:none;}
+        #step-one {
+            border-right:none;
+            margin:0px auto;
+            padding-top:10px;
+            float:initial;
+        }
+        @@media screen and (max-width: 1024px) {
+            #step-one {max-width:510px;border:none;height:100%;}
+        }
+    </style>
+}
+<div id="step-one" class="Reg">
+<h2>Register for @Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear</h2>
+@using (Html.BeginForm())
+{
+    <div id="reg-cont">
+        @Html.HiddenFor(m => m.Parent.PRT_RecordID, new { Class = "prid" })
+        <table id="reg-data">
+        @if (Model.RegChildren.Count > 0)
+        {
+            <tr><td></td><td>Name</td><td>Age*</td><td>Age Group</td><td>Shirts</td><td>Shirt Size</td><td></td></tr>
+        }
+        @for (i = 0; i < Model.RegChildren.Count; i++)
+        {
+            Child c = Model.RegChildren[i].Child;
+            Int32 age = Global.AgeOnReg(c.CLD_Birthdate);
+            Teammate t = Data.GetCurrentTeammate(c);
+            //Team te = t.Team;
+            Boolean isreg = t != null;
+            Boolean under = age < Global.GetTeamMin(0);
+            Boolean over = age > Global.GetTeamMax(Definitions.Teams.Count - 1);
+            Payment pm = null;
+            if (isreg)
+            {
+                pm = Data.GetPM(m => m.PMT_RecordID == t.TMT_PMT_RecordID);
+            }
+            Boolean ispaid = (pm != null && pm.PMT_Paid);
+            
+            <tr class="RegChild @c.CLD_RecordID" data-also="Teammate">
+                <td>
+                    @Html.HiddenFor(m => m.RegChildren[i].Child.CLD_RecordID, new { Class = "crid" })
+                    @if (isreg)
+                    {
+                        n++;
+                        <input class="trid" type="hidden" value="@t.TMT_RecordID" />
+                    }
+                    else
+                    {
+                        <input class="tmrid" type="hidden" value="@Global.TeamID(c.CLD_Birthdate)" />
+                    }
+                    @if (!under && !over && !ispaid)
+                    {@Html.CheckBoxFor(m => m.RegChildren[i].Reg, new { @class = "reg-chk Reg" })}
+                    else
+                    {@Html.CheckBoxFor(m => m.RegChildren[i].Reg, new { @class = "reg-chk Reg", disabled = "disabled" })}
+                </td>
+                <td>@c.CLD_FirstName</td>
+                <td>@age</td>
+                @{
+                  List<SelectListItem> sll = new List<SelectListItem>();
+                  foreach (Team te1 in Global.AllTeams(c.CLD_Birthdate, c.CLD_Gender).OrderByDescending(m=>m.TEM_Gender.HasValue).ToList())
+                  {
+                      sll.Add(new SelectListItem { Text = Definitions.Teams[te1.TEM_TeamID], Value = te1.TEM_TeamID.ToString() });
+                  }
+                  
+                  SelectList sl = new SelectList(sll, "Value", "Text");
+                  if (t != null)
+                  {
+                      sl = new SelectList(sll, "Value", "Text", t.Team.TEM_TeamID);
+                  }
+                }
+                @if (sll.Count == 1)
+                {
+                    Int32 tid = Model.RegChildren[i].TeamSelect;
+                    if (tid == -1) { tid = Global.TeamID(c.CLD_Birthdate, c.CLD_Gender); }
+                    <input type="hidden" class="TeamSelect" value="@tid" />
+                    <td class="team">@Data.GetTM(m => m.TEM_TeamID == tid).TEM_TeamName</td>
+                }
+                else if(t!=null)
+                {
+                    if (!ispaid&&(!t.Team.TEM_Gender.HasValue||t.Team.TEM_Gender==c.CLD_Gender)&&sll.Count!=1)
+                    {
+                        <td class="team">@Html.DropDownListFor(m => m.RegChildren[i].TeamSelect, sl, new { @class = "TeamSelect" })</td>
+                    }
+                    else
+                    {
+                        <td class="team">@Html.DropDownListFor(m => m.RegChildren[i].TeamSelect, sl, new { @class = "TeamSelect", @disabled = "" })</td>
+                    }
+                }
+                else if (!over && !under && Global.TeamID(c.CLD_Birthdate, c.CLD_Gender) != -1)
+                {
+                    <td class="team">@Html.DropDownListFor(m => m.RegChildren[i].TeamSelect, sl, new { @class = "TeamSelect" })</td>
+                }
+                else
+                {
+                    <td class="team">No team for age</td>
+                }
+                <td class="shirt">
+                @if ((isreg || Model.RegChildren[i].Reg) && !ispaid)
+                {<text>@Html.CheckBoxFor(m => m.RegChildren[i].Uni, new { @class = "reg-uni Uni" }) $25</text>}
+                else
+                {<text>@Html.CheckBoxFor(m => m.RegChildren[i].Uni, new { @class = "reg-uni Uni", @disabled = "disabled" }) $25</text>}
+                </td>
+                <td class="ddshirt">
+                @if (isreg)
+                {
+                    if (!ispaid)
+                    {<text>@Html.DropDownListFor(m => m.RegChildren[i].UniSize, new SelectList(ViewBag.ShirtSizeList, "Value", "Text", t.TMT_ShirtID), new { @class = "UniSize" })</text>}
+                    else
+                    {<text>@Html.DropDownListFor(m => m.RegChildren[i].UniSize, new SelectList(ViewBag.ShirtSizeList, "Value", "Text", t.TMT_ShirtID), new { @class = "UniSize", @disabled = "disabled" })</text>}
+                }
+                else
+                {
+                    if (Model.RegChildren[i].Uni && !ispaid)
+                    {<text>@Html.DropDownListFor(m => m.RegChildren[i].UniSize, new SelectList(ViewBag.ShirtSizeList, "Value", "Text"), new { @class = "UniSize" })</text>}
+                    else
+                    {<text>@Html.DropDownListFor(m => m.RegChildren[i].UniSize, new SelectList(ViewBag.ShirtSizeList, "Value", "Text"), new { @class = "UniSize", @disabled = "disabled" })</text>}
+                }
+                @Html.HiddenFor(m => m.RegChildren[i].UniSize)
+                </td>
+                @if (!ispaid)
+                {
+                    <td><div class="imgbtn ti remove" data-group="@c.CLD_RecordID"><img data-func="askdelete" data-delete-type="r" data-delete-message="Really?" src="/Content/icons/delete.png" /></div></td>
+                }
+            </tr>
+        }
+        </table>
+        <div class="addchild Child" id="new" @*data-prefix="new"*@>
+            <div class="fncybtn unhide @(ViewBag.State == 0 ? "hide" : "")">Add Child</div>
+            <div class="inner @(ViewBag.State != 0 ? "hide" : "")">
+                <h4>Add Child</h4>
+                <input type="text" class="fncy-box FirstName" placeholder="First Name" />
+                <input type="text" class="fncy-box LastName" placeholder="Last Name(optional)" />
+                <input type="text" class="fncy-box Birthdate" placeholder="Birthdate" />
+                <div class="mult-opt GenderContainer bool">
+                    <div class="opt">
+                        <input type="radio" name="newGender" id="opt1" class="Gender" value="False" /><label for="opt1">Male</label>
+                    </div>
+                    <div class="opt">
+                        <input type="radio" name="newGender" id="opt2" class="Gender" value="True" /><label for="opt2">Female</label>
+                    </div>
+                </div>
+                <div class="final" style="padding:0px;">
+                    <textarea class="fncy-box Notes" placeholder="Optional description of medical conditions/allergies. This can be updated after registration."></textarea>
+                </div>
+                <div class="fncybtn submit">Submit</div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="bottom-message">
+        *Age on the day the @Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear season ends.
+    </div>
+    <div id="totalcostcont">Sub Total: $<span id="totalcost">@tcur</span>.00</div>
+    <div id="update">
+        @if (false)
+        {
+        <div id="policies">
+            @Html.CheckBoxFor(m => m.Medical) I agree to the <a id="medicallink" href="#">Medical Agreement</a>
+        </div>
+        }
+        else
+        {
+            Model.Medical = true;
+            @Html.CheckBoxFor(m => m.Medical, new { style = "display:none;" })
+        }
+        Please select a position for which you would be willing to volunteer.<br />
+        <div style="padding-left:10px;margin-top:3px;">
+            @Html.RadioButtonFor(m => m.Volunteer, 0) None
+            @Html.RadioButtonFor(m => m.Volunteer, 1) Coaching
+            @Html.RadioButtonFor(m => m.Volunteer, 2) Team Assistant
+            @Html.RadioButtonFor(m => m.Volunteer, 3) Field Lining
+        </div>
+        <img alt="loading" id="submitting" class="hide" src="/Content/loading2.gif" />
+        <div id="registerbtn" class="fncybtn">@(ViewBag.NumReg > 0 ? "Update" : "Register")</div>
+        <div class="clear"></div>
+        <hr />
+        <div class="clear"></div>
+        
+        <b>Registration Instructions: </b><br />
+        Cost is $40.00 per child, up to a maximum of $160.00 per family. &nbsp; 
+        This includes a $5.00 non-refundable registration fee. &nbsp;
+        Reversible (red/blue) team shirts are an additional $25.00. &nbsp;
+        Registration will not be considered active until full registration payment is received. &nbsp;
+        Scholarships are available by request. <br /><br />
+        @if (Global.RegCutoff.CompareTo(Global.LateFeeDate) != 0)
+        {
+            <b>Early registration deadline is @Global.LateFeeDate.ToString("MMMM d").&nbsp; </b>
+            <text>Registrations postmarked or delivered after this date will be an additional $10.00 (per family). <br /><br /></text>
+        }
+        <b>Registration cutoff date is @Global.RegCutoff.ToString("MMMM d").&nbsp; </b>
+        New registrations will not be accepted, nor will refunds be available, after this date. 
+        <br />
+        <br />
+        Your registration will be fully activated once we receive your payment.<br /><br />
+    </div>
+}
+</div>
+
+@if (ViewBag.State > 1)
+{
+    Order o = Data.GetCurrentOrder(Model.Parent);
+    List<Payment> pms = o.Payments.ToList();
+<div id="step-two">
+    <div id="payment">
+        <h2>Payment @if (ViewBag.State == 3)
+                    {<img class="fl-end" src="/Content/icons/gCheck.png"/>}</h2>
+        @for (Int32 j = 0; j < pms.Count; j++)
+        {
+            Payment pm = pms[j];
+            <hr />
+            <div style="float:left;">
+                Students: $40 x <span class="numreg" @(pm.PMT_Current ? "id='numreg'" : "")>@pm.PMT_Registrations</span><br />
+                Shirts: $25 x <span class="numuni"  @(pm.PMT_Current ? "id='numuni'" : "")>@pm.PMT_Uniforms</span>
+                <br />
+                <span class="fl-start">Group Total</span>
+            </div>
+            <div class="fl-end">
+                &nbsp;&nbsp;$<span class="fl-end regcost" @(pm.PMT_Current ? "id='regcost'" : "")>@(pm.PMT_Registrations * 40).00</span><br />
+                &nbsp;&nbsp;$<span class="fl-end unicost" @(pm.PMT_Current ? "id='unicost'" : "")>@(pm.PMT_Uniforms * 25).00</span>
+                <br />
+                <span class="fl-end"><b>$@Global.CombPrice(pm.PMT_Registrations, pm.PMT_Uniforms).00</b></span>
+            </div>
+            <div class="clear"></div>
+        }
+        <hr />
+        <div id="costcont">
+            <div>Total:</div> <b>$<span id="totalcost2">@ViewBag.tsub.00</span></b><br />
+            @if (ViewBag.LateFee == true)
+            {
+                <div>Late Fee:</div> <b><span>$10.00</span></b><br />
+            }
+            @if (ViewBag.treg > ViewBag.max)
+            {
+                <div>Family Discount:</div> <b>-$<span id="disco" class="fl-end">@(treg - ViewBag.max).00</span></b><br />
+            }
+            <div>Grand Total:</div> <b>$<span>@tgrand.00</span></b><br /><br />
+            <div>Paid:</div> <b>-$<span>@tpaid.00</span></b><br />
+            <div>Remaining:</div> <b>$<span>@(tgrand - tpaid).00</span></b><br />
+        </div>
+        <div class="clear">&nbsp;</div>
+        @if (tgrand - tpaid > 0)
+        {
+        <div id="payopt">
+            <div id="payblock" class="hide" style="position:absolute;left:0;right:0;top:0;bottom:0;background-color:rgba(20,20,20,0.6);"><div style="background:#fff;margin-top:100px;border:1px solid #ff0000;">Please update form before paying.</div></div>
+            To pay online using <img src="/Content/paypal.gif" style="height:12px;position:relative;top:3px;" />:<br /><br />
+            <form id="paynow" name="_xclick" action="https://www.paypal.com/us/cgi-bin/webscr" method="post">
+                <input type="hidden" name="cmd" value="_xclick" />
+                <input id="" type="hidden" name="business" value="skhssc@hotmail.com" />
+                <input type="hidden" name="currency_code" value="USD" />
+                <input type="hidden" name="custom" value="@Data.GetCurrentPayment(Model.Parent).PMT_RecordID" />
+                <input type="hidden" name="item_name" value="SKHSS Registration" />
+                <input id="paynowprice" type="hidden" name="amount" value="@(tgrand - tpaid)" />
+
+                <input type="hidden" name="return" value="http://@(Request.Url.Host == "localhost" ? Request.Url.Host + ":" + Request.Url.Port : Request.Url.Host)/Home/PayPalComplete/" />
+                <input type="hidden" name="cancel" value="http://@(Request.Url.Host == "localhost" ? Request.Url.Host + ":" + Request.Url.Port : Request.Url.Host)/Members/Register/" />
+                <input type="image" src="http://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" border="0" name="submit" />
+            </form>
+            <div id="rplc" style="height:31px;" class="hide">&nbsp;</div>
+            <br />
+            To pay by check, mail your payment to: <br /><br />
+            <b>SK Homeschool Sports Club<br />
+            3229 Hinkley Road SE<br />
+            Port Orchard, WA  98366<br />    
+            </b>
+            <br />
+        </div>
+        }
+        else
+        {
+            <br /><br />
+        }
+        <br />
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="width:92px;margin:0 auto;">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="RCRQM4925VGPY">
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+        Please consider making a donation to help us provide scholarships for other families. <br /><br />
+    </div>
+</div>
+}
+<script type="text/javascript">
+    var ist = "@Model.Parent.UserLogin.USR_Test";
+    var latefee = "@ViewBag.LateFee";
+    var prid = "@Model.Parent.PRT_RecordID"
+    var regp = parseInt("@Definitions.RegistrationPrice");
+    var unip = parseInt("@Definitions.UniformPrice");
+    var max = parseInt("@Definitions.FamilyMaxiumum");
+</script>

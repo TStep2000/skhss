@@ -1,0 +1,87 @@
+﻿@using SKHSS.Helpers
+@using SKHSS.Models
+@model Team
+@{
+    ViewBag.Title = "Team";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Script1 = "Date.js";
+}
+<script>
+    $(document).ready(function () {
+        @*$.ajax({ url: "https://www.googleapis.com/blogger/v3/blogs/3928690991978983108/posts?labels=" + "@ViewBag.tag" + "&key=AIzaSyAWR90rzSWzy4_iVbuar2mI2isqFMefe5c" }).done(function (data) {
+            if (data.items) {
+                if (data.items.length > 0) {
+                    $("#update1 .subheader").text(data.items[0].title);
+                    $("#update1 .date").text(Date.parse(data.items[0].published.substring(0, 10)).toString("MM/d/yyyy"));
+                    $("#update1 .subparagraph span").text(data.items[0].content);
+                }
+                if (data.items.length > 1) {
+                    $("#update2 .subheader").text(data.items[1].title);
+                    $("#update2 .date").text(Date.parse(data.items[1].published.substring(0, 10)).toString("MM/d/yyyy"));
+                    $("#update2 .subparagraph span").text(data.items[1].content);
+                }
+            }
+        });*@
+    });
+</script>
+@if (ViewBag.Picturelist.Count == 0)
+{
+    <style>
+        #top {display:none;}
+        #left,#right {border-top:2px solid #656565;min-height:calc(100% - 38px);}
+    </style>
+}
+<h1 id="title">@Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentYear @Model.TEM_TeamName</h1>
+@if (Global.IsInRoleOrHigher(User.Identity.Name, Definitions.CoachRole))
+{
+    <a href="/Members/Reports?type=1&team=@Model.TEM_TeamID" id="view-rep" class="fncybtn">Team Roster</a>
+}
+@*<a id="toteams" href="/Members/Teams" style="float:right;"><< Teams</a>*@
+<div id="top">
+    <div id="cover">
+        @for (Int32 i = 0; i < ViewBag.Picturelist.Count;i++ )
+        {
+            <img src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(ViewBag.Picturelist[i].PIC_Filename)" />
+        }
+    </div>
+</div>
+<div id="left" class="wing">
+    <h2>Coaches</h2>
+    @Html.DisplayFor(m => Model.Coaches)
+    <br />
+    <h2>Players</h2>
+    @{
+        List<Teammate> ts = Data.GetAllCurrentTeammates().Where(m => m.TMT_TEM_TeamID == Model.TEM_TeamID && m.Child.Parent.UserLogin.USR_Approved && m.TMT_PMT_RecordID != null && m.TMT_Accepted).ToList();
+    }
+    @foreach(Teammate t in ts){
+        @Html.DisplayFor(m => t)
+    }
+</div>
+<div id="right" class="wing">
+    <h2>Location</h2>
+    <a href="https://www.google.com/maps/dir//11256+Banner+Rd+SE,+Olalla,+WA+98359/">Google Maps Directions</a>
+
+    @*<div id="update1">
+        <h3 class="subheader"></h3> <span class="date"></span>
+        <div class="subparagraph"><span class="ellipsis_text"></span>
+        </div>
+    </div>
+    <div id="update2">
+        <h3 class="subheader"></h3> <span class="date"></span>
+        <div class="subparagraph"><span class="ellipsis_text"></span>
+                    
+        </div>
+    </div>*@
+</div>
+
+
+@*if (Model.Name == null)
+{
+    <span style="color:Red;font-size:20px;">Error: Team not found, please try again or contact the administrator: mathguy3@gmail.com</span>
+}
+<br />
+<h3>Coaches:</h3>
+@Html.DisplayFor(m => m.Coachlist)
+<br /><br />
+<h3>Players:</h3>
+@Html.DisplayFor(m => m.Teamlist)*@

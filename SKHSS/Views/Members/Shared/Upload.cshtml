@@ -1,0 +1,135 @@
+﻿@{
+    Layout = "";
+    ViewBag.Title = "Upload";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#sendpics").on("click", handle);
+        function handle(e) {
+            $.each($(".uploadfiles"), function (index, value) {
+                $(value).ajaxSubmit();
+            });
+            $("#cont").html("Thank you! Your pictures are being uploaded in the background, and will appear shortly.");
+        }
+        $("#currentfile").on("change", addtoqueue);
+        function addtoqueue(e) {
+            var file = document.getElementById("currentfile");
+            var filename = file.files[0].name;
+            var filenames = [];
+            var qui = "";
+            for (var i = 0; i < file.files.length; i++) {
+                if (i + 1 == file.files.length) {
+                    qui = qui + '"' + file.files[i].name + '"';
+                } else {
+                    qui = qui + '"' + file.files[i].name + '", ';
+                }
+            }
+            $("#queue").append('<div class="queueitem">' + qui + "</div>");
+            //$("#queue .queueitem:last-child").css("text-overflow", "ellipsis");
+            $("#currentfile").off()
+            $("#addImages").off().css("display", "none").attr("id", "");
+
+            $(file).attr("id", "");
+
+            $("#adds").append('' +
+            '<form action="/Members/Upload" enctype="multipart/form-data" class="uploadfiles" method="post" novalidate="novalidate">' +
+                '<div id="addImages" class="fancybtn2">' +
+                    '<input type="file" multiple="true" name="file" id="currentfile" accept="image/*">' +
+                    '<span class="noselect">' +
+                    'Add Images' +
+                    '</span>' +
+                '</div>' +
+            '</form>');
+            $("#currentfile").on("change", addtoqueue);
+        }
+    });
+</script>
+<style>
+    
+    #titlebox
+    {
+        background:#AAAAAA;
+        padding:5px;
+        text-align:center;
+    }
+    #titlebox h2{margin:0;}
+    #cont{text-align:center;}
+    #sendpics{width:70px;height:25px;font-size:18px;font-weight:200;margin-bottom:5px;}
+    #queue{background:#DDDDDD;margin-bottom:5px;text-align:left;font-size:15px;}
+    .queueitem{background:#999;border-top:1px solid #777;padding:5px;width:100%;text-overflow:ellipsis;white-space: nowrap;overflow:hidden;}
+    #closelightbox{
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        padding: 1px 3px;
+        background: #e1e1e1 !important;
+        border: 1px solid #777;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        text-decoration: none;
+        color: #000 !important;
+        margin: 2px;
+    }
+    #closelightbox:hover{text-decoration:underline;}
+</style>
+<div id="titlebox">
+    <h2 id="uploadtitle">Upload</h2>
+    <a href="#" id="closelightbox">Close</a>
+ </div>
+<div id="cont">
+    @*<form id="fileupload" action="Upload" method="POST" enctype="multipart/form-data">
+        <!-- Redirect browsers with JavaScript disabled to the origin page -->
+        <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"&gt;</noscript>
+        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+        <div class="row fileupload-buttonbar">
+            <div class="col-lg-7">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Add files...</span>
+                    <input id="it" type="file" name="files[]" multiple="">
+                </span>
+                <button type="submit" class="btn btn-primary start">
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start upload</span>
+                </button>
+                <button type="reset" class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel upload</span>
+                </button>
+                <button type="button" class="btn btn-danger delete">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span>Delete</span>
+                </button>
+                <input type="checkbox" class="toggle">
+                <!-- The loading indicator is shown during file processing -->
+                <span class="fileupload-loading"></span>
+            </div>
+            <!-- The global progress information -->
+            <div class="col-lg-5 fileupload-progress fade">
+                <!-- The global progress bar -->
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                </div>
+                <!-- The extended global progress information -->
+                <div class="progress-extended">&nbsp;</div>
+            </div>
+        </div>
+        <!-- The table listing the files available for upload/download -->
+        <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+    </form>*@
+    <div id="adds">
+        <form action="/Members/Upload" enctype="multipart/form-data" class="uploadfiles" method="post" novalidate="novalidate">
+            <div id="addImages" class="fancybtn2">
+                <input type="file" multiple="true" name="file" id="currentfile" accept="image/*">
+                <span class="noselect">
+                    Add Images
+                </span>
+            </div>
+        </form>
+    </div>
+    <div id="queue">
+        <div style="padding:5px 0 5px 5px;font-weight:200;">Queue: (do not upload more than 10 at a time, or they will not upload)</div>
+    </div>
+    <input id="sendpics" class="fncybtn" type="submit" />
+</div>

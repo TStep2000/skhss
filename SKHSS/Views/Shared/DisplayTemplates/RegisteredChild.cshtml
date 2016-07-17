@@ -1,0 +1,6 @@
+﻿@model SKHSS.Models.Teammate
+<div class="registeredchild actrow">
+<span class="acttitle">@Model.Child.CLD_FirstName @Model.Child.Parent.PRT_LastName</span>
+<span class="unregister"><a href="#" id="@Model.TMT_RecordID">Unregister</a></span>
+<span class="cldteam">Team: <a href="@Url.Action("Team", new { id = Model.Team.TEM_TeamID })">@Model.Team.TEM_TeamName</a></span>
+</div>

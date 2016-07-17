@@ -1,0 +1,14 @@
+﻿@using SKHSS.Models
+@{
+    ViewBag.Title = "Index";
+    List<IPN> ipns = SKHSS.Helpers.Data.db.IPNs.ToList();
+    var i = 0;
+}
+
+<h2>Index</h2>
+
+@foreach (IPN ipn in ipns)
+{
+    i++;
+    <div>@i: <span>@ipn.IPN_TransactionID</span> <span>@ipn.IPN_Response</span> <span>@ipn.IPN_Email</span> <span>@ipn.IPN_Status</span> <span>@ipn.IPN_Amount|||AS1234DF</span></div><br />
+}

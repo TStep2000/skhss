@@ -1,0 +1,9 @@
+﻿@model SKHSS.Models.Teammate
+<h4><span>@Model.Child.CLD_FirstName @Model.Child.Parent.PRT_LastName </span></h4>
+@*<div class="teammate fancylist">
+    <div class="title"><h4><span>@Model.Child.CLD_FirstName @Model.Child.Parent.PRT_LastName</span></h4></div>
+    @if(Model.Picture!=null)
+    {
+        <img src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(Model.Picture.PIC_Filename)" />
+    }
+</div>*@

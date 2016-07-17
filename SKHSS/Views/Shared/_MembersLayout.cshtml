@@ -1,0 +1,84 @@
+﻿@using SKHSS.Helpers
+@using SKHSS.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Members = true;
+    //SKHSS.Authentication.SKHSSMembershipProvider sp = new SKHSS.Authentication.SKHSSMembershipProvider();
+    UserLogin login = Data.GetLogin(User.Identity.Name);
+}
+<style>
+    #membermenu ul:first-child li:nth-child(@ViewBag.MemberPageID) a {box-shadow:inset 0 0 20px rgba(10,10,10,.8);}
+    #rolemenu ul:first-child li:nth-child(@ViewBag.RolePageID) a {box-shadow:inset 0 0 20px rgba(10,10,10,.8);}
+</style>
+<aside id="accountmenu" class="fillmiddle">
+	<ul>
+        <li><a href="@Url.Action("Index", "Members")"><span>Account</span></a></li>
+        @if(Global.IsInRoleOrHigher(login,Definitions.CoachRole)){
+            <li class="thick"><a href="@Url.Action("Teams", "Members")"><span>Teams</span></a></li>
+        }
+        else
+        {
+            if (Data.GetCurrentOrder(login.Parent) != null && login.USR_Approved == true)
+            {
+                <li class="thick"><a href="@Url.Action("Teams", "Members")"><span>Teams</span></a></li>
+            }
+        }
+        @*<li class="thick"><a href="@Url.Action("Pictures", "Members")"><span>Pictures</span><img src="/Content/icons/pictures.png" /></a></li>*@
+        @if (Global.IsInRole(login, Definitions.ParentRole) && !Global.IsRegCutoff)
+        {
+            <li class="thick"><a href="@Url.Action("Register")"><span>Register</span></a></li>
+        }
+        @*if (Global.IsInRole(login, Definitions.CoachRole))
+        {
+            <li class="thick"><a href="@Url.Action("MyTeam")"><span>My Team</span></a></li>
+        }*@
+        @if (Global.IsInRoleOrHigher(login, Definitions.CoachRole))
+        {
+            <li class="thick"><a href="@Url.Action("Reports")"><span>Reports</span></a></li>
+        }
+        @if (Global.IsInRoleOrHigher(login, Definitions.SportsRole))
+        {
+            <li><a href="@Url.Action("Roles")"><span>Set Coaches</span></a></li>
+        }
+        @if (Global.IsInRole(login, Definitions.PresRole))
+        {
+            List<UserLogin> act = Data.GetULs(m => m.USR_Activated == false && (m.USR_Email == "" || m.USR_Email == null)).Where(Predicates.IsInRole(Definitions.ParentRole)).ToList();
+            if (Global.IsInRole(login, Definitions.MeRole))
+            {
+                act = Data.GetULs(m => m.USR_Activated == false).Where(Predicates.IsInRole(Definitions.ParentRole)).ToList();
+            }
+            <li class="wide"><a href="@Url.Action("ActivateUsers")"><span>Activate Users</span></a><div class="notify @(act.Count==0?"hide":"")">@act.Count</div></li>
+            <li><a href="@Url.Action("Registrations")"><span>Registrations</span></a></li>
+            <li><a href="@Url.Action("Settings")"><span>Settings</span></a></li>
+            <li><a href="@Url.Action("Blogger")"><span>Blogger</span></a></li>
+            <li class="thick"><a href="@Url.Action("Users")"><span>Users</span></a></li>
+        }
+        @if (Global.IsInAnyRole(login, new[]{Definitions.MeRole,Definitions.WebAdminRole}))
+        {
+            <li class="wide"><a href="@Url.Action("ViewFeedback")"><span>View Feedback</span></a></li>
+            <li><a href="@Url.Action("DBData")"><span>Data</span></a></li>
+            <li class="thick"><a href="@Url.Action("Log")"><span>Log</span></a></li>
+        }
+        @if (Global.IsInRole(login, Definitions.MeRole))
+        {
+            
+            <li ><a href="@Url.Action("Sandbox")"><span>Sandbox</span></a></li>
+            <li class="thick"><a href="@Url.Action("Ideas")"><span>Ideas</span></a></li>
+        }
+    </ul>
+    @if (Global.IsInAnyRole(login, new[] { Definitions.MeRole, Definitions.ParentRole }) && Request.Url.ToString().Contains("http://localhost:1994/"))
+    {
+        <div id="mepanel" class="fl-start">
+            @RenderSection("MePanel", false)
+        </div>
+    }
+    <div id="accountdetails">
+        @User.Identity.Name @if (Global.IsInRole(login, Definitions.MeRole)){@Definitions.Seasons[Global.CurrentSeasonID] @Global.CurrentSeasonID @Global.CurrentYear}
+    </div>
+</aside>
+<div id="membercontent" class="fillmiddle">
+    @if(ViewBag.OrigError != true){
+        <div id="errorbanner"><div id="errorcanvas"><div id="allrequired" style="display:none;">All marked fields are required</div><div id="customerrors"></div></div><span class="fncybtn" id="hidebanner">Hide</span></div>
+    }
+    @RenderBody()
+</div>

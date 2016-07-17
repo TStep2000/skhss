@@ -1,0 +1,113 @@
+﻿@using SKHSS.Helpers
+@model SKHSS.Models.ObjectModel
+
+@{
+    ViewBag.Title = "Registration";
+    //ViewBag.Style1 = "bootstrap.min.css";
+    //ViewBag.Style2 = "RegistrationForm.css";
+    ViewBag.Script1 = "jquery.maskedinput.min.js";
+    ViewBag.Script2 = "jquery-ui-1.8.24.min.js";
+    ViewBag.Script3 = "bootstrap.min.js";
+    ViewBag.DisableBackspace = true;
+    ViewBag.SaveData = true;
+}
+<!--[if IE]>
+	<style>
+        .phname{display:block!important;}
+    </style>
+<![endif]-->
+
+<div class="top-right-message">If you already have an account click here to login <img height="20" src="../../Content/arrowsm.png" /></div>
+<div class="center-page">
+    <div class="holder">
+    <div id="instructions">
+        <div id="instructions-inner">
+            1. Upon submitting your account information, a confirmation email will be sent to the email address provided.<br /><Br />
+            2. Once you receive the confirmation email, click the 'Activate' link to activate your account.&ensp;This will also  
+            log you into your account and automatically take you to your Account page.<br /><br />
+            3. If you don’t have an email address, simply send us a message using the Contact Us form and we'll activate your account manually.<br /><br />
+            4. After your account has been created and activated, you'll have access our Registration page, where you can register for the current season.
+        </div>
+    </div>
+@using (Html.BeginForm("Registration", "Home", FormMethod.Post, htmlAttributes: new { @id = "registration", @autocomplete = "off" }))
+{
+    <div @*id="registration-form"*@ class="Object" id="Registration">
+        <h2>Create New Account</h2>
+        <div class="Parent" data-prefix="Parent_">
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.FatherName, new { @class = "fncy-box Parent_FatherName", placeholder = "Father's First Name" })
+            </div>
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.MotherName, new { @class = "fncy-box Parent_MotherName", placeholder = "Mother's First Name" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                @Html.TextBoxFor(m => m.Parent.LastName, new { @class = "fncy-box req Parent_LastName", placeholder = "Family Name" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.FatherEmail, new { @class = "fncy-box Parent_FatherEmail", placeholder = "Father's Email" })
+            </div>
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.MotherEmail, new { @class = "fncy-box Parent_MotherEmail", placeholder = "Mother's Email" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.FatherPhone, new { @class = "fncy-box Parent_FatherPhone", placeholder = "Father's Phone #" })
+            </div>
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Parent.MotherPhone, new { @class = "fncy-box Parent_MotherPhone", placeholder = "Mother's Phone #" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12">
+                @Html.TextBoxFor(m => m.Parent.Address, new { @class = "fncy-box req Parent_Address", placeholder = "Address" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-8">
+                @Html.TextBoxFor(m => m.Parent.City, new { @class = "fncy-box req Parent_City", placeholder = "City" })
+            </div>
+            <div class="box box-4">
+                @Html.TextBoxFor(m => m.Parent.Zipcode, new { @class = "fncy-box req Parent_Zipcode", placeholder = "Zip code" })
+            </div>
+        </div>
+        </div>
+        <!--<div class="row">
+            <div class="box box-12">
+                Html.TextBoxFor(m => m.Phone, new { class = "fncy-box req Phone", placeholder = "Phone" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="box box-12 email">
+                Html.TextBoxFor(m => m.Email, new { class = "fncy-box Email", placeholder = "Email" })
+            </div>
+        </div>-->
+        <div class="row">
+            <div class="box box-6">
+                @Html.TextBoxFor(m => m.Username, new { @class = "fncy-box req Username", placeholder = "Username" })
+            </div>
+            <div class="box box-6">
+                @Html.PasswordFor(m => m.Password, new { @class = "fncy-box req Password", placeholder = "Password" })
+            </div>
+        </div>
+        <div class="row last" >
+            <div class="box box-8">
+                <span class="error @(ViewBag.ErrorText==null?"hide":"")">@(ViewBag.ErrorText!=null?"Error:":"") @ViewBag.ErrorText</span>
+            </div>
+            <div id="chk" class="box box-4">
+                <input type="checkbox" id="show" value="true" /> <label for="show">Show Password</label>
+            </div>
+        </div>
+        <div id="submitcont">
+            <img id="submitting" src="/Content/loading2.gif" />
+            <input type="submit" id="Object" value="Submit"/>
+        </div>
+    </div>
+}
+   </div> 
+</div>

@@ -1,0 +1,86 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Feedback
+@{
+    ViewBag.Title = "Feedback";
+    Boolean mem = User.Identity.IsAuthenticated;
+    ViewBag.Script1 = "jquery.browser.min.js";
+    ViewBag.NoIndex = true;
+}
+
+<h2>Feedback</h2>
+This is where you can give feedback straight to the developer of this website. You can give suggestions, report errors, anything you want to say to the developer. I WILL read these, and I am constantly updating, upgrading and adding new content to this website.
+<br /><br />
+@using (Html.BeginForm())
+{
+<div id="exterior">
+    <div id="interior">
+        @if (ViewBag.Result == "success")
+        {
+            <div>Thank you! Your response is welcome, and VERY helpful! :)</div>
+        }
+        else
+        {
+        <div id="left">
+            <span class="c">Data</span>
+            <span class="c">Name</span>
+            <span class="c">Email</span>
+            <span class="c">Message</span>
+        </div>
+        <div id="right">
+            <span class="c">@(mem ? "Member Type: " + Definitions.GetHighestRole(Global.HighestRole(User.Identity.Name)) + "," : "") <span id="browser"></span><br /> (Data collected for debugging)&nbsp;</span>
+            @if(User.Identity.IsAuthenticated&&Global.IsInAnyRole(User.Identity.Name, new[]{Definitions.CoachRole,Definitions.ParentRole}))
+            {
+                if(Global.IsInRole(User.Identity.Name,Definitions.ParentRole))
+                {
+                    Parent p = Data.GetLogin(User.Identity.Name).Parent;
+                    <text>
+                    @Html.HiddenFor(m => m.FBK_Name, new { @Value = new System.Globalization.CultureInfo("en-US").TextInfo.ToTitleCase(p.PRT_LastName) })
+                    @Html.TextBoxFor(m => m.FBK_Name, new { @Value = new System.Globalization.CultureInfo("en-US").TextInfo.ToTitleCase(p.PRT_LastName), disabled = "disabled", @Class = "c fncy-box" })
+                    </text>
+                }
+                else
+                {
+                    /*Coach c = Global.GetReadOnlyCoach(User.Identity.Name);
+                    <text>
+                    @Html.HiddenFor(m => m.FBK_Name, new { @Value = c.CCH_FirstName + " " + c.CCH_LastName })
+                    @Html.TextBoxFor(m => m.FBK_Name, new { @Value = c.CCH_FirstName + " " + c.CCH_LastName, disabled = "disabled", @Class = "c fncy-box" })
+                    </text>*/
+                }
+            }
+            else
+            {
+                @Html.TextBoxFor(m => m.FBK_Name, new { @Class = "c fncy-box" })
+            }
+            @if(User.Identity.IsAuthenticated && Data.GetLogin(User.Identity.Name).USR_Email != "")
+            {
+                @Html.HiddenFor(m => m.FBK_Email, new { @Value = Data.GetLogin(User.Identity.Name).USR_Email })
+                @Html.TextBoxFor(m => m.FBK_Email, new { @Value = Data.GetLogin(User.Identity.Name).USR_Email, disabled = "disabled", @Class = "c fncy-box" })
+            }
+            else
+            {
+                @Html.TextBoxFor(m => m.FBK_Email, new { @Class = "c fncy-box" })
+            }
+            @*<input type="text" class="c fncy-box" id="name" />
+            <input type="text" class="c fncy-box" id="email" />*@
+            @Html.TextAreaFor(m => m.FBK_Message, new { @rows = "5", @Class = "c fncy-box", @maxlength = "255" })
+            <span id="remain">Characters remaining: <span id="chars"><i>Javascript disabled.</i></span></span>
+            @if(User.Identity.IsAuthenticated)
+            {
+                @Html.HiddenFor(m => m.FBK_USR_RecordID, new { @Value = Data.GetLogin(User.Identity.Name).USR_RecordID })
+            }
+            @Html.HiddenFor(m => m.FBK_Browser)
+            @Html.HiddenFor(m => m.FBK_OS)
+            @Html.HiddenFor(m => m.FBK_BrowserString)
+            @*<textarea rows="5" style="" class="c fncy-box" id="message" ></textarea>*@
+            <span id="loadingarea" style="display:none;">
+                Sending... 
+                <img src="/Content/loading.gif" id="loading" alt="loading"/>
+            </span>
+            <input type="submit" value="Send" class="fncybtn" id="sub" />
+            <span class="error" id="feederror">@ViewBag.Error</span>
+        </div>
+        }
+    </div>
+</div>
+}

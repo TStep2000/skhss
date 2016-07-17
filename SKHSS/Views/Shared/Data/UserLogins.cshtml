@@ -1,0 +1,73 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<UserLogin> uls = new List<UserLogin>();
+    if(all)
+    {
+        uls = Data.GetULs().OrderBy(m=>m.USR_Username).ToList();
+    }
+    else if(Model.HasValue)
+    {
+        uls.Add(Data.GetUL(m => m.USR_RecordID == Model));
+    }
+}
+@foreach(UserLogin ul in uls){
+<div class="fancylist ul @ul.USR_RecordID" data-group="@ul.USR_RecordID" data-type="ul" id="@ul.USR_RecordID">
+    <input type="hidden" class="urid" value="@ul.USR_RecordID" />
+    <span class="title"><b>UserLogin</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@ul.USR_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-username="@ul.USR_Username" data-password="@ul.USR_Password">
+            <img data-func="login" src="/Content/icons/card.png" />
+        </div>
+        <div class="imgbtn" data-group="@ul.USR_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Object" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Coaches">Coaches</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>Username</legend><input type="text" value="@ul.USR_Username" /></fieldset>
+        @{Boolean navp = ul.USR_PRT_RecordID.HasValue;}
+        <fieldset class="@(navp?"fk highlight":"")" data-id="@(navp?ul.USR_PRT_RecordID.ToString():"")" data-type="p"><legend>Parent</legend><span>@(navp?ul.Parent.PRT_LastName:"")</span></fieldset>
+        @if(ul.Parent==null){
+            <div class="data-error"><div class="dot">&nbsp;</div>No Parent</div>
+        }
+        @if (ul.Parent != null && !Global.IsInRole(ul.USR_Username, Definitions.ParentRole)){
+            <div class="data-error"><div class="dot" data-id="@ul.USR_RecordID" data-error="1">&nbsp;</div>Parent, but no Parent role</div> //Add user to Parent Role
+        }
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@ul.USR_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>ParentID</legend><input type="text" class="ParentID" value="@ul.USR_PRT_RecordID" /></fieldset>
+        <fieldset><legend>RoleID</legend><input type="text" class="RoleID" value="@ul.USR_ROL_RoleID"></fieldset>
+        <fieldset><legend>Username</legend><input type="text" class="Username" value="@ul.USR_Username" /></fieldset>
+        <fieldset><legend>Email</legend><input type="text" class="Email" value="@ul.USR_Email" /></fieldset>
+        <fieldset><legend>Password</legend><input type="text" class="Password" value="@ul.USR_Password" /></fieldset>
+        <fieldset><legend>Phone</legend><input type="text" class="Phone" value="@Global.FancyPhone(ul.USR_Phone)" /></fieldset>
+        <fieldset><legend>ResetDate</legend><input type="text" class="ResetDate" value="@(ul.USR_ResetDate.HasValue?ul.USR_ResetDate.Value.ToShortDateString():"")" /></fieldset>
+        <div class="clear"></div>
+        <fieldset><legend>Activated</legend><input type="button" class="Activated" value="@ul.USR_Activated" /></fieldset>
+        <fieldset><legend>Approved</legend><input type="button" class="Approved" value="@ul.USR_Approved" /></fieldset>
+        <fieldset><legend>Temp</legend><input type="button" class="Temp" value="@ul.USR_Temp" /></fieldset>
+        <fieldset><legend>Test</legend><input type="button" class="Test" value="@ul.USR_Test" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (uls.Count == 0)
+{
+    <text>none</text>
+}

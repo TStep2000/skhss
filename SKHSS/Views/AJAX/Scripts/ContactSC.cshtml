@@ -1,0 +1,11 @@
+﻿@{Layout = null;}
+<script>
+    $(document).ready(function (e) {
+        $("#sub").on("click", function () {
+            $("#loadingarea").css("display", "block");
+            $("#sub").css("display", "none");
+            $.post(doc_root + "Home/ContactSubmit", { name: $("#name").val(), email: $("#email").val(), message: $("#message").val() },
+            function (data) { $("#interior").html(data); });
+        });
+    });
+</script>

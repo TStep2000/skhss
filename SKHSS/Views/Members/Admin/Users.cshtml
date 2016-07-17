@@ -1,0 +1,30 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model List<UserLogin>
+
+@{
+    ViewBag.Title = "ViewUsers";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Script1 = "jquery.autosize.input.js";
+    ViewBag.DisableBackspace = true;
+    ViewBag.SaveData = true;
+    List<String> tm = Definitions.Teams;
+    List<String> se = Definitions.Seasons;
+    List<String> sh = Definitions.ShirtSizes;
+}
+@if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+{
+    <style scoped>
+        .fields {width:calc(100% - 72px)!important;}
+        .ul > .fields {width:calc(100% - 115px)!important;}
+        .fsPassword {width:70px;}
+        .fsUsername, .fsLastName, .fsEmail {width:calc(33% - 102px);}
+    </style>
+}
+<h2 class="pagetitle">Users</h2>
+<div id="users" class="data">
+    @foreach (UserLogin ul in Model)
+    {
+        @Html.Partial("Users/UserLogin", ul);
+    }
+</div>

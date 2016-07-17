@@ -1,0 +1,25 @@
+﻿@using SKHSS.Models
+@model Album
+@{
+    int i = 0;
+    int count = (Model.Pictures.Count>5)?5:Model.Pictures.Count;
+}
+<a href="@Url.Action("Album",new {id=Model.ALB_RecordID})" class="album fancylist">
+    @foreach (Picture p in Model.Pictures)
+    {
+        Int32 width = 200;
+        if(Model.Pictures.Count!=1)
+        {
+            width = 175;
+        }
+        <img @(Model.Pictures.Count == 1?"class=only":"") style="right:calc(@i * ((100% - @(175)px) / @(count-1)));" src="/Content/uploads/@SKHSS.Helpers.Global.ThumbnailFilename(p.PIC_Filename)" width="@(width)px" />
+        if (i == 4)
+        {
+            break;
+        }
+        i++;
+    }
+    <div class="title"><div class="count">@Model.Pictures.Count</div>@Model.ALB_Title<div class="innershadow">&nbsp;</div></div>
+    <div class="shadow"></div>
+    
+</a>

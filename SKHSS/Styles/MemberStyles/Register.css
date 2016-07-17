@@ -1,0 +1,77 @@
+﻿/*Layout*/
+#step-one{float:left;position:relative;height:100%; width:590px;padding-right:15px;border-right:1px solid #969696;}
+#reg-data {width:100%;padding:5px 5px 10px 5px;z-index:5;border-bottom:1px solid #969696;margin-bottom:5px;}
+#reg-cont {position:relative;width:100%;background:#e1e1e1;border:1px solid #969696;border-radius:3px;-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);}
+#step-two {float:left;width:230px;margin-left:14px;padding-right:10px;}
+#membercontent {padding:15px 0px 5px 15px;}
+#content, #middle, #membercontent {height:100%;/*min-height:610px;*/}
+#submitting {float:right;/*position:absolute;right:5px;bottom:5px;*/}
+#totalcostcont {margin-top:8px;margin-left:0px;}
+#policies {margin:10px 0px;}
+#update {margin-top:15px;}
+#payopt {position:relative;}
+
+/********Reg-table*/
+td {padding:1px 2px;white-space:nowrap;vertical-align:middle;}
+tr:first-child td {font-weight:bold;border-bottom:1px solid #969696;}
+#registerbtn {/*position: absolute;right: 5px;bottom: 5px;*/float:right;margin-top:0px;margin-bottom:5px;padding: 2px 4px;background: rgb(0, 180, 7);border: 2px solid #777;border-radius: 5px;font-size: 20px;line-height: 20px;font-weight: 700;text-shadow:0px 0px 1px rgba(255, 255, 255, .5)}
+#registerbtn:hover {box-shadow: inset 1px 1px 4px rgba(0,0,0,0.7);}
+.bottom-message {margin-top:8px;font-size:12px;float:right;width:auto;}
+.removeChild {display:none;margin-top:2px;cursor:pointer;z-index:100;}
+.removeChild:hover {background:#ccc;border:1px solid #aaa;margin-left:-1px;margin-right:-1px;margin-top:1px;height:16px;}
+.removeChild:active {background:#aaa;border:1px solid #777;}
+
+/*New Child*/
+.final {/*vertical-align:middle;*/padding:5px;/*position:relative;white-space:nowrap;*/}
+.final .fncy-box {width:152px;display:inline-block;}
+#sub-child {position:absolute;bottom:4px;right:20px;font-size:18px;padding:2px 3px;}
+.mult-opt {position:relative;display:inline-block;vertical-align:middle;}
+#error {color:red;position:absolute;right:0px;top:102%;top: calc(100% + 5px);}
+.final textarea.fncy-box {width:80%;width:calc(80% + 13px);margin-bottom: -3px;}
+#show-new {float:right;display:none;margin:-3px 5px 2px 0px;border-color:#999;}
+#show-new.fncylink {text-decoration:underline;cursor:pointer;border-radius:5px;}
+#show-new.fncylink:hover {background:#ccc;}
+
+/**********Payment Step*/
+#costcont {text-align:right;position:relative;width:180px;float:right;}
+#costcont div {position:absolute;left:0;}
+
+/*Cash/Credit*/
+.cash {margin-right:20px;}
+#paynow {margin-top:5px;text-align:center;}
+#cashopt{margin-top:30px;}
+#creditopt {margin-top:35px;}
+#creditopt > div {text-align:right;}
+
+/*Mobile View/Screen degredation*/
+@media screen and (max-width: 1024px) {
+    #step-one, #step-two {width:100%;float:none;padding:0px;}
+    #step-one {border:none;height:auto;border-bottom:2px solid black;margin-bottom:20px;}
+    #step-one form {max-width:510px;margin:0px auto;}
+    #step-two {height:auto;padding-bottom:10px;margin-left:0px;}
+    #reg-cont {max-width:510px;}
+    #membercontent {overflow:auto;padding:5px;padding-top:10px;}
+    #content, #middle, #membercontent {min-height:0px;}
+    td {padding:3px 1px;}
+    #reg-data {width:100%;font-size:12px;}
+    select {font-size:12px;font-family:inherit;margin:0px;-webkit-appearance:none;}
+    input[type="checkbox"] {margin:1px 2px;}
+    .final .fncy-box {width:40%;width: calc(50% - 40px);}
+    .final textarea.fncy-box {width: calc(100% + -77px);}
+    #update {margin-bottom:30px;}
+    #sub-child {right:3px;}
+}
+@media screen and (max-width: 565px) {
+    h2 {font-size:18px;line-height:18px;}
+    .addchild .inner {padding-bottom:30px;}
+}
+@media screen and (max-width: 340px) {
+    #reg-data tr:first-child {font-size:10px;line-height:10px;}
+}
+
+/* NEW */
+.addchild {/*vertical-align:middle;*/padding:5px;/*position:relative;white-space:nowrap;*/}
+.addchild .fncy-box {width:152px;display:inline-block;}
+.addchild textarea.fncy-box {width:80%;width:calc(80% + 12px);margin-bottom: -3px;}
+.addchild .submit {position:absolute;bottom:4px;right:20px;font-size:18px;padding:2px 3px;}
+.addchild .unhide {float:right;margin:-3px 5px 2px 0px;border-color:#999;}

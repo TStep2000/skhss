@@ -1,0 +1,100 @@
+﻿@model Int32
+@using SKHSS.Models
+@using SKHSS.Helpers
+@{
+    Layout = null;
+    Team te = Data.db.Teams.Single(m => m.TEM_TeamID == Model);
+    List<Coach> cos = Data.GetCHs(m => m.CCH_TEM_TeamID == Model).OrderBy(m => m.CCH_PositionID).ToList();
+    /*UserLogin headul = Data.GetLoginsByRole(Definitions.HeadCRole).FirstOrDefault();
+    Coach headc = headul.Coaches.First();*/
+    
+    List<Teammate> ts = Data.GetAllCurrentTeammates()
+                                    .Where(m => m.Team.TEM_TeamID == Model && (m.Child.Parent.UserLogin.USR_Test == null || m.Child.Parent.UserLogin.USR_Test == false))
+                                    .OrderBy(m => m.Child.Parent.PRT_LastName)
+                                    .ThenBy(m => m.Child.CLD_Birthdate).ToList();
+}
+<style type="text/css">
+    table {
+        border:1px solid black;
+        width:100%;
+        font-size:12px;
+        border-collapse:collapse;
+    }
+    td {
+        border:1px solid black;
+        padding:1px 3px;
+    }
+    td:not(.long) {
+        white-space:nowrap;
+        width:1px;
+        
+    }
+    .bold td {
+        font-weight:bold;
+    }
+    h3 {margin-left:3px;margin-bottom:0px;line-height: 30px;font-family: Calibri, sans-serif;font-size: 22px;font-weight: bold;}
+</style>
+<div id="temreport">
+<h2>@te.TEM_TeamName</h2>
+<h3>Coaches</h3>
+<table border="1">
+    <tr class="bold">
+        <td></td>
+        <td>Coach Name</td>
+        <td>Position</td>
+        <td>Phone</td>
+        <td class="long">Email</td>
+    </tr>
+    @{Int32 i = 0;}
+    @*if(headc!=null&&headc.CCH_TEM_TeamID!=Model){
+        i++;
+        <tr>
+            <td>@i</td>
+            <td>@Global.ParentName(headc) </td>
+            <td>Head Coach</td>
+            <td>@(headc.UserLogin.USR_Phone!=null?Global.FancyPhone(headc.UserLogin.USR_Phone):"")</td>
+            <td class="long">@headc.UserLogin.USR_Email</td>
+        </tr>
+    }*@
+@foreach (Coach co in cos)
+{
+    i++;
+    Parent p = co.UserLogin.Parent;
+    <tr>
+        <td>@i</td>
+        <td>@Global.ParentName(co) </td>
+        <td>@Definitions.CoachPositions[co.CCH_PositionID]</td>
+        <td>@(co.UserLogin.USR_Phone!=null?Global.FancyPhone(co.UserLogin.USR_Phone):"")</td>
+        <td class="long">@co.UserLogin.USR_Email</td>
+    </tr>
+}
+</table>
+<h3>Players</h3>
+<table>
+    <tr class="bold">
+        <td></td>
+        <td>Player Name</td>
+        <td>Parent Names</td>
+        <td>Age</td>
+        <td>Email</td>
+        <td>Phone</td>
+        <td colspan="2" class="email">Medical Notes</td>
+    </tr>
+    @{i = 0;}
+@foreach (Teammate t in ts)
+{
+    i++;
+    <tr>
+        <td>@i</td>
+        <td>@Global.ChildLastName(t.Child), @t.Child.CLD_FirstName</td>
+        <td>@Global.ParentNames(t.Child.Parent,true,false,false)</td>
+        <td>@Global.AgeOnReg(t.Child.CLD_Birthdate)</td>
+        @*<td>@(t.TMT_ShirtID.HasValue ? Definitions.ShirtSizes[t.TMT_ShirtID.Value] : "")</td>*@
+        <td>@t.Child.Parent.UserLogin.USR_Email</td>
+        <td>@Global.FancyPhone(t.Child.Parent.UserLogin.USR_Phone)</td>
+        <td colspan="2" class="email">@t.Child.CLD_Notes</td>
+        @*<td><input type="checkbox" disabled @(t.Payment != null && t.Payment.PMT_Paid ? "checked=\"checked\"" : "") /></td>*@
+    </tr>
+}
+</table>
+</div>

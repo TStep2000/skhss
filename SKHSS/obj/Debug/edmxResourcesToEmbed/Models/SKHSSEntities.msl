@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SKHSSEntitiesModelStoreContainer" CdmEntityContainer="SKHSSEntities">
+    <EntitySetMapping Name="Albums">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Album">
+        <MappingFragment StoreEntitySet="Album">
+          <ScalarProperty Name="ALB_RecordID" ColumnName="ALB_RecordID" />
+          <ScalarProperty Name="ALB_Title" ColumnName="ALB_Title" />
+          <ScalarProperty Name="ALB_Description" ColumnName="ALB_Description" />
+          <ScalarProperty Name="ALB_USR_RecordID" ColumnName="ALB_USR_RecordID" />
+          <ScalarProperty Name="ALB_Private" ColumnName="ALB_Private" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Caches">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Cache">
+        <MappingFragment StoreEntitySet="Cache">
+          <ScalarProperty Name="CAC_RecordID" ColumnName="CAC_RecordID" />
+          <ScalarProperty Name="CAC_Type" ColumnName="CAC_Type" />
+          <ScalarProperty Name="CAC_Date" ColumnName="CAC_Date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CacheItems">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.CacheItem">
+        <MappingFragment StoreEntitySet="CacheItem">
+          <ScalarProperty Name="CCI_RecordID" ColumnName="CCI_RecordID" />
+          <ScalarProperty Name="CCI_CAC_RecordID" ColumnName="CCI_CAC_RecordID" />
+          <ScalarProperty Name="CCI_Title" ColumnName="CCI_Title" />
+          <ScalarProperty Name="CCI_Content" ColumnName="CCI_Content" />
+          <ScalarProperty Name="CCI_Published" ColumnName="CCI_Published" />
+          <ScalarProperty Name="CCI_Labels" ColumnName="CCI_Labels" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Children">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Child">
+        <MappingFragment StoreEntitySet="Child">
+          <ScalarProperty Name="CLD_RecordID" ColumnName="CLD_RecordID" />
+          <ScalarProperty Name="CLD_PRT_RecordID" ColumnName="CLD_PRT_RecordID" />
+          <ScalarProperty Name="CLD_FirstName" ColumnName="CLD_FirstName" />
+          <ScalarProperty Name="CLD_LastName" ColumnName="CLD_LastName" />
+          <ScalarProperty Name="CLD_Birthdate" ColumnName="CLD_Birthdate" />
+          <ScalarProperty Name="CLD_Gender" ColumnName="CLD_Gender" />
+          <ScalarProperty Name="CLD_Notes" ColumnName="CLD_Notes" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Coaches">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Coach">
+        <MappingFragment StoreEntitySet="Coach">
+          <ScalarProperty Name="CCH_RecordID" ColumnName="CCH_RecordID" />
+          <ScalarProperty Name="CCH_USR_RecordID" ColumnName="CCH_USR_RecordID" />
+          <ScalarProperty Name="CCH_PRT_RecordID" ColumnName="CCH_PRT_RecordID" />
+          <ScalarProperty Name="CCH_PositionID" ColumnName="CCH_PositionID" />
+          <ScalarProperty Name="CCH_TEM_TeamID" ColumnName="CCH_TEM_TeamID" />
+          <ScalarProperty Name="CCH_PIC_RecordID" ColumnName="CCH_PIC_RecordID" />
+          <ScalarProperty Name="CCH_PRTID" ColumnName="CCH_PRTID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Contacts">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Contact">
+        <MappingFragment StoreEntitySet="Contact">
+          <ScalarProperty Name="CON_RecordID" ColumnName="CON_RecordID" />
+          <ScalarProperty Name="CON_PRT_RecordID" ColumnName="CON_PRT_RecordID" />
+          <ScalarProperty Name="CON_Phone" ColumnName="CON_Phone" />
+          <ScalarProperty Name="CON_Email" ColumnName="CON_Email" />
+          <ScalarProperty Name="CON_PRTID" ColumnName="CON_PRTID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Feedbacks">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Feedback">
+        <MappingFragment StoreEntitySet="Feedback">
+          <ScalarProperty Name="FBK_RecordID" ColumnName="FBK_RecordID" />
+          <ScalarProperty Name="FBK_USR_RecordID" ColumnName="FBK_USR_RecordID" />
+          <ScalarProperty Name="FBK_Name" ColumnName="FBK_Name" />
+          <ScalarProperty Name="FBK_Email" ColumnName="FBK_Email" />
+          <ScalarProperty Name="FBK_Message" ColumnName="FBK_Message" />
+          <ScalarProperty Name="FBK_Browser" ColumnName="FBK_Browser" />
+          <ScalarProperty Name="FBK_OS" ColumnName="FBK_OS" />
+          <ScalarProperty Name="FBK_BrowserString" ColumnName="FBK_BrowserString" />
+          <ScalarProperty Name="FBK_Viewed" ColumnName="FBK_Viewed" />
+          <ScalarProperty Name="FBK_Complete" ColumnName="FBK_Complete" />
+          <ScalarProperty Name="FBK_Date" ColumnName="FBK_Date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IPNs">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.IPN">
+        <MappingFragment StoreEntitySet="IPN">
+          <ScalarProperty Name="IPN_TransactionID" ColumnName="IPN_TransactionID" />
+          <ScalarProperty Name="IPN_RecieptDate" ColumnName="IPN_RecieptDate" />
+          <ScalarProperty Name="IPN_Amount" ColumnName="IPN_Amount" />
+          <ScalarProperty Name="IPN_Response" ColumnName="IPN_Response" />
+          <ScalarProperty Name="IPN_Email" ColumnName="IPN_Email" />
+          <ScalarProperty Name="IPN_Status" ColumnName="IPN_Status" />
+          <ScalarProperty Name="IPN_PayerEmail" ColumnName="IPN_PayerEmail" />
+          <ScalarProperty Name="IPN_PayerLastName" ColumnName="IPN_PayerLastName" />
+          <ScalarProperty Name="IPN_PMT_RecordID" ColumnName="IPN_PMT_RecordID" />
+          <ScalarProperty Name="IPN_Error" ColumnName="IPN_Error" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Logs">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Log">
+        <MappingFragment StoreEntitySet="Log">
+          <ScalarProperty Name="LOG_RecordID" ColumnName="LOG_RecordID" />
+          <ScalarProperty Name="LOG_Text" ColumnName="LOG_Text" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Orders">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Order">
+        <MappingFragment StoreEntitySet="Order">
+          <ScalarProperty Name="ORD_RecordID" ColumnName="ORD_RecordID" />
+          <ScalarProperty Name="ORD_PRT_RecordID" ColumnName="ORD_PRT_RecordID" />
+          <ScalarProperty Name="ORD_SeasonID" ColumnName="ORD_SeasonID" />
+          <ScalarProperty Name="ORD_Year" ColumnName="ORD_Year" />
+          <ScalarProperty Name="ORD_Volunteer" ColumnName="ORD_Volunteer" />
+          <ScalarProperty Name="ORD_Date" ColumnName="ORD_Date" />
+          <ScalarProperty Name="ORD_Approved" ColumnName="ORD_Approved" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Parents">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Parent">
+        <MappingFragment StoreEntitySet="Parent">
+          <ScalarProperty Name="PRT_RecordID" ColumnName="PRT_RecordID" />
+          <ScalarProperty Name="PRT_USR_RecordID" ColumnName="PRT_USR_RecordID" />
+          <ScalarProperty Name="PRT_FatherName" ColumnName="PRT_FatherName" />
+          <ScalarProperty Name="PRT_MotherName" ColumnName="PRT_MotherName" />
+          <ScalarProperty Name="PRT_LastName" ColumnName="PRT_LastName" />
+          <ScalarProperty Name="PRT_Address" ColumnName="PRT_Address" />
+          <ScalarProperty Name="PRT_City" ColumnName="PRT_City" />
+          <ScalarProperty Name="PRT_Zipcode" ColumnName="PRT_Zipcode" />
+          <ScalarProperty Name="PRT_PrimaryEmail" ColumnName="PRT_PrimaryEmail" />
+          <ScalarProperty Name="PRT_PrimaryPhone" ColumnName="PRT_PrimaryPhone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Payments">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Payment">
+        <MappingFragment StoreEntitySet="Payment">
+          <ScalarProperty Name="PMT_RecordID" ColumnName="PMT_RecordID" />
+          <ScalarProperty Name="PMT_ORD_RecordID" ColumnName="PMT_ORD_RecordID" />
+          <ScalarProperty Name="PMT_Uniforms" ColumnName="PMT_Uniforms" />
+          <ScalarProperty Name="PMT_Registrations" ColumnName="PMT_Registrations" />
+          <ScalarProperty Name="PMT_LateFee" ColumnName="PMT_LateFee" />
+          <ScalarProperty Name="PMT_Total" ColumnName="PMT_Total" />
+          <ScalarProperty Name="PMT_IPN_TransactionID" ColumnName="PMT_IPN_TransactionID" />
+          <ScalarProperty Name="PMT_TransactionDate" ColumnName="PMT_TransactionDate" />
+          <ScalarProperty Name="PMT_Paid" ColumnName="PMT_Paid" />
+          <ScalarProperty Name="PMT_Current" ColumnName="PMT_Current" />
+          <ScalarProperty Name="PMT_Date" ColumnName="PMT_Date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Phones">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Phone">
+        <MappingFragment StoreEntitySet="Phone">
+          <ScalarProperty Name="PHN_PhoneNumber" ColumnName="PHN_PhoneNumber" />
+          <ScalarProperty Name="PHN_Type" ColumnName="PHN_Type" />
+          <ScalarProperty Name="RecordID" ColumnName="RecordID" />
+          <ScalarProperty Name="PHN_ProviderName" ColumnName="PHN_ProviderName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Pictures">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Picture">
+        <MappingFragment StoreEntitySet="Picture">
+          <ScalarProperty Name="PIC_RecordID" ColumnName="PIC_RecordID" />
+          <ScalarProperty Name="PIC_Filename" ColumnName="PIC_Filename" />
+          <ScalarProperty Name="PIC_Caption" ColumnName="PIC_Caption" />
+          <ScalarProperty Name="PIC_ALB_RecordID" ColumnName="PIC_ALB_RecordID" />
+          <ScalarProperty Name="PIC_Year" ColumnName="PIC_Year" />
+          <ScalarProperty Name="PIC_SeasonID" ColumnName="PIC_SeasonID" />
+          <ScalarProperty Name="PIC_TeamID" ColumnName="PIC_TeamID" />
+          <ScalarProperty Name="PIC_Private" ColumnName="PIC_Private" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SysVars">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.SysVar">
+        <MappingFragment StoreEntitySet="SysVar">
+          <ScalarProperty Name="GBL_ID" ColumnName="GBL_ID" />
+          <ScalarProperty Name="GBL_Data" ColumnName="GBL_Data" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Teams">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Team">
+        <MappingFragment StoreEntitySet="Team">
+          <ScalarProperty Name="TEM_TeamID" ColumnName="TEM_TeamID" />
+          <ScalarProperty Name="TEM_TeamName" ColumnName="TEM_TeamName" />
+          <ScalarProperty Name="TEM_PIC_RecordID" ColumnName="TEM_PIC_RecordID" />
+          <ScalarProperty Name="TEM_MinAge" ColumnName="TEM_MinAge" />
+          <ScalarProperty Name="TEM_MaxAge" ColumnName="TEM_MaxAge" />
+          <ScalarProperty Name="TEM_Gender" ColumnName="TEM_Gender" />
+          <ScalarProperty Name="TEM_Enabled" ColumnName="TEM_Enabled" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Teammates">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.Teammate">
+        <MappingFragment StoreEntitySet="Teammate">
+          <ScalarProperty Name="TMT_RecordID" ColumnName="TMT_RecordID" />
+          <ScalarProperty Name="TMT_CLD_RecordID" ColumnName="TMT_CLD_RecordID" />
+          <ScalarProperty Name="TMT_TEM_TeamID" ColumnName="TMT_TEM_TeamID" />
+          <ScalarProperty Name="TMT_PMT_RecordID" ColumnName="TMT_PMT_RecordID" />
+          <ScalarProperty Name="TMT_Year" ColumnName="TMT_Year" />
+          <ScalarProperty Name="TMT_SeasonID" ColumnName="TMT_SeasonID" />
+          <ScalarProperty Name="TMT_ShirtID" ColumnName="TMT_ShirtID" />
+          <ScalarProperty Name="TMT_Accepted" ColumnName="TMT_Accepted" />
+          <ScalarProperty Name="TMT_PIC_RecordID" ColumnName="TMT_PIC_RecordID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserLogins">
+      <EntityTypeMapping TypeName="SKHSSEntitiesModel.UserLogin">
+        <MappingFragment StoreEntitySet="UserLogin">
+          <ScalarProperty Name="USR_RecordID" ColumnName="USR_RecordID" />
+          <ScalarProperty Name="USR_PRT_RecordID" ColumnName="USR_PRT_RecordID" />
+          <ScalarProperty Name="USR_UserID" ColumnName="USR_UserID" />
+          <ScalarProperty Name="USR_ROL_RoleID" ColumnName="USR_ROL_RoleID" />
+          <ScalarProperty Name="USR_Username" ColumnName="USR_Username" />
+          <ScalarProperty Name="USR_Password" ColumnName="USR_Password" />
+          <ScalarProperty Name="USR_Email" ColumnName="USR_Email" />
+          <ScalarProperty Name="USR_Phone" ColumnName="USR_Phone" />
+          <ScalarProperty Name="USR_ResetDate" ColumnName="USR_ResetDate" />
+          <ScalarProperty Name="USR_Activated" ColumnName="USR_Activated" />
+          <ScalarProperty Name="USR_Approved" ColumnName="USR_Approved" />
+          <ScalarProperty Name="USR_Test" ColumnName="USR_Test" />
+          <ScalarProperty Name="USR_Temp" ColumnName="USR_Temp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="SP_Nearforums_AuthenticateUser_TSQL" FunctionName="SKHSSEntitiesModel.Store.SP_Nearforums_AuthenticateUser_TSQL">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SKHSSEntitiesModel.SP_Nearforums_AuthenticateUser_TSQL_Result">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

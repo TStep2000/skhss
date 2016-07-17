@@ -1,0 +1,80 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@{
+    Layout = null;
+    List<Teammate> ts = Data.GetAllCurrentTeammates().Where(m => m.Child.Parent.UserLogin.USR_Test != true).OrderBy(m => m.Child.Parent.PRT_LastName).ThenBy(m => m.Child.Parent.PRT_RecordID).ThenBy(m => m.Child.CLD_Birthdate).ToList();
+    Guid currP = Guid.Empty;
+}
+<style type="text/css">
+    #grid {
+        width:100%;
+        border-top:1px solid black;
+        border-left:1px solid black;
+        border-collapse:collapse;
+    }
+    /*all rows
+    #grid > div {
+        display:table-row;
+    }
+    /*columns*/
+    .age, .paid {
+        width:10px;
+        text-align:center;
+    }
+    .num,.name,.parents,.parentlast,.city,.phone,.agegrp,.birthdate,.shirt {
+        width:1px;
+        white-space:nowrap;
+    }
+    .email {font-size:10px!important;}
+    /*all cells*/
+    td {
+        border-bottom:1px solid black;
+        border-right:1px solid black;
+        padding:2px 5px 2px 3px;
+        position:relative;
+        font-size:12px!important;
+    }
+    #toprow {
+        font-weight: bold;
+    }
+</style>
+<div id="regreport">
+<h2>Registrations</h2> 
+<table id="grid">
+    <tr id="toprow">
+        <td class="num"></td>
+        <td class="name">Player Name</td>
+        <td class="age">Age</td>
+        @*<td class="birthdate">Birthdate</td>*@
+        <td class="agegrp">Age Group</td>
+        <td class="parents">Parent's names</td>
+        @*<td class="city">City</td>*@
+        <td class="phone">Phone</td>
+        <td class="email long">Email</td>
+        <td class="shirt">Shirt</td>
+        <td class="paid">Pd</td>
+    </tr>
+@{Int32 i = 0;}
+@foreach (Teammate t in ts)
+{
+    i++;
+    Child c = t.Child;
+    Parent p = c.Parent;
+    <tr>
+        <td class="num">@i</td>
+        <td class="name">@Global.ChildLastName(c), @c.CLD_FirstName</td>
+        <td class="age">@Global.Age(c.CLD_Birthdate)</td>
+        @*<td class="birthdate">@c.CLD_Birthdate.ToShortDateString()</td>*@
+        <td class="agegrp">@t.Team.TEM_TeamName</td>
+        <td class="parents">@Global.ParentNames(p, true, false, false) @p.PRT_LastName</td>
+        @*<td class="city">@p.PRT_City</td>*@
+        <td class="phone">@(p.UserLogin.USR_Phone!=null?Global.FancyPhone(p.UserLogin.USR_Phone):"")</td>
+        <td class="email long">@p.UserLogin.USR_Email</td>
+        @*<td class="amt">$@(t.TMT_ShirtID.HasValue?(Definitions.RegistrationPrice+Definitions.UniformPrice):Definitions.RegistrationPrice)</td>*@
+        @*<td class="paid">@(t.Order != null && t.Order.ORD_Paid == true ? "X" : "")</td>*@
+        <td class="shirt">@(t.TMT_ShirtID.HasValue ? Definitions.ShirtSizes[t.TMT_ShirtID.Value] : "")</td>
+        <td class="paid"><input type="checkbox" disabled @(t.Payment != null && t.Payment.PMT_Paid ? "checked=\"checked\"" : "") /></td>
+    </tr>
+}
+</table>
+</div>

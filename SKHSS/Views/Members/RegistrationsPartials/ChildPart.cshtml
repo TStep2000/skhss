@@ -1,0 +1,91 @@
+﻿@model Child
+@using SKHSS.Helpers
+@using SKHSS.Models
+@{
+    Layout = null;
+    List<String> tm = Definitions.Teams;
+    List<Team> tms = Data.GetTMs(m => m.TEM_Enabled == true).ToList();
+    List<String> se = Definitions.Seasons;
+    List<String> sh = Definitions.ShirtSizes;
+    Int32 num = ViewBag.Num;
+    Boolean ext = Model != null;
+    SKHSS.Models.Teammate t = null;
+    Boolean srt = false;
+    if (ext)
+    {
+        t  = Data.GetCurrentTeammate(Model);
+        srt = (t!=null&&t.TMT_ShirtID!=null);   
+    }
+    String id = (ext?Model.CLD_RecordID.ToString():num.ToString());
+    System.Threading.Thread.Sleep(500);
+}
+<div class="row Child fancylist @id" id="@id">
+    @if (ext)
+    {
+        <input type="hidden" class="crid" value="@Model.CLD_RecordID" />
+    }
+    <div class="inputs">
+        <input type="text" class="FirstName fncy-box" placeholder="First Name" value="@(ext?Model.CLD_FirstName:"")" />
+    </div>
+    <div class="inputs">
+        <input type="text" class="LastName fncy-box" placeholder="Last Name" value="@(ext?Model.CLD_LastName:"")" />
+    </div>
+    <div class="inputs">
+        <input type="text" class="Birthdate fncy-box" placeholder="Birthdate" value="@(ext?Model.CLD_Birthdate.ToShortDateString():"")" />
+    </div>
+    <div class="agecont">Age: <span class="age">@(ext?Global.AgeOnReg(Model.CLD_Birthdate).ToString():"")</span></div>
+    <div class="mult-opt">
+        <div class="opt">
+            <input type="radio" name="@(id)Gender" class="Gender" value="False" @(ext?Model.CLD_Gender!=true?"checked":"":"") /><label for="c@(num)opt1">Male</label>
+        </div>
+        <div class="opt">
+            <input type="radio" name="@(id)Gender" class="Gender" value="True" @(ext?Model.CLD_Gender?"checked":"":"")  /><label for="c@(num)opt2">Female</label>
+        </div>
+    </div>
+    <div class="notes">
+        <textarea class="Notes fncy-box" placeholder="Note" >@(ext?Model.CLD_Notes:"")</textarea>
+    </div>
+    <div class="Teammate" id="t@(num)">
+        @if (ext && (t != null))
+        {
+            <input type="hidden" class="trid" value="@t.TMT_RecordID" />
+        }
+        <fieldset><legend>Team</legend><select class="TeamID">
+            @{Int32 tid = ext?Global.TeamID(Model.CLD_Birthdate):-1;
+              if(ext&&t!=null){tid = t.TMT_TEM_TeamID;}}
+            @for (int l = 0; l < tms.Count; l++ )
+            {
+                <option value="@tms[l].TEM_TeamID" @(ext?tms[l].TEM_TeamID==tid?"selected":"":"") >@tms[l].TEM_TeamName</option>
+            }
+        </select></fieldset>
+        <fieldset><legend>Shirt</legend><input type="checkbox" class="isShirt" @(srt?"checked":"") />&nbsp;<select @(srt?"":"disabled") class="ShirtID">
+            @for (int l = 0; l < sh.Count; l++ )
+            {
+                <option value="@l" @(srt?l==t.TMT_ShirtID?"selected":"":"")>@sh[l]</option>
+            }
+        </select></fieldset>
+        <fieldset><legend>Year</legend><select disabled class="Year">
+            @{Int32 year = Global.CurrentYear;}
+            @for (int k = DateTime.Now.Year - 10; k <= DateTime.Now.Year + 1; k++)
+            {
+                <option value="@k" @(k == year ? "selected" : "")>@k</option>
+            }
+        </select></fieldset>
+        <fieldset><legend>Season</legend><select disabled class="SeasonID">
+            @{Int32 season = Global.CurrentSeasonID;}
+            @for (int l = 0; l < se.Count; l++ )
+            {
+                <option value="@l" @(l == season ? "selected" : "")>@se[l]</option>
+            }
+        </select></fieldset>
+        <div>
+            <br />
+            (Current year and season)
+        </div>
+    </div>
+    <div class="removechild imgbtn" data-group="@id" data-delete-id="@(ext && (t != null)?t.TMT_RecordID.ToString():"")">
+        <img data-func="askdelete" data-delete-message="Confirm Deletion?" data-delete-type="r" src="/Content/icons/delete.png" alt="delete" />
+        <img class="load hide hide1" src="/Content/loading.gif" alt="loading" />
+        <img class="chk hide hide1" src="/Content/icons/gcheck.png" alt="done"/>
+    </div>
+</div>

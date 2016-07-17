@@ -1,0 +1,54 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Teammate
+@{Layout = null;}
+<div id="@Model.TMT_RecordID" class="t Teammate node hide @Model.TMT_RecordID">
+    <input type="hidden" class="trid" value="@Model.TMT_RecordID" />
+    <div class="leftm fl-start">
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+        {
+            @*<div class="userid btn"><img src="/Content/icons/cog.png" /></div>*@
+            <div class="imgbtn ids">
+                <img data-func="show" src="/Content/icons/cog.png" alt="open" />
+            </div>
+        }
+    </div>
+    <fieldset class="settings hide"><legend>Record ID</legend><span style="position:absolute;height:18px;overflow:hidden;">@Model.TMT_RecordID</span></fieldset>
+    <div class="fields">
+        <fieldset class="fsTeamID"><legend>Team</legend><select class="TeamID">
+            @for (int l = 0; l < Definitions.Teams.Count; l++)
+            {
+                <option value="@l" @(l == Model.TMT_TEM_TeamID ? "selected" : "")>@Definitions.Teams[l]</option>
+            }
+        </select></fieldset>
+        <fieldset class="fsYear"><legend>Year</legend><select class="Year">
+            @for (int k = DateTime.Now.Year - 10; k <= DateTime.Now.Year + 1; k++)
+            {
+                <option value="@k" @(k == Model.TMT_Year ? "selected" : "")>@k</option>
+            }
+        </select></fieldset>
+        <fieldset class="fsSeasonID"><legend>Season</legend><select class="SeasonID">
+            @for (int l = 0; l < Definitions.Seasons.Count; l++)
+            {
+                <option value="@l" @(l == Model.TMT_SeasonID ? "selected" : "")>@Definitions.Seasons[l]</option>
+            }
+        </select></fieldset>
+        <fieldset class="fsShirtID"><legend>Shirt</legend><input type="checkbox" class="isShirt" @(Model.TMT_ShirtID.HasValue?"checked":"") />&nbsp;<select @(Model.TMT_ShirtID.HasValue?"":"disabled") class="ShirtID">
+            @for (int l = 0; l < Definitions.ShirtSizes.Count; l++ )
+            {
+                <option value="@l" @(l == Model.TMT_ShirtID ? "selected" : "")>@Definitions.ShirtSizes[l]</option>
+            }
+        </select></fieldset>
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+        {
+            <fieldset class="Accepted"><legend>Accepted</legend><input class="Accepted" type="text" value="@Model.TMT_Accepted" /></fieldset>
+        }
+    </div>
+    <div class="rightm fl-end">
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole)){
+        <div class="imgbtn" data-group="@Model.TMT_RecordID">
+            <img data-func="delete" data-delete-type="s" data-delete-message="Are you sure you want to delete this account?" src="/Content/icons/delete.png" />
+        </div>}
+    </div>
+    <div class="clear"></div>
+</div>

@@ -1,0 +1,325 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model List<Picture>
+@{
+    ViewBag.Title = "Album";
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Script1 = "ThreeDots.js";
+    //ViewBag.Script2 = "Lightbox.js";
+    ViewBag.Style1 = "nivo-lightbox.css";
+    ViewBag.Style2 = "default.css";
+    ViewBag.Script2 = "nivo-lightbox.min.js";
+    ViewBag.Script3 = "Lightbox.js";
+}
+<style>
+    .picture {
+        position:relative;
+        display:inline-block;
+        padding-bottom:20px;
+        margin-bottom:5px;
+        border-top:1px solid #ccc;
+        border-radius:5px;
+        cursor:pointer;
+        overflow:hidden;
+    }
+    .picture img
+    {
+        display:block;
+        width:100%;
+    }
+    .picture .shadow {
+        position:relative;
+        display:block;
+        max-height:200px;
+        overflow:hidden;
+    }
+    .picture .shadow::before
+    {
+        display:block;
+        content:'';
+        position:absolute;
+        width:100%;
+        height:100%;
+    }
+    .picture:hover .shadow::before {
+        box-shadow:inset 0px 0px 10px 1px rgba(0,0,0,0.4);
+        -moz-box-shadow:inset 0px 0px 10px 1px rgba(0,0,0,0.4);
+        -webkit-box-shadow:inset 0px 0px 10px 1px rgba(0,0,0,0.4);
+    }
+    .picture .caption {
+        position:absolute;
+        bottom:3px;
+        left:0;
+        text-align:center;
+        width:100%;
+        padding:0 4px;
+    }
+    .picture:hover {
+        border-bottom-left-radius: 33px;
+    }
+    .picture .innershadow {
+        position:absolute;
+        box-shadow: 0px 0px 8px 0px #000;
+        -moz-box-shadow: 0px 0px 8px 0px #000;
+        -webkit-box-shadow: 0px 0px 8px 0px #000;
+        bottom: -24px;
+        width: 40px;
+        height: 40px;
+        left: -20px;
+        border-radius: 100%;
+        display:none;
+    }
+    .picture:hover .innershadow {
+        display:block;
+    }
+    #editalbum {
+        font-size:18px;
+        width:150px;
+        position:absolute;
+        top:10px;
+        right:10px;
+    }
+    #deletealbum {
+        position:absolute;
+        top:10px;
+        right:170px;
+        padding:0px 2px;
+    }
+    .delete {
+        display:none;
+        position:absolute;
+        left:10px;
+        line-height:17px;
+        top:15px;
+        height:22px;
+        width:20px;
+        color:white;
+        text-shadow:0px 0px 2px #000;
+        user-select:none;
+        cursor:pointer;
+        padding-left:3.5px;
+        background-color:#fff;
+        font-size:18px;
+        font-weight:bolder;
+        border-radius:100%;
+        border:1px solid #000;
+    }
+    .delete:hover {text-shadow:0px 0px 4px #000;}
+    #nope {float:right;width:50px;}
+    #yup {float:left;width:50px;}
+    .ok {float:none !important;width:auto !important;}
+    .nivo-lightbox-title {
+        position:fixed;
+        top:95%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        -webkit-transform:translate(-50%,-50%);
+        font-size:18px !important;
+    }
+    .nivo-lightbox-title .fncybtn {
+        position:absolute;
+        background:black;
+        border-radius:30px;
+        height:34px;
+        top:0px;
+        padding-top:7px;
+        border:1px solid #333;
+        width:140px;
+        font-size:14px;
+    }
+    .nivo-lightbox-title .fncybtn:hover {
+        text-decoration:underline;
+    }
+    .nivo-lightbox-title #addtoprof {
+        left:calc(100% + 5px);
+    }
+    .nivo-lightbox-title #addtoteam {
+        right:calc(100% + 5px);
+    }
+    @@media screen and (-webkit-min-device-pixel-ratio: 3.0) and (max-width: 980px) and (orientation:portrait), screen and (max-width: 600px) {
+        .picture {
+            width:100%;
+        }
+        #editalbum {
+            width:100px;
+            font-size:14px;
+        }
+        #deletealbum {
+            right:120px;
+        }
+        .nivo-lightbox-title .fncybtn {
+            top:40px;
+        }
+        .nivo-lightbox-title #addtoprof {
+            left:53%;
+        }
+        .nivo-lightbox-title #addtoteam {
+            right:53%;
+        }
+        .nivo-lightbox-title {
+            top: 85%;
+        }
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var breakwidth = 200;
+        var maxwidth = $("#pictures").outerWidth();
+        if (maxwidth / 4 > breakwidth) {
+            $("#picstyle").html(".fancylist{width:calc(25% - 5px);}.fancylist:nth-child(4n){margin-right:0;}")
+        } else if (maxwidth / 3 > breakwidth) {
+            $("#picstyle").html(".fancylist{width:calc(33% - 5px);}.fancylist:nth-child(3n){margin-right:0;}")
+        } else if (maxwidth / 2 > 175) {
+            $("#picstyle").html(".fancylist{width:calc(50% - 5px);}.fancylist:nth-child(2n){margin-right:0;}")
+        } else {
+            $("#picstyle").html(".fancylist{width:100%;margin-right:0;}")
+        }
+        $(window).resize(function () {
+            var maxwidth = $("#pictures").outerWidth();
+            if (maxwidth / 4 > breakwidth) {
+                $("#picstyle").html(".fancylist{width:calc(25% - 5px);}.fancylist:nth-child(4n){margin-right:0;}")
+            } else if (maxwidth / 3 > breakwidth) {
+                $("#picstyle").html(".fancylist{width:calc(33% - 5px);}.fancylist:nth-child(3n){margin-right:0;}")
+            } else if (maxwidth / 2 > 175) {
+                $("#picstyle").html(".fancylist{width:calc(50% - 5px);}.fancylist:nth-child(2n){margin-right:0;}")
+            } else {
+                $("#picstyle").html(".fancylist{width:100%;margin-right:0;}")
+            }
+        });
+        /*if (qs != undefined) {
+            if (qs["open"] != undefined) {
+                openPicture();
+            }
+            if (qs["edit"] != undefined) {
+                openThislightbox();
+            }
+        }*/
+        $(".picture a").nivoLightbox();
+        $(".picture a").on("click", function (e) {
+            e.preventDefault();
+            $("#addtoteam").on("click", function () {
+                finalmessage("Are you sure you want to replace the current image?<br/><div id='yup' class='fncybtn'>Yes</div><div id='nope' class='fncybtn'>No</div>");
+                $("#yup").on("click", function () {
+                    $.post("/Members/ChangeTeamPic", { id: $(".nivo-lightbox-image img").attr("src") }, function () {
+                        $("#finalmessage").remove();
+                        finalmessage("Team picture successfully changed");
+                        setTimeout(closefinalmessage, 700);
+                    });
+                });
+            });
+            $("#addtoprof").on("click", function () {
+                finalmessage("Are you sure you want to replace the current image?<br/><div id='yup' class='fncybtn'>Yes</div><div id='nope' class='fncybtn'>No</div>");
+                $("#yup").on("click", function () {
+                    $.post("/Members/ChangeCoachPic", { id: $(".nivo-lightbox-image img").attr("src") }, function () {
+                        $("#finalmessage").remove();
+                        finalmessage("Profile picture successfully changed");
+                        setTimeout(closefinalmessage, 700);
+                    });
+                });
+            });
+            $(".nivo-lightbox-close").on("click", closenivo);
+            $(".nivo-lightbox-overlay").on("click", closenivo);
+        });
+        function closenivo(e) {
+            if ($(e.target).hasClass("nivo-lightbox-overlay") || $(e.target).hasClass("nivo-lightbox-close")) {
+                e.preventDefault();
+                $("#addtoteam").off("click");
+                $("#addtoprof").off("click");
+                closefinalmessage();
+            }
+        }
+        $("#editalbum").on("click", function (e) {
+            e.preventDefault();
+            if ("@ViewBag.Owned" == "True") {
+                openThislightbox();
+            }
+        });
+        function openThislightbox() {
+            $.ajax({ url: $("#editalbum a").attr("href") }).done(function (data) {
+                openlightbox(data, 850, $(window).height(), true);
+                $("#closelightbox").on("click", closelightbox);
+                $("#closelightbox").css("transition", "0").css("position", "absolute").css("padding", "1px 3px").css("left", 6).css("top", 6);
+            });
+        }
+        function openPicture(input) {
+            $(".picture:nth-of-type(@ViewBag.open)").trigger("click");
+        }
+        $("#deletealbum").on("click", deleteAlbumClick);
+    });
+    $(window).on("closelightbox", function (e) {
+        var errors = e.errors;
+        if (errors.length == 0) {
+            finalmessage("Your album was saved successfully");
+            setTimeout(function () { window.location.reload(); }, 1000);
+        }
+        else {
+            finalmessage("" + errors.length + " picture" + (errors.length == 1 ? "" : "s") + " did not upload properly. <div id='errors'></div><div id='closeerror' class='fncybtn'>Ok</div>");
+            for (var i = 0; i < errors.length; i++) {
+                $("#errors").append(errors[i].substring(errors[i].lastIndexOf("/")) + "<br/>");
+            }
+            $("#closeerror").on("click", function () {
+                closefinalmessage();
+                setTimeout(function () {
+                    location.reload();
+                }, 300);
+            });
+        }
+    });
+    function deleteAlbumClick() {
+        finalmessage("Are you sure you want to delete this album?<br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+        $("#yup").on("click", deletealbum);
+        $("#nope").on("click", closefinalmessage);
+    }
+    function deletealbum() {
+        var canc = false;
+        $.post("/Members/DeleteAlbum", { id: "@ViewBag.AlbumID" }, function (data) {
+            if (data[0] == "!") {
+                finalmessage("Oh, no! there was an error!<br/>" + data.substr(1) + " <div class='fncybtn ok' id='nope'>OK</div>");
+                canc = true;
+            }
+            else if (data[0] == "~") {
+                if (data[1] == "c") {
+                    finalmessage("One or more pictures are being used as a profile picture, if you delete it, the user will not be able to use it anymore.<br/> Continue? <br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+                }
+                else {
+                    finalmessage("One or more pictures are being used as a primary team picture, if you delete it, that team will not be able to use it anymore.<br/> Continue? <br/><div class='fncybtn' id='yup'>Yes</div><div class='fncybtn' id='nope'>No</div>");
+                }
+                canc = truel
+                $("#yup").on("click", function () {
+                    $.post("/Members/DeleteAlbum", { id: "@ViewBag.AlbumID", over: true }, success);
+                });
+            }
+            else {
+                success(true);
+                canc = false;
+            }
+            $("#nope").on("click", closefinalmessage);
+        });
+    }
+    function success(d) {
+        finalmessage("Album sucessfuly deleted!<br/>Redirecting...");
+        setTimeout(function () { window.location = "/Members/Pictures"; }, 1000);
+    }
+    function finalmessage(data) {
+        if ($("#finalmessage").length > 0) {
+            $("#finalmessage").remove();
+        }
+        $("body").append("<div id='finalmessage'>" + data + "</div>");
+        $("#finalmessage").css("top", "calc(50% - " + ($("#finalmessage").height() / 2) + "px)");
+        $("#nope").on("click", closefinalmessage);
+    }
+</script>
+<style id="picstyle" type="text/css"></style>
+<h2>@((ViewBag.AlbumName!="")?ViewBag.AlbumName:"Untitled")</h2>
+@if(ViewBag.Owned||Global.IsInRole(User.Identity.Name,Global.MeRole))
+{
+    <div id="deletealbum" class="fncybtn">Delete Album</div>
+    <div id="editalbum" class="fancybtn2"><a href="@Url.Action("EditAlbum", new {id=ViewBag.AlbumID })">Edit Album</a></div>
+}
+<div id="pictures">
+    @Html.DisplayForModel()
+</div>
+@if (ViewBag.Crash)
+{
+    <div>Whoops! I think I broke something. Or you did, so check the URL, cause I think something's wrong there...</div>
+}

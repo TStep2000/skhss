@@ -1,0 +1,175 @@
+﻿h2,h3 {
+    margin-top:0px;
+}
+/* Layout */
+#leftside
+{
+    
+}
+#rightside
+{
+    padding-left:10px;
+    margin-left:10px;
+}
+.regside
+{
+    width:100%;
+    min-height:430px;
+    background:#f1f1f1;
+    border:1px solid #c1c1c1;
+    padding:10px;
+    position:relative;
+    border-radius:3px;
+}
+.regwrapper
+{
+    position:relative;
+    float:left;
+    width:calc(50% - 5px);
+    margin-bottom:10px;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 3.0) and (max-width: 980px) and (orientation:portrait), screen and (max-width: 600px) {
+    .regwrapper {
+        width:100%;
+    }
+    #rightside {
+        padding-left:0;
+        margin-left:0;
+    }
+    h2 {
+        font-size:22px;
+        line-height:22px;
+    }
+    #submitcont {margin-top:5px!important;}
+}
+.box{position:relative; float:left; padding:0 5px;}
+.box-12{width:100%;}
+.box-6{width:50%;}
+.box-8{width:75%}
+.box-4{width:25%;}
+.box-2{width:12.5px;}
+.row {margin-bottom:8px;}
+.row.last {margin-bottom:0;}
+.childnamebox{width:calc(75% - 100px);}
+.date {min-width:100px;}
+.btnbox{width:20px;margin-left:10px;padding-top:12px;user-select:none;-moz-user-select:none;-webkit-user-select:none;}
+/* Special Boxes */
+.filled{background:#e1e1e1; border:1px solid #d1d1d1; border-radius:3px;}
+.genderbox label{padding-left:8px;}
+.genderbox
+{
+    padding:3px 5px 0 5px; 
+    width:50px; 
+    line-height:12px;
+    position:relative;
+    top:0px;
+    left:5px;
+}
+/*#moc label:first-of-type{padding-right:35px;}*/
+#moc
+{
+    margin:0 2% 0 0; 
+    padding-left:3px; 
+    width:48%;
+    position:relative;
+    top:0px;
+    left:5px;
+    font-size:13px;
+    font-weight:bold;
+    text-align:center;
+}
+#mocp {float:left;margin-left:calc(2% + 3px);}
+#moce {float:right;margin-right:calc(2% + 3px);}
+#moc label {
+    font-size:13px;
+    font-weight:normal;
+    margin-left:4px;
+    position:relative;
+    top:1px;
+}
+.phname[name=Phone] {
+    top:-7px;
+}
+#chk{float:right; text-align:right; margin-top:0px; display:none;min-width:135px;}
+#qu{display:inline-block;position:relative;width:13px;height:13px;top:2px;background:url("glyphicons_question_small.png");}
+
+/*#spc{width:100px; height:31px; margin-left:5px; margin-bottom:15px;}*/
+
+/* Validation */
+#valsum{position:absolute; bottom:0; right:200px; height:20px; width:200px;}
+#valmessage{position:absolute; font-weight:lighter; right:5px; bottom:5px; color:Red;}
+.valmessage{display:none;}
+#validationerrors{color:Red;}
+/* Special Inputs */
+input[type="radio"],input[type="checkbox"]
+{
+    margin:-2px 0 0 2px;
+}
+.fncy-box
+{
+    padding: 0 0.5em;
+    height: 2.5em;
+}
+/* Submit button */
+#submitcont
+{
+    margin-top:10px;
+    float:right;
+}
+#Object
+{
+    /*position:relative;
+    bottom:-50px;
+    left:3px;*/
+    margin-right:5px;
+    padding:1px 6px;
+    background:#f1f1f1;
+    border:1px solid #c1c1c1;
+    cursor:pointer;
+    font-family:Calibri, Sans-Serif;
+    font-weight:200;
+    font-size:25px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    -webkit-transition: all 0.10s linear;
+    -moz-transition: all 0.10s linear;
+    transition: all 0.10s linear;
+}
+#Object:hover
+{
+    -webkit-box-shadow: inset 0 1px 4px rgba(0,0,0,0.4);
+    -moz-box-shadow: inset 0 1px 4px rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.4); 
+}
+#Object:active
+{
+    background:#e1e1e1;
+    border:1px solid #c1c1c1; 
+    -webkit-transition: all 0.005s linear;
+    -moz-transition: all 0.005s linear;
+    transition: all 0.005s linear; 
+}
+/* Add/Remove buttons */
+#addChild{background:url("glyphicons_plus_small.png");float:right;position:relative;top:-47px;}
+#addChild, .removeChild
+{
+    cursor:pointer;
+    display:inline-block;
+    width:18px;
+    height:18px;
+    
+}
+.removeChild{background:url("glyphicons_minus_small.png");}
+#addwrapper
+{
+    float:right;
+    padding-right:17px;
+    padding-top:12px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    width:100%;
+    text-align:center;
+}

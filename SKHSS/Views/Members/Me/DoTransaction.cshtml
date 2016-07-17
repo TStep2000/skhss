@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "DoTransaction";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#dotrans").on("click", function () {
+            var obj = new Object();
+            obj.txn_id = $("#TransactionID").val();
+            obj.mc_gross = $("#amount").val();
+            obj.receiver_email = "mathguy3@gmail.com";
+            obj.payment_status = "Completed";
+            obj.prt_id = $("#ParentID").val();
+            $.post("/Members/DoTransaction", { prt_id: $("#ParentID").val(), txn_id: $("#TransactionID").val() }, function (ret) {
+                $("#message").text(ret);
+                $.post("/AJAX/IPN?txn_id=" + $("#TransactionID").val() + "&mc_gross=" + $("#amount").val() + "&receiver_email=mathguy3@gmail.com&payment_status=Completed", { data: JSON.stringify(obj) }, function (ret2) {
+                    $("#message2").text(ret2);
+                });
+            });
+        });
+    });
+</script>
+<h2>DoTransaction</h2>
+
+ParentID: <input type="text" id="ParentID" /><br />
+Amount: <input type="text" id="amount" /><br />
+TransactionID: <input type="text" id="TransactionID" />
+<br /><br />
+<input type="submit" id="dotrans" value="Do!" />
+
+<span id="message"></span>
+<span id="message2"></span>

@@ -1,0 +1,72 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Guid?
+@{
+    Layout = null;
+    Boolean all = ViewBag.All == true;
+    List<Parent> ps = new List<Parent>();
+    if (all)
+    {
+        ps = Data.GetPs().ToList();
+    }
+    else if (Model.HasValue)
+    {
+        String type = ViewBag.Type;
+        switch(type){
+            default:
+                ps.Add(Data.GetP(m => m.PRT_RecordID == Model));
+            break;
+        }
+    }
+}
+@foreach (Parent p in ps)
+{
+<div class="fancylist p @p.PRT_RecordID" data-group="@p.PRT_RecordID" data-type="p" id="@p.PRT_RecordID">
+    <input type="hidden" class="prid" value="@p.PRT_RecordID" />
+    <span class="title"><b>Parent</b></span>
+    <div class="topm">
+        <div class="imgbtn fl-start" data-group="@p.PRT_RecordID">
+            <img data-func="askdelete" src="/Content/icons/delete.png" />
+        </div>
+        <div class="imgbtn">
+            <img data-func="show" src="/Content/icons/cog.png" />
+        </div>
+        <div class="imgbtn" data-group="@p.PRT_RecordID">
+            <img alt="save" class="save" data-func="save" data-save-type="Parent" src="/Content/icons/save.png" />
+            <img alt="loading" class="load hide1 hide" src="/Content/loading.gif">
+            <img alt="done" class="chk hide1 hide" src="/Content/icons/gCheck.png">
+        </div>
+    </div>
+    <div class="rightm">
+        <div class="fncybtn2" data-type="Orders">Orders</div>
+        <div class="fncybtn2" data-type="Children">Children</div>
+    </div>
+    <div class="navprop">
+        <fieldset><legend>LastName</legend><input type="text" value="@p.PRT_LastName" /></fieldset>
+        <fieldset class="fk highlight" data-id="@p.PRT_USR_RecordID" data-type="ul"><legend>UserLogin</legend><span>@p.UserLogin.USR_Username</span></fieldset>
+        @{Order o = Data.GetCurrentOrder(p);}
+        @*if(o==null){
+            <div class="data-error"><div class="dot">&nbsp;</div>No current Order</div>
+        }*@
+        @if(o!=null&&o.Payments.Count>0&&Data.GetCurrentPayment(o)==null){
+            <div class="data-error"><div class="dot">&nbsp;</div>Current Order and payments, but no current Payment</div> // Go to Order
+        }
+    </div>
+    <div class="fields">
+        <fieldset class="settings hide"><legend>RecordID</legend><input type="text" class="RecordID" value="@p.PRT_RecordID" /></fieldset>
+        <fieldset class="settings hide"><legend>UserLoginID</legend><input type="text" class="UserLoginID" value="@p.PRT_USR_RecordID" /></fieldset>
+        <fieldset><legend>FatherName</legend><input type="text" class="FatherName" value="@p.PRT_FatherName" /></fieldset>
+        <fieldset><legend>MotherName</legend><input type="text" class="MotherName" value="@p.PRT_MotherName" /></fieldset>
+        <fieldset><legend>LastName</legend><input type="text" class="LastName" value="@p.PRT_LastName" /></fieldset>
+        <fieldset><legend>Address</legend><input type="text" class="Address" value="@p.PRT_Address" /></fieldset>
+        <fieldset><legend>City</legend><input type="text" class="City" value="@p.PRT_City" /></fieldset>
+        <fieldset><legend>Zipcode</legend><input type="text" class="Zipcode" value="@p.PRT_Zipcode" /></fieldset>
+    </div>
+    <div class="clear"></div>
+    <div class="container"></div>
+</div>
+}
+@if (ps.Count == 0)
+{
+    <text>none</text>
+}

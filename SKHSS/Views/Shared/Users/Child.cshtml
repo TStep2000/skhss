@@ -1,0 +1,46 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@model Child
+@{Layout = null;}
+<div id="@Model.CLD_RecordID" class="c Child node hide @Model.CLD_RecordID">
+    <input type="hidden" class="crid" value="@Model.CLD_RecordID" />
+    <div class="leftm fl-start">
+        @if(Model.Teammates.Count>0){
+        <div class="imgbtn openbtn">
+            <img data-func="open" data-page="1" src="/Content/icons/down.png" alt="open" />
+            <div class="hide hide1 1">
+                <img data-func="close" data-page="0" src="/Content/icons/up.png" alt="close" />
+            </div>
+        </div>
+        }
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole))
+        {
+            <div class="imgbtn ids">
+                <img data-func="show" src="/Content/icons/cog.png" alt="open" />
+            </div>
+        }
+    </div>
+    <fieldset class="settings hide"><legend>Record ID</legend><span style="position:absolute;height:18px;overflow:hidden;">@Model.CLD_RecordID</span></fieldset>
+    <div class="fields">
+        <fieldset class="fsFirstName"><legend>First Name</legend><input class="FirstName" type="text" value="@Model.CLD_FirstName" /></fieldset>
+        <fieldset class="fsBirthdate"><legend>Birthdate</legend><input class="Birthdate" type="text" value="@Model.CLD_Birthdate.ToShortDateString()" /></fieldset>
+        <fieldset class="fsGender"><legend>Gender</legend><select class="Gender"><option value="false" @(Model.CLD_Gender==false?"selected":"")>Male</option><option value="true" @(Model.CLD_Gender==true?"selected":"")>Female</option></select></fieldset>
+        <fieldset class="fsNotes"><legend>Comments</legend><input class="Notes" type="text" value="@Model.CLD_Notes" /></fieldset>
+    </div>
+    <div class="rightm fl-end">
+        @if (Global.IsInRole(User.Identity.Name, Definitions.MeRole)){
+        <div class="imgbtn" data-group="@Model.CLD_RecordID">
+            <img data-func="delete" data-delete-type="s" data-delete-message="Are you sure you want to delete this account?" src="/Content/icons/delete.png" />
+        </div>}
+    </div>
+    @if (Model.Teammates.Count > 0)
+    {
+        <div class="clear"></div>
+        <div class="cont">
+            @foreach (Teammate t in Model.Teammates)
+            {
+                @Html.Partial("Users/Teammate", t);
+            }
+        </div>
+    }
+</div>

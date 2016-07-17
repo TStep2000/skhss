@@ -1,0 +1,73 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "Reports";
+    Int32 teamid = 0;
+    Int32 type = 0;
+    if (ViewBag.TeamID != null)
+    {
+        teamid = Int32.Parse(ViewBag.TeamID);
+    }
+    if (ViewBag.Type != null)
+    {
+        type = Int32.Parse(ViewBag.Type);
+    }
+    Boolean iscoach = !Global.IsInRoleOrHigher(User.Identity.Name, Definitions.SportsRole);
+    /*if(iscoach){
+        Guid ulg = Data.GetLogin(User.Identity.Name).USR_RecordID;
+        teamid = Data.GetCHs(m => m.CCH_USR_RecordID == ulg).CCH_TEM_TeamID;
+        type = 1;
+    }*/
+}
+<h2>Reports</h2>
+@*Contacts Calendar<br />
+Parent list: Father, Mother, Last, Phone, Email, Volunteer Positions, ChildNames<br />
+Team list: TeamName, CoachNames(First,Last), PlayerNames(First,Last,Age)<br />*@
+@switch(type){
+    case 0:
+        <a class="printpage" href="/Members/RegReport">Printable Page</a>
+    break;
+    case 1:
+        <a class="printpage" href="/Members/TeamReport/@teamid">Printable Page</a>
+    break;
+}
+
+<div class="ddns">
+    @using (Html.BeginForm("Reports", "Members", FormMethod.Get))
+    {
+    @Html.DropDownList("team", new SelectList(Data.db.Teams.Where(m => m.TEM_Enabled), "TEM_TeamID", "TEM_TeamName", teamid), new { style = (type == 1 ? "" : "display:none;") })
+    if(!iscoach)
+    {
+    <select id="type" name="type">
+        <option value="0" @(type==0?"selected":"")>Registrations</option>
+        <option value="1" @(type==1?"selected":"")>Teams</option>
+        @*<option value="2" @(type==2?"selected":"")>Shirts</option>*@
+    </select>
+    }
+    <input id="viewreport" type="submit" value="View Report" />
+    }
+</div>
+<hr />
+<div id="report">
+    @switch (type)
+    {
+        case 1:
+            <div>
+            @Html.Partial("DisplayTemplates/TeamReport", teamid)
+            </div>
+            break;
+        case 2:
+            <div>
+            @Html.Partial("DisplayTemplates/ShirtReport")
+            </div>
+            break;
+        case 0:
+        default:
+            <div>
+            @Html.Partial("DisplayTemplates/RegistrationReport")
+            </div>
+            break;
+    }
+    
+</div>

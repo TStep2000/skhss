@@ -1,0 +1,35 @@
+﻿@{Layout = null;}
+<style>
+    #about{padding:0 30px 10px 30px;}
+    #left {float:left;width:calc(96% - 200px);padding: 15px 0;margin-right:4%;}
+    #right {float:left;width:200px;padding: 15px 0;}
+    .bi {line-height:20px;}
+    .fees {margin-bottom:20px;}
+    .bmt-1, .bmt-2, .bmt-3, .tmt-1, .tmt-2, .fst-1, .fst-2 {display:inline-block;}
+    .bmt-1 {min-width:175px;}
+    .bmt-2 {min-width:150px;}
+    .tmt-1 {min-width:100px;}
+    .tmt-2 {float:right;}
+    .fst-1 {min-width:125px;}
+    .fst-2 {float:right;}
+    .clmns {width:200px;}
+    .clmnlg {max-width:63%;}
+    @@media screen and (max-width: 600px) {
+        .bmt-1 {min-width:145px;}
+        .bmt-2 {min-width:120px;}
+    }
+    @@media screen and (max-width: 460px) {
+        #about {padding:0;}
+        #right {border-top:1px solid #ddd;}
+        #left,#right {max-width:100%;width:100%;margin:0;}
+        .bi {width:50%;float:left;font-size:13px;}
+        .fees {margin-right:0%;margin-bottom:20px;}
+        .miss {border-bottom:1px solid #ddd;padding-bottom:10px;}
+        .tmt-1 {min-width:50px;}
+        .fst-1 {min-width:75px;}
+        .clmns {min-width:0px!important;width:160px;}
+        .bmt-1 {min-width:100px;}
+        .bmt-2 {min-width:90px;}
+        .clmnlg {font-size:10px;min-width:345px!important;}
+    }
+</style>

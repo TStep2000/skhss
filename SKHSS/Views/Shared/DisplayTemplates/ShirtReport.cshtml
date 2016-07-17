@@ -1,0 +1,52 @@
+﻿@using SKHSS.Models
+@using SKHSS.Helpers
+@{
+    Layout = null;
+    List<Teammate> ts = db.Teammates.Where(m => m.TMT_Accepted && m.TMT_SEA_SeasonID == Global.CurrentSeasonID && m.TMT_Year == Global.CurrentYear).OrderBy(m => m.Child.Parent.PRT_LastName).ThenBy(m => m.Child.CLD_Birthdate).ToList();
+    Guid currP = Guid.Empty;
+}
+<style type="text/css">
+    table {
+        border:1px solid black;
+        width:100%;
+        font-size:12px;
+        border-collapse:collapse;
+    }
+    td {
+        border:1px solid black;
+        padding:1px 3px;
+    }
+    /*td:not(.long) {
+        white-space:nowrap;
+        width:1px;
+    }*/
+    td.short {
+        width:1px;
+    }
+    .bold td {
+        font-weight:bold;
+    }
+    h3 {margin-left:3px;margin-bottom:0px;line-height: 30px;font-family: Calibri, sans-serif;font-size: 22px;font-weight: bold;}
+</style>
+<div id="temreport">
+<h2>Shirts</h2>
+<table>
+    <tr class="bold">
+        <td>Player Name</td>
+        <td class="short">Age</td>
+        <td>Team Name</td>
+        <td>Shirt Size</td>
+        <td class="short">Paid</td>
+    </tr>
+@foreach (Teammate t in ts)
+{
+    <tr>
+        <td>@t.Child.Parent.PRT_LastName, @t.Child.CLD_FirstName</td>
+        <td class="short">@Global.Age(t.Child.CLD_Birthdate)</td>
+        <td>@Global.TeamName(t.Child.CLD_Birthdate)</td>
+        <td>@(t.TMT_SRT_ShirtID.HasValue ? Definitions.ShirtSizes[t.TMT_ShirtID.Value] : "")</td>
+        <td class="short"><input type="checkbox" disabled @(t.Order != null && t.Order.ORD_Paid ? "checked=\"checked\"" : "") /></td>
+    </tr>
+}
+</table>
+</div>

@@ -1,0 +1,12 @@
+﻿@using SKHSS.Models
+@model List<Log>
+@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+}
+<div class="fncybtn fl-end delete">Delete All</div>
+<div>
+@foreach (Log l in Model)
+{
+    <text>@l.LOG_Text</text> <br /><br />
+}
+</div>

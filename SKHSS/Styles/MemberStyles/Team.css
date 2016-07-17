@@ -1,0 +1,115 @@
+﻿#title {
+    margin:10px 0 10px 5px;
+    width:50%;
+    display:inline-block;
+}
+#top {
+    width:100%;
+    height:150px;
+    background:#ccc;
+    overflow:hidden;
+    border-bottom:2px solid #656565;
+    border-top:1px solid #777;
+}
+#cover {
+    height:100%;
+    width:1024px;
+}
+#top img {
+    margin-right:-3px;
+    height:100%;
+}
+#right .subheader {
+    margin:0;
+}
+.date {
+    display:inline-block;
+    margin-bottom:10px;
+}
+    
+.wing {
+    padding:5px;
+    float:left;
+    width:40%;
+    min-height:calc(100% - 190px);
+}
+#left {
+    border-right:1px solid #ccc;
+    width:60%;
+}
+#membercontent {
+    padding:0;
+}
+.fancylist {
+    height:100px;
+    margin-bottom:5px;
+    border-top:1px solid #eee;
+}
+.fancylist .title,.phone,.email {
+    padding:3px 0 3px 5px;
+    width:calc(100% - 100px);
+    position:absolute;
+    right:0;
+    white-space:nowrap;
+}
+.phone {top:23px;}
+.email {top:43px;}
+.fancylist .title h4 {margin:0;}
+.fancylist img {width:100px;}
+#view-rep,#toteams {float:right;margin-top:10px;margin-right:10px;/*position:absolute;right:10px;top:10px;*/}
+@media screen and (max-width: 660px) {
+    #title {width:auto;}
+    #left h4 {
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .phone {top:22px;}
+    .email {top:38px;}
+    .phone, .email {font-size:12px;line-height:12px;}
+    .fancylist {
+        height: 65px;
+        width:50%;
+        min-width:230px;
+    }
+    .fancylist img {
+        width:65px;
+    }
+    .fancylist .title,.phone,.email {
+        width: calc(100% - 65px);            
+    }
+}
+@media screen and (max-width: 660px) {
+    #right,#left {
+        width:100%;
+        height:auto;
+        min-height:0px!important;
+        float:right;
+    }
+}
+@media screen and (max-width: 460px) {
+    #top {
+        width:100%;
+        height:100px;
+    }
+    #title {
+        font-size:20px;
+        line-height:20px;
+    }
+    h2 {
+        font-size:16px;
+        line-height:16px;
+    }
+    .wing {
+        min-height:calc(100% - 125px);
+    }
+    .subheader {
+        font-size:12px;
+        line-height:12px;
+    }
+    .date {
+        font-size:10px;
+    }
+    .ellipsis_text {
+        font-size:10px;
+    }
+}

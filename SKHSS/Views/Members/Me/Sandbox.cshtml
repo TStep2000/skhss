@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_MembersLayout.cshtml";
+    ViewBag.Title = "Sandbox";
+}
+<style type="text/css">
+    .fncybtn {
+        padding:2px;
+    }
+</style>
+<h2>Sandbox</h2>
+<br />
+<a class="fncybtn updatedb" href="UpdateDB" onclick="return confirm('Did you get VERY EXPLICIT permission do to this?!?');">UpdateDB*</a><br /><br />
+
+<a class="fncybtn" href="RefreshDB">RefreshDB* (this is not bad)</a><br /><br />
+
+<a class="fncybtn" href="ViewFeedback">View Feedback</a><br /><br />
+
+<a class="fncybtn" href="WriteToFile">Write To File</a><br /><br />
+
+<a class="fncybtn" href="ActivateUsers">Activate a user</a><br /><br />
+
+<a class="fncybtn" href="SendEmail">SendEmail*</a><br /><br />
+
+<a class="fncybtn" href="Log">Log</a><br /><br />
+
+<a class="fncybtn" href="DoTransaction">DoTransaction</a><br /><br />
+
+<a class="fncybtn" href="MakeCoach">MakeCoach</a><br /><br />
+
+<a class="fncybtn" style="color:red;" href="WipeAll">Wipe All Pictures</a><br /><br />
+
+<a class="fncybtn" style="color:red;" href="DeletePics">KillAll Everything</a><br /><br /><br /><br />
+
+<a class="fncybtn" href="ClearCache">Clear Cache*</a><br /><br /><br />
+
+*DirectAction
+<br /><br />
+<div class="test imgbtn">
+    <img data-page="2" src="/Content/icons/down.png"/>
+    <img data-page="1" data-func="edit" src="/Content/icons/edit.png" />
+    <div class="hide hide1 1">
+        <img data-page="0" data-func="undo" src="/Content/icons/undo.png" />
+        <img class="save" data-func="save" src="/Content/icons/save.png"/>
+        <img class="load hide hide1" src="/Content/loading.gif" />
+        <img class="chk hide hide1" src="/Content/icons/gcheck.png"/>
+    </div>
+    <div class="hide hide1 2">
+        <img data-page="0" src="/Content/icons/up.png"/>
+        <img data-func="open" src="/Content/icons/cog.png" />
+        <img data-func="delete" src="/Content/icons/delete.png"/>
+    </div>
+</div>
+<span class="ts"></span>
+<span class="ts2 hide">asdfas-asdf-asdsd--asdfasdfadsf</span>
