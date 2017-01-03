@@ -254,12 +254,12 @@ namespace SKHSS.Helpers
 
         public static String GetPrimaryEmail(Guid UserRecordID)
         {
-            Boolean primary = db.Parents.Single(m=>m.PRT_USR_RecordID==UserRecordID).PRT_PrimaryEmail.Value;                                                    //||waiting on changes
+            Boolean primary = true;  //db.Parents.Single(m=>m.PRT_USR_RecordID==UserRecordID).PRT_PrimaryEmail;                                                    //||waiting on changes
             return db.Contacts.Single(m => m.CON_PRTID == primary).CON_Email;
         }
         public static String GetPrimaryPhone(Guid UserRecordID)
         {
-            Boolean primary = db.Parents.Single(m => m.PRT_USR_RecordID == UserRecordID).PRT_PrimaryPhone.Value;                                                //||
+            Boolean primary = true;  //db.Parents.Single(m => m.PRT_USR_RecordID == UserRecordID).PRT_PrimaryPhone.Value;                                                //||
             return db.Contacts.Single(m => m.CON_PRTID == primary).CON_Phone;
         }
         public static String GetSysVar(String Name)
