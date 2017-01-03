@@ -31,9 +31,9 @@ namespace SKHSS.Models
         public string PRT_Address { get; set; }
         public string PRT_City { get; set; }
         public string PRT_Zipcode { get; set; }
-        public Nullable<bool> PRT_PrimaryEmail { get; set; }
-        public Nullable<bool> PRT_PrimaryPhone { get; set; }
-    
+        public string PRT_PrimaryEmail { get; set; }
+        public string PRT_PrimaryPhone { get; set; }
+
         public virtual ICollection<Child> Children { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

@@ -200,8 +200,8 @@ namespace SKHSS.Helpers
                 if (v(psave.MotherEmail, true)){ mc.CON_Email = psave.MotherEmail; }
                 if (v(psave.MotherPhone, true)){ mc.CON_Phone = psave.MotherPhone; }
 
-                if (v(psave.PrimaryEmail)) { p.PRT_PrimaryEmail = Boolean.Parse(psave.PrimaryEmail); }
-                if (v(psave.PrimaryPhone)) { p.PRT_PrimaryPhone = Boolean.Parse(psave.PrimaryPhone); }
+                if (v(psave.PrimaryEmail)) { p.PRT_PrimaryEmail =  psave.PrimaryEmail; }
+                if (v(psave.PrimaryPhone)) { p.PRT_PrimaryPhone =  psave.PrimaryPhone; }
 
                 if (v(psave.LastName)) { p.PRT_LastName = psave.LastName; }
                 if (v(psave.Address)) { p.PRT_Address = psave.Address; }
